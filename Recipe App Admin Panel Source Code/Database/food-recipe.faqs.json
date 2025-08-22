@@ -1,0 +1,165 @@
+[{
+  "_id": {
+    "$oid": "66ded686851bdfea8d3625c7"
+  },
+  "question": "Can I substitute ingredients in the recipe?",
+  "answer": "Yes, you can substitute ingredients based on your dietary preferences or availability. For example, you can use almond milk instead of dairy milk, or swap butter with coconut oil. Keep in mind that this may alter the flavor or texture slightly.",
+  "status": "Publish",
+  "createdAt": {
+    "$date": "2024-09-09T11:05:42.085Z"
+  },
+  "updatedAt": {
+    "$date": "2024-09-20T15:52:20.341Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66ded69c851bdfea8d3625d7"
+  },
+  "question": "Can I make this recipe ahead of time?",
+  "answer": "Yes! Many recipes can be prepared in advance. For baked goods, you can often make the dough or batter the day before and refrigerate it until you're ready to bake. For soups and stews, the flavors can actually improve after sitting for a day.",
+  "status": "Publish",
+  "createdAt": {
+    "$date": "2024-09-09T11:06:04.291Z"
+  },
+  "updatedAt": {
+    "$date": "2024-09-09T11:06:04.291Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66ded6a8851bdfea8d3625e7"
+  },
+  "question": "How do I store leftovers?",
+  "answer": "Leftovers can typically be stored in an airtight container in the refrigerator for 3-5 days. Some dishes also freeze well. Check the specific recipe instructions for storage tips.",
+  "status": "Publish",
+  "createdAt": {
+    "$date": "2024-09-09T11:06:16.271Z"
+  },
+  "updatedAt": {
+    "$date": "2024-09-09T11:06:16.271Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66ded6b6851bdfea8d3625f7"
+  },
+  "question": "Can I freeze this dish?",
+  "answer": "Many dishes freeze well, especially soups, stews, casseroles, and baked goods. Make sure to cool the dish completely before freezing and use a freezer-safe container. Label with the date and reheat within 2-3 months for the best quality.",
+  "status": "Publish",
+  "createdAt": {
+    "$date": "2024-09-09T11:06:30.113Z"
+  },
+  "updatedAt": {
+    "$date": "2024-09-09T11:06:30.113Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66ded6c0851bdfea8d362607"
+  },
+  "question": "How can I adjust the recipe for larger/smaller servings?",
+  "answer": "Most recipes can be scaled up or down by multiplying or dividing the ingredient quantities. However, be cautious when changing the size for baking recipes, as the cooking time and temperature might also need adjustment.",
+  "status": "Publish",
+  "createdAt": {
+    "$date": "2024-09-09T11:06:40.802Z"
+  },
+  "updatedAt": {
+    "$date": "2024-09-09T11:06:40.802Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66ded6cd851bdfea8d362617"
+  },
+  "question": "What should I do if I don’t have a specific tool or piece of equipment?",
+  "answer": "Many kitchen tools can be substituted or improvised. For example, if you don’t have a food processor, you can use a blender. If a recipe calls for a stand mixer, you can usually mix by hand with a little extra effort.",
+  "status": "Publish",
+  "createdAt": {
+    "$date": "2024-09-09T11:06:53.331Z"
+  },
+  "updatedAt": {
+    "$date": "2024-09-09T11:06:53.331Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66ded6d6851bdfea8d362627"
+  },
+  "question": "How do I know when the dish is fully cooked?",
+  "answer": "Many recipes provide a visual cue, like “until golden brown” or “until juices run clear.” For more accuracy, you can use a food thermometer to ensure the internal temperature meets food safety standards (e.g., 165°F for poultry).",
+  "status": "Publish",
+  "createdAt": {
+    "$date": "2024-09-09T11:07:02.812Z"
+  },
+  "updatedAt": {
+    "$date": "2024-09-09T11:07:02.812Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66ded6e2851bdfea8d362637"
+  },
+  "question": "Can I make this recipe gluten-free/vegan?",
+  "answer": "Yes, with some adjustments. For gluten-free versions, you can substitute all-purpose flour with a gluten-free flour blend. For vegan options, replace dairy products with plant-based alternatives and use ingredients like flax eggs or applesauce in place of eggs.",
+  "status": "Publish",
+  "createdAt": {
+    "$date": "2024-09-09T11:07:14.723Z"
+  },
+  "updatedAt": {
+    "$date": "2024-09-09T11:07:14.723Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66ded6fe851bdfea8d362647"
+  },
+  "question": "How do I prevent my dish from being too salty/sweet/spicy?",
+  "answer": "aste your dish as you cook and adjust seasoning gradually. If a dish ends up too salty, you can often balance it by adding acid (like lemon juice) or starch (like potatoes). Too sweet? Add a pinch of salt or something acidic. Too spicy? Add dairy or a sweetener.",
+  "status": "Publish",
+  "createdAt": {
+    "$date": "2024-09-09T11:07:42.932Z"
+  },
+  "updatedAt": {
+    "$date": "2024-09-09T11:07:42.932Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66ded709851bdfea8d362657"
+  },
+  "question": "Can I make this recipe in a slow cooker/instant pot?",
+  "answer": "Many recipes can be adapted for a slow cooker or instant pot. Reduce the liquid if you're slow cooking, as liquids don’t evaporate as much. For the instant pot, be sure to follow specific timing recommendations for pressure cooking.",
+  "status": "Publish",
+  "createdAt": {
+    "$date": "2024-09-09T11:07:53.233Z"
+  },
+  "updatedAt": {
+    "$date": "2024-09-09T11:07:53.233Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66ded714851bdfea8d362667"
+  },
+  "question": "What should I do if my dish doesn’t turn out as expected?",
+  "answer": "Cooking can sometimes be unpredictable, but don’t be discouraged! Try to pinpoint the issue—whether it’s ingredient substitution, incorrect temperature, or timing. Each attempt will help you improve, and feel free to adjust the recipe to suit your taste.",
+  "status": "Publish",
+  "createdAt": {
+    "$date": "2024-09-09T11:08:04.395Z"
+  },
+  "updatedAt": {
+    "$date": "2024-09-09T11:08:04.395Z"
+  },
+  "__v": 0
+}]

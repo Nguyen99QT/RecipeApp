@@ -1,0 +1,2 @@
+C:/Aptech/7. PRJ4/Receipe/Flutter Receipe App/recipe_app/android/app/.cxx/RelWithDebInfo/p46a245u/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Aptech/7. PRJ4/Receipe/Flutter Receipe App/recipe_app/android/app/.cxx/RelWithDebInfo/p46a245u/armeabi-v7a/CMakeFiles/rebuild_cache.dir

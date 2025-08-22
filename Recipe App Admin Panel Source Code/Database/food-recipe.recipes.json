@@ -1,0 +1,303 @@
+[{
+  "_id": {
+    "$oid": "65bde758e101bd826900170e"
+  },
+  "name": "Leftover Rice Pancakes Recipe",
+  "image": "1706944344235_Leftover Rice Pancakes Recipe.jpg",
+  "ingredients": [
+    "1 Cup leftover cooked rice",
+    "1 cup all-purpose flour",
+    "1 tbsp granulated sugar",
+    "1 tsp baking powder",
+    "1/2 tsp baking soda",
+    "1/4 tsp salt",
+    "1 cup buttermilk/milk",
+    "1 large egg",
+    "2 tbsp melted butter/oil",
+    "1 tbsp vanilla extract (optional)"
+  ],
+  "categoryId": {
+    "$oid": "65bb83871f1cbf25e0f942f4"
+  },
+  "cuisinesId": {
+    "$oid": "65bb84851f1cbf25e0f943be"
+  },
+  "prepTime": "10 mins",
+  "cookTime": "15 mins",
+  "totalCookTime": "25 mins",
+  "servings": "2",
+  "difficultyLevel": "Easy",
+  "video": "",
+  "url": "MSJRY8VWVuY",
+  "overview": "<p>Leftover Rice Pancakes Recipe: This is a great way to use leftover rice. This Leftover Rice Pancake is a good option for breakfast, all you have to do is prepare a batter by adding egg, flour, butter and some essential ingredients to the Leftover Rice. After that prepare delicious pancake from it.</p>",
+  "createdAt": {
+    "$date": "2024-02-03T07:12:24.280Z"
+  },
+  "updatedAt": {
+    "$date": "2024-09-09T11:11:00.373Z"
+  },
+  "__v": 0,
+  "how_to_cook": "<p><strong>How to Make Leftover Rice Pancakes</strong></p><p>1.In a large mixing bowl, combine the flour, sugar, baking powder, baking soda, and salt. Mix well.</p><p>2.In a separate bowl, whisk together the buttermilk/milk, egg, melted butter (or oil), and vanilla extract (if using).</p><p>3.Add the wet ingredients to the dry ingredients, and gently mix until just combined.</p><p>4.Fold in the leftover rice into the pancake batter.</p><p>5.Heat a non-stick pan over medium heat. Lightly grease it with butter or oil.</p><p>6.Cook the pancakes for about 2-3 minutes on each side, or until they are golden brown and slightly puffed up.</p><p>7.Serve the leftover rice pancakes warm with your favorite toppings, such as maple syrup, fresh fruits, honey, or a dollop of yoghurt.</p>",
+  "gallery": [
+    "1725880260353_Leftover Rice Pancakes Recipe 4.jpg",
+    "1725880260356_Leftover Rice Pancakes Recipe 3.jpg",
+    "1725880260357_Leftover Rice Pancakes Recipe 2.jpg",
+    "1725880260358_Leftover Rice Pancakes Recipe.jpg"
+  ]
+},
+{
+  "_id": {
+    "$oid": "65bde9d9e101bd8269001777"
+  },
+  "name": "Hamburgers and Fries Recipe",
+  "image": "1706944985776_Hamburgers and Fries Recipe.jpg",
+  "ingredients": [
+    "250 gm minced mutton",
+    "4 Tbsp onions - finely chopped",
+    "1/2 tsp ginger-garlic paste",
+    "1/2 tsp black pepper powder",
+    "Salt - to taste oil",
+    "3-4 Tbsp butter",
+    "3-4 burger buns",
+    "4 tomato slices",
+    "4 onion slices",
+    "Coleslaw (optional)",
+    "Mayonnaise (optional)",
+    "For French Fries:",
+    "3-4 large potatoes",
+    "Salt - to taste",
+    "Pepper (optional)",
+    "Oil - for deep frying"
+  ],
+  "categoryId": {
+    "$oid": "65bb838e1f1cbf25e0f94304"
+  },
+  "cuisinesId": {
+    "$oid": "65bb84851f1cbf25e0f943be"
+  },
+  "prepTime": "10 mins",
+  "cookTime": "1 hr",
+  "totalCookTime": "1 hr 10 mins",
+  "servings": "4",
+  "difficultyLevel": "Medium",
+  "video": "",
+  "url": "CJj84y5P3_g",
+  "overview": "<p>Succulent mutton patties pan fried to create an oozing luscious hamburger. Served with potato fries, some coleslaw, mustard and ketchup.</p>",
+  "createdAt": {
+    "$date": "2024-02-03T07:23:05.780Z"
+  },
+  "updatedAt": {
+    "$date": "2024-09-09T11:11:56.878Z"
+  },
+  "__v": 0,
+  "how_to_cook": "<p><strong>How to Make Hamburgers and Fries</strong></p><p>1.Mix the minced mutton, onion, garlic-ginger paste, salt and pepper together.</p><p>2.Shape the mixture in 3 or 4 round patties and refrigerate for an hour.</p><p>3.Pan fry these patties by browning both sides over a high heat, then lower the heat and let them cook through and remove.</p><p>4.In the same pan, melt some butter, slit the buns in half and semi-toast them in the butter.</p><p>5.Now make the hamburger with onion and tomato slices, coleslaw or mayonnaise.</p><p>6.Serve with ketchup or mustard and fries.</p><p><strong>For French Fries:</strong></p><p>1.A double fry method for making crispier fries.</p><p>2.Peel and slice the potatoes into 'fingers'.</p><p>3.Boil some water with a pinch of salt.</p><p>4.When it boils, add the potatoes, switch off the fire and leave for 5-6 minutes.</p><p>5.Take the potatoes out and drain them well or wipe dry.</p><p>6.Heat oil in a pan and add the potato fingers.</p><p>7.Lower the heat to medium and fry till they become light golden. (half cooked)</p><p>8.Then remove from the oil and drain.</p><p>9.Just before serving fry the same potato fingers again over a high heat till golden brown.</p><p>10.Sprinkle some salt and pepper and serve.</p>",
+  "gallery": [
+    "1725880316861_Hamburgers and Fries Recipe 3.jpeg",
+    "1725880316863_Hamburgers and Fries Recipe 2.jpg",
+    "1725880316864_Hamburgers and Fries Recipe 1.jpeg"
+  ]
+},
+{
+  "_id": {
+    "$oid": "65bde8cbe101bd8269001759"
+  },
+  "name": "Chilli Paneer Frankie Recipe",
+  "image": "1706944715320_Chilli Paneer Frankie Recipe.jpg",
+  "ingredients": [
+    "For Paratha:",
+    "1 cup Maida",
+    "1 cup whole wheat Flour",
+    "1/2 cup Curd",
+    "1 tbsp Oil",
+    "For Frankie Masala:",
+    "2 tbsp Red chilli powder",
+    "2 tbsp Coriander Powder",
+    "1 tbsp Garam masala",
+    "1/2 tbsp Turmeric",
+    "1 tbsp Black Salt",
+    "For chilli paneer:",
+    "250 gram Paneer",
+    "1/2 cup Capsicum, chopped",
+    "1 cup Onion, chopped",
+    "1/2 cups Spring Onion",
+    "1 tbsp Soy Sauce",
+    "1 tbsp Red Chilli Sauce",
+    "1/2 tbsp Green Chilli Sauce",
+    "1 tbsp Garlic, finely chopped",
+    "1/2 tbsp Ginger, finely chopped",
+    "2 tsp Green Chillies, finely chopped",
+    "1 cup Onion, finely chopped",
+    "to taste Salt",
+    "1/2 tsp Black pepper",
+    "As Required Oil for frying",
+    "1 cup Cornflour",
+    "1/2 cup Maida",
+    "1/2 tsp Ginger garlic paste"
+  ],
+  "categoryId": {
+    "$oid": "65bb83871f1cbf25e0f942f4"
+  },
+  "cuisinesId": {
+    "$oid": "65bb848b1f1cbf25e0f943ce"
+  },
+  "prepTime": "5 mins",
+  "cookTime": "25 mins",
+  "totalCookTime": "30 mins",
+  "servings": "4",
+  "difficultyLevel": "Easy",
+  "video": "",
+  "url": "m73j1dThWzg",
+  "overview": "<p>Chilli Paneer Frankie Recipe: We love indo-chinese dishes so much and chilli paneer one of them. It is a simple recipe that can be prepare under 25 minutes. This chilli paneeer frankie gives a variety to your meal.</p>",
+  "createdAt": {
+    "$date": "2024-02-03T07:18:35.324Z"
+  },
+  "updatedAt": {
+    "$date": "2024-09-09T11:13:21.660Z"
+  },
+  "__v": 0,
+  "how_to_cook": "<p><strong>How to Make Chilli Paneer Frankie</strong></p><p>1.For prepare frankie masala put all the ingredients in a bowl and mix it well.</p><p>2.Take a big bowl and put maida, whole wheat flour, salt, curd and oil. Mix well and kneading a dough with the water.</p><p>3.The dough should be like chapati dough. Keep it aside for few minutes.</p><p>4.Now take a dough and divide into for 6 equal parts. Rolled out these ball like chapati and heat a tawa and make parathas.</p><p>5.Now, take a bowl and put cornflour and maida in it. Add ginger garlic paste and salt, add water and make a slurry.</p><p>6.Cut the paneer into the cubes and add into the slurry, coated well. Heat the oil and frying them for light brown.</p><p>7.Set a kadhai on the gas stove and put some oil in it, When the oil gets hot, put choppes garic, ginger, green chilies and saute for few minutes.</p><p>8.Add choppes onion and capsicum, saute them for 2 minutes. Now, add black pepper, red sauce, soy sauce, chilli sauce, vinger and salt to taste.</p><p>9.Mix all the Ingredients and again make a slurry with 1 tbsp cornflour and water. add this slurry into the kadhai and it it give a thicken texture to the mixture.</p><p>10.After that add fried paneer cubes in it and mix them. Cook for 2 minutes and switch off the gas.</p><p>11.It's the time of assembling. Take one paratha sprinkle some frankie masala and put chilli paneer on it. Sprinkle raw chopped onion.</p><p>12.Take foil papper put paratha on it and from the half and make a roll of paratha. Enjoy your chilli paneer frankie.</p>",
+  "gallery": [
+    "1725880401645_Chilli Paneer Frankie Recipe 2.jpg",
+    "1725880401645_Chilli Paneer Frankie Recipe 1.jpg"
+  ]
+},
+{
+  "_id": {
+    "$oid": "65bdde5be101bd82690016ae"
+  },
+  "name": "Eggless Banana Pancake Recipe",
+  "image": "1706942043311_banana-pancake.jpg",
+  "ingredients": [
+    "1 Cup all-purpose flour",
+    "1 tbsp sugar",
+    "1 tsp baking powder",
+    "A pinch of salt",
+    "1 ripe banana, mashed",
+    "1 cup milk",
+    "2 tbsp melted butter or oil"
+  ],
+  "categoryId": {
+    "$oid": "65bb83871f1cbf25e0f942f4"
+  },
+  "cuisinesId": {
+    "$oid": "65bb84851f1cbf25e0f943be"
+  },
+  "prepTime": "5 mins",
+  "cookTime": "15 mins",
+  "totalCookTime": "20 mins",
+  "servings": "2",
+  "difficultyLevel": "Easy",
+  "video": "1707287970220_Eggless Banana Pancake Recipe.mp4",
+  "url": "",
+  "overview": "<p>Eggless Banana Pancake Recipe: This is a quick and easy breakfast recipe. All you need banana, sugar, milk and all-purpose flour.</p>",
+  "createdAt": {
+    "$date": "2024-02-03T06:34:03.327Z"
+  },
+  "updatedAt": {
+    "$date": "2024-09-09T11:14:35.988Z"
+  },
+  "__v": 0,
+  "how_to_cook": "<p><strong>How to Make Eggless Banana Pancake</strong></p><p>1.&nbsp; In a large mixing bowl, whisk together the flour, sugar, baking powder, and salt.</p><p>2.&nbsp; In a separate bowl, mash the ripe banana until smooth.</p><p>3.&nbsp; Add the mashed banana, milk, and melted butter or oil to the dry ingredients. Stir until just combined.</p><p>4.&nbsp; Heat a griddle or non-stick pan over medium heat. Ladle the batter onto the hot surface, creating small circles.</p><p>5.&nbsp; Once you see bubbles forming on the surface, it's time to flip. Cook until both sides are golden brown.</p>",
+  "gallery": [
+    "1725880475973_Eggless Banana Pancake Recipe 2.png",
+    "1725880475974_Eggless Banana Pancake Recipe.jpg"
+  ]
+},
+{
+  "_id": {
+    "$oid": "65bdebbbe101bd82690017a9"
+  },
+  "name": "Honey Chilli Potato Recipe",
+  "image": "1706945467543_Honey Chilli Potato Recipe.png",
+  "ingredients": [
+    "For Frying Potatoes:",
+    "2 nos Potatoes, sliced",
+    "5 tbsp Corn flour",
+    "1 1/2 tbsp Salt",
+    "2 tsp Chilli Powder",
+    "For Honey Chilli Sauce:",
+    "1 1/2 tsp Garlic",
+    "1 tsp Ginger",
+    "2 nos Whole Red Chillies , chopped",
+    "1 tsp Chilli Flakes",
+    "2 tsp Tomato Sauce",
+    "2 tsp Chilli Sauce",
+    "1 tsp Vinegar",
+    "2 tbsp Honey",
+    "1 tsp Salt",
+    "4 tsp Sesame Seeds , roasted",
+    "2 Bulbs Spring Onions"
+  ],
+  "categoryId": {
+    "$oid": "65bb838e1f1cbf25e0f94304"
+  },
+  "cuisinesId": {
+    "$oid": "65bb848b1f1cbf25e0f943ce"
+  },
+  "prepTime": "10 mins",
+  "cookTime": "25 mins",
+  "totalCookTime": "35 mins",
+  "servings": "2",
+  "difficultyLevel": "Easy",
+  "video": "",
+  "url": "HToinNNWISU",
+  "overview": "<p>Honey Chilli Potato Recipe : The amazing starter recipe, honey chilli potato can be added to any party food menu. This Chinese dish is generally liked by people of all ages. Made with fried potatoes, honey and chilli sauce, this snack is crunchy, flavorful and amazingly delicious. Enjoy the crispy, spicy and tangy taste</p>",
+  "createdAt": {
+    "$date": "2024-02-03T07:31:07.565Z"
+  },
+  "updatedAt": {
+    "$date": "2024-09-09T11:15:49.438Z"
+  },
+  "__v": 0,
+  "how_to_cook": "<p><strong>For Frying Potatoes:</strong></p><p>1.Take two potatoes and cut them into slices in a bowl.</p><p>2.In the bowl add corn flour, salt and red chilli powder.</p><p>3.Toss them well so that the mixture coats the sliced potatoes properly.</p><p>4.Now heat oil in a broad pan and deep fry the potatoes on medium flame till golden brown and crisp.</p><p>5.Do not fry on high flame otherwise they will burn from outside and remain uncooked from inside.</p><p>6.In another pan dry roast the sesame seeds on low heat till light brown and keep aside.</p><p><strong>For Preparing Honey Chilli Sauce:</strong></p><p>1.Heat oil and add garlic, ginger, whole red chillies, chilli flakes and tomato sauce.&nbsp;</p><p>2.Now add chilli sauce, vinegar, honey and salt. Mix all the ingredients well to make a sauce.</p><p>3.Add the fried potatoes and coat them well with the sauce.</p><p>4.Toss well and sprinkle the roasted sesame seeds and spring onions.</p><p>5.Combine the ingredients well and serve the crunchy honey chilli potatoes immediately.</p>",
+  "gallery": [
+    "1725880549420_Honey Chilli Potato Recipe 4.jpg",
+    "1725880549421_Honey Chilli Potato Recipe 3.jpg",
+    "1725880549423_Honey Chilli Potato Recipe 2.jpg",
+    "1725880549423_Honey Chilli Potato Recipe 1.jpg"
+  ]
+},
+{
+  "_id": {
+    "$oid": "65d05067072cfbfa128de4b4"
+  },
+  "name": "Oats Porridge",
+  "image": "1708150887734_Screenshot_28.png",
+  "ingredients": [
+    "First, add ½ cup quick-cooking oats or rolled oats in a pan.",
+    "Add 1 cup of water.",
+    "Then add ½ cup milk or as needed. You can also add more water for a dairy-free recipe.",
+    "Add sugar as per taste. I just added 2 tablespoons raw sugar or white sugar. Sugar is completely optional. If adding fruits later, then you can skip sugar.",
+    "Stir very well as you heat the oats porridge mixture on low to medium heat.",
+    "Bring the oatmeal porridge to a gentle simmer as you continue to stir frequently.",
+    "The porridge will thicken as it cooks. Continue to cook for a total of 5 to 6 minutes (if you have used quick cooking oats) or until it reaches the consistency you like.",
+    "Turn off heat when the and the oats have softened well and you get the preferred consistency."
+  ],
+  "categoryId": {
+    "$oid": "65bb83871f1cbf25e0f942f4"
+  },
+  "cuisinesId": {
+    "$oid": "65bb84851f1cbf25e0f943be"
+  },
+  "prepTime": "5 mins",
+  "cookTime": "10 mins",
+  "totalCookTime": "15 mins",
+  "servings": "2",
+  "difficultyLevel": "Easy",
+  "video": "",
+  "url": "JYf3Mjt3zRM",
+  "overview": "<p>Oatmeal Porridge is a traditional breakfast dish that’s enjoyed in many different form around the world. Wonderfully hearty oats are simmered with water or milk until thick and creamy for a satisfying morning meal that keeps you full for hours.</p><p>In India we call this Oats Porridge; in the UK it’s simply known as Porridge – and in the US it’s called Oatmeal. But the ingredients and cooking methods are all basically the same!</p><p>This classic oatmeal porridge recipe only takes about 5 minutes to make with quick-cooking and 10 minutes with rolled oats. It’s terrific to customize with your preference of water and/or milk, and top with nearly any sweet goodies you like.</p><p>Adults and kids alike love cuddling up with warm bowls loaded with their favorite toppings! Give this family-friendly recipe a try and I’m sure it will become your new go-to breakfast recipe for busy weekdays.</p>",
+  "createdAt": {
+    "$date": "2024-02-17T06:21:27.931Z"
+  },
+  "updatedAt": {
+    "$date": "2024-09-09T11:21:14.148Z"
+  },
+  "__v": 0,
+  "how_to_cook": "<p><strong>How to Make Oats Porridge</strong></p><p>1. First, add ½ cup quick-cooking oats or rolled oats in a pan.</p><p>Note: When buying oats or oats products for babies, be sure to check the contents label on the pack. It should only list oats and no other flavorings or additional ingredients.</p><p>2. Add 1 cup of water.</p><p>3. Then add ½ cup milk or as needed. You can also add more water for a dairy-free recipe.</p><p>Consistency can be easily adjusted as per your requirements. ½ cup milk gives a slightly thick consistency. For a thinner consistency, you can add more milk or water.</p><p>Note that the water or milk can be added less or more depending on the type and brand of oats. So do also read the instructions on the packet.</p><p>4. Add sugar as per taste. I just added 2 tablespoons raw sugar or white sugar. Sugar is completely optional. If adding fruits later, then you can skip sugar.</p><p>If adding honey, then add when the porridge becomes lukewarm or cools down at room temperature, as honey when heated becomes toxic.</p><p>5. Stir very well as you heat the oats porridge mixture on low to medium heat.</p><p>6. Bring the oatmeal porridge to a gentle simmer as you continue to stir frequently.</p><p>7. The porridge will thicken as it cooks. Continue to cook for a total of 5 to 6 minutes (if you have used quick cooking oats) or until it reaches the consistency you like.</p><p>For rolled oats, cook for 10 to 12 minutes on low to medium heat. If the consistency is too thick for you add some more water or milk</p><p>8. Turn off heat when the and the oats have softened well and you get the preferred consistency.</p><p>Serve Oats Porridge hot or warm or at room temperature. Keep in mind that the Oatmeal Porridge will thicken as it cools.</p>",
+  "gallery": [
+    "1725880874131_Oats Porridge 3.jpeg",
+    "1725880874133_Oats Porridge 2.jpg",
+    "1725880874133_Oats Porridge.jpg"
+  ]
+}]

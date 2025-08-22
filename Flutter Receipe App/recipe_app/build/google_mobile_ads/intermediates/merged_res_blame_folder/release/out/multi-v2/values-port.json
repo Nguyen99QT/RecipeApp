@@ -1,0 +1,34 @@
+{
+    "logs": [
+        {
+            "outputFile": "io.flutter.plugins.googlemobileads.google_mobile_ads-merged_res-3:/values-port/values-port.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\caong\\.gradle\\caches\\transforms-3\\25d6f0150e0deef4bb8f6541307f4645\\transformed\\appcompat-1.2.0\\res\\values-port\\values-port.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "55",
+                        "endOffsets": "106"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "io.flutter.plugins.googlemobileads.google_mobile_ads-mergeReleaseResources-1:/values-port/values-port.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\caong\\.gradle\\caches\\transforms-3\\25d6f0150e0deef4bb8f6541307f4645\\transformed\\appcompat-1.2.0\\res\\values-port\\values-port.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "55",
+                        "endOffsets": "106"
+                    }
+                }
+            ]
+        }
+    ]
+}

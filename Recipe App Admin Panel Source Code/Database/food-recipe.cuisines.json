@@ -1,0 +1,234 @@
+[{
+  "_id": {
+    "$oid": "65bb84b41f1cbf25e0f9440e"
+  },
+  "name": "Greek",
+  "createdAt": {
+    "$date": "2024-02-01T11:47:00.029Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:47:00.029Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84a21f1cbf25e0f943de"
+  },
+  "name": "Continental",
+  "createdAt": {
+    "$date": "2024-02-01T11:46:42.220Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:46:42.220Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84c31f1cbf25e0f94438"
+  },
+  "name": "Italian",
+  "createdAt": {
+    "$date": "2024-02-01T11:47:15.068Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:47:15.068Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84e31f1cbf25e0f94484"
+  },
+  "name": "Singapore",
+  "createdAt": {
+    "$date": "2024-02-01T11:47:47.396Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:47:47.396Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb848b1f1cbf25e0f943ce"
+  },
+  "name": "Chinese",
+  "createdAt": {
+    "$date": "2024-02-01T11:46:19.940Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:46:19.940Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84d31f1cbf25e0f9445c"
+  },
+  "name": "Lebanese",
+  "createdAt": {
+    "$date": "2024-02-01T11:47:31.330Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:47:31.330Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84851f1cbf25e0f943be"
+  },
+  "name": "American",
+  "createdAt": {
+    "$date": "2024-02-01T11:46:13.844Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:46:13.844Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84c61f1cbf25e0f94442"
+  },
+  "name": "Japanese",
+  "createdAt": {
+    "$date": "2024-02-01T11:47:18.915Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:47:18.915Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84ed1f1cbf25e0f94498"
+  },
+  "name": "Thai",
+  "createdAt": {
+    "$date": "2024-02-01T11:47:57.288Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:47:57.288Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84a61f1cbf25e0f943ee"
+  },
+  "name": "Cuban",
+  "createdAt": {
+    "$date": "2024-02-01T11:46:46.809Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:46:46.809Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84df1f1cbf25e0f9447a"
+  },
+  "name": "Russian",
+  "createdAt": {
+    "$date": "2024-02-01T11:47:43.562Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:47:43.562Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84be1f1cbf25e0f94428"
+  },
+  "name": "Indonesian",
+  "createdAt": {
+    "$date": "2024-02-01T11:47:10.371Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:47:10.371Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84ab1f1cbf25e0f943fe"
+  },
+  "name": "French",
+  "createdAt": {
+    "$date": "2024-02-01T11:46:51.814Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:46:51.814Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84db1f1cbf25e0f94470"
+  },
+  "name": "Mexican",
+  "createdAt": {
+    "$date": "2024-02-01T11:47:39.283Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:47:39.283Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84b91f1cbf25e0f94418"
+  },
+  "name": "Indian",
+  "createdAt": {
+    "$date": "2024-02-01T11:47:05.498Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:47:05.498Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84d61f1cbf25e0f94466"
+  },
+  "name": "Malaysian",
+  "createdAt": {
+    "$date": "2024-02-01T11:47:34.986Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:47:34.986Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84e81f1cbf25e0f9448e"
+  },
+  "name": "Spanish",
+  "createdAt": {
+    "$date": "2024-02-01T11:47:52.042Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:47:52.042Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84cb1f1cbf25e0f94452"
+  },
+  "name": "Korean",
+  "createdAt": {
+    "$date": "2024-02-01T11:47:23.530Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:47:23.530Z"
+  },
+  "__v": 0
+}]

@@ -1,0 +1,182 @@
+[{
+  "_id": {
+    "$oid": "65bb83871f1cbf25e0f942f4"
+  },
+  "name": "Breakfast",
+  "createdAt": {
+    "$date": "2024-02-01T11:41:59.647Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:41:59.647Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84421f1cbf25e0f943a2"
+  },
+  "name": "Holiday",
+  "createdAt": {
+    "$date": "2024-02-01T11:45:06.049Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:45:06.049Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb83d81f1cbf25e0f9434e"
+  },
+  "name": "Main-course",
+  "createdAt": {
+    "$date": "2024-02-01T11:43:20.787Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:43:20.787Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84491f1cbf25e0f943ac"
+  },
+  "name": "Vegetarian",
+  "createdAt": {
+    "$date": "2024-02-01T11:45:13.129Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:45:13.129Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb838e1f1cbf25e0f94304"
+  },
+  "name": "Lunch ",
+  "createdAt": {
+    "$date": "2024-02-01T11:42:06.003Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:42:06.003Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84301f1cbf25e0f9437e"
+  },
+  "name": "Dessert",
+  "createdAt": {
+    "$date": "2024-02-01T11:44:48.273Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:44:48.273Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb843b1f1cbf25e0f94398"
+  },
+  "name": "Soup",
+  "createdAt": {
+    "$date": "2024-02-01T11:44:59.820Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:44:59.820Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb83931f1cbf25e0f9430e"
+  },
+  "name": "Dinner",
+  "createdAt": {
+    "$date": "2024-02-01T11:42:11.100Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:42:11.100Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb839c1f1cbf25e0f9431e"
+  },
+  "name": "Light food",
+  "createdAt": {
+    "$date": "2024-02-01T11:42:20.759Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:42:20.759Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb83d21f1cbf25e0f9433e"
+  },
+  "name": "Salad",
+  "createdAt": {
+    "$date": "2024-02-01T11:43:14.701Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:43:14.701Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84241f1cbf25e0f9435e"
+  },
+  "name": "Side-dish",
+  "createdAt": {
+    "$date": "2024-02-01T11:44:36.107Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:44:36.107Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb84361f1cbf25e0f94388"
+  },
+  "name": "Snack",
+  "createdAt": {
+    "$date": "2024-02-01T11:44:54.137Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:44:54.137Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb83cc1f1cbf25e0f9432e"
+  },
+  "name": "Appetizer",
+  "createdAt": {
+    "$date": "2024-02-01T11:43:08.556Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:43:08.556Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65bb842a1f1cbf25e0f9436e"
+  },
+  "name": "Baked-goods",
+  "createdAt": {
+    "$date": "2024-02-01T11:44:42.092Z"
+  },
+  "updatedAt": {
+    "$date": "2024-02-01T11:44:42.092Z"
+  },
+  "__v": 0
+}]
