@@ -58,7 +58,14 @@ class FFAppState extends ChangeNotifier {
       _deviceId = prefs.getString('ff_deviceId') ?? _deviceId;
     });
     _safeInit(() {
-      _countryName = prefs.getString('ff_countryName') ?? _countryName;
+      String savedCountryName = prefs.getString('ff_countryName') ?? _countryName;
+      // Override US from emulator to prefer Vietnam for better UX
+      if (savedCountryName == 'US' || savedCountryName.isEmpty) {
+        _countryName = 'VN';
+        prefs.setString('ff_countryName', 'VN'); // Save the corrected value
+      } else {
+        _countryName = savedCountryName;
+      }
     });
     _safeInit(() {
       _isVerified = prefs.getBool('ff_isVerified') ?? _isVerified;
@@ -274,7 +281,7 @@ class FFAppState extends ChangeNotifier {
     prefs.setString('ff_deviceId', value);
   }
 
-  String _countryCode = '91';
+  String _countryCode = '+84'; // Default to Vietnam country code
   String get countryCode => _countryCode;
   set countryCode(String value) {
     _countryCode = value;
@@ -286,17 +293,23 @@ class FFAppState extends ChangeNotifier {
     _phone = value;
   }
 
-  String _countryCodeEdit = '';
+  String _countryCodeEdit = '+84'; // Default to Vietnam
   String get countryCodeEdit => _countryCodeEdit;
   set countryCodeEdit(String value) {
     _countryCodeEdit = value;
   }
 
-  String _countryName = '';
+  String _countryName = 'VN'; // Always default to Vietnam for better UX
   String get countryName => _countryName;
   set countryName(String value) {
-    _countryName = value;
-    prefs.setString('ff_countryName', value);
+    // Override US from emulator to prefer Vietnam
+    if (value == 'US' || value.isEmpty) {
+      _countryName = 'VN';
+      prefs.setString('ff_countryName', 'VN');
+    } else {
+      _countryName = value;
+      prefs.setString('ff_countryName', value);
+    }
   }
 
   String _fcmToken = '';

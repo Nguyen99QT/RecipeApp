@@ -127,13 +127,9 @@ class _TimerWidgetState extends State<TimerWidget> {
                           secondsLeft = 60;
                           startTimer();
 
-                          await RecipeAppGroup.signupApiCall.call(
-                            firstname: widget!.firstname,
-                            lastname: widget!.lastname,
+                          await RecipeAppGroup.resendOtpCall.call(
                             email: widget!.email,
-                            countryCode: '+${FFAppState().countryCode}',
-                            phone: widget!.phone,
-                            password: widget!.password,
+                            token: FFAppState().token,
                           );
                           await actions.showCustomToastBottom(
                             'OTP Resend!',

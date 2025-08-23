@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:flutter/services.dart';
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class CustomLabelCountryCodeWidget extends StatefulWidget {
   const CustomLabelCountryCodeWidget({
@@ -33,6 +35,81 @@ class CustomLabelCountryCodeWidget extends StatefulWidget {
 
 class _CustomLabelCountryCodeWidgetState
     extends State<CustomLabelCountryCodeWidget> {
+  
+  @override
+  void initState() {
+    super.initState();
+    // Force default to Vietnam for better UX
+    if (FFAppState().countryName == 'US' || FFAppState().countryName.isEmpty) {
+      FFAppState().update(() {
+        FFAppState().countryName = 'VN';
+        FFAppState().countryCode = '+84';
+      });
+    }
+  }
+  
+  bool _isEmulator() {
+    if (kIsWeb) return false;
+    
+    // Common emulator indicators
+    if (Platform.isAndroid) {
+      // Check for common emulator model names
+      return false; // We'll use a simple approach for now
+    }
+    return false;
+  }
+  
+  String _getDefaultCountryCode() {
+    // Get device locale
+    final locale = Localizations.localeOf(context);
+    final countryCode = locale.countryCode;
+    
+    print('Device locale: ${locale.toString()}');
+    print('Country code from locale: $countryCode');
+    
+    // Map common country codes to phone country codes
+    final countryMap = {
+      'VN': 'VN', // Vietnam
+      'US': 'US', // United States
+      'GB': 'GB', // United Kingdom
+      'IN': 'IN', // India
+      'CN': 'CN', // China
+      'JP': 'JP', // Japan
+      'KR': 'KR', // Korea
+      'TH': 'TH', // Thailand
+      'MY': 'MY', // Malaysia
+      'SG': 'SG', // Singapore
+      'ID': 'ID', // Indonesia
+      'PH': 'PH', // Philippines
+    };
+    
+    // Check if widget has initial country code first
+    if (widget.initialCountryCode != null && 
+        widget.initialCountryCode!.isNotEmpty && 
+        widget.initialCountryCode != 'US') { // Ignore US from emulator
+      print('Using widget initialCountryCode: ${widget.initialCountryCode}');
+      return widget.initialCountryCode!;
+    }
+    
+    // Check FFAppState for saved country (but ignore US for better UX in Vietnam)
+    if (FFAppState().countryName.isNotEmpty && 
+        FFAppState().countryName != 'VN' && 
+        FFAppState().countryName != 'US') { // Ignore US from emulator/previous sessions
+      print('Using saved countryName from FFAppState: ${FFAppState().countryName}');
+      return FFAppState().countryName;
+    }
+    
+    // Use locale if available and mapped (but skip US for emulator)
+    if (countryCode != null && countryMap.containsKey(countryCode) && countryCode != 'US') {
+      print('Using locale country code: $countryCode');
+      return countryMap[countryCode]!;
+    }
+    
+    // For emulator, US locale, or when locale detection fails, default to Vietnam for better UX
+    print('Defaulting to Vietnam (VN) - emulator detected or preferred for Vietnamese users');
+    return 'VN';
+  }
+
   @override
   Widget build(BuildContext context) {
     return IntlPhoneField(
@@ -141,21 +218,31 @@ class _CustomLabelCountryCodeWidgetState
             borderSide: BorderSide(
                 color: FlutterFlowTheme.of(context).black20, width: 1)),
       ),
-      initialCountryCode: widget.initialCountryCode!,
-      validator: (num) {
-        return "Please enter valid number ";
+      initialCountryCode: _getDefaultCountryCode(), // Auto-detect or default to Vietnam
+      validator: (phone) {
+        if (phone == null || phone.number.isEmpty) {
+          return "Please enter phone number";
+        }
+        if (phone.number.length < 8) {
+          return "Phone number too short";
+        }
+        return null;
       },
       invalidNumberMessage: "Please enter valid phone number",
       onChanged: (value) {
         FFAppState().update(() {
           FFAppState().phone = value.number;
+          FFAppState().countryCode = value.countryCode;
         });
+        print('Phone number: ${value.completeNumber}');
       },
       autovalidateMode: AutovalidateMode.onUserInteraction,
       onCountryChanged: (value) {
         FFAppState().update(() {
           FFAppState().countryCode = value.dialCode.toString();
+          FFAppState().countryName = value.code.toString(); // Store country code (e.g., 'VN')
         });
+        print('Country changed to: ${value.name} (${value.code}) ${value.dialCode}');
       },
     );
   }
