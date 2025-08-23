@@ -83,21 +83,38 @@ const SignUp = async (req, res) => {
         });
         
         const savedUser = await newUser.save();
+        console.log('User saved successfully:', savedUser._id);
         
-        // Generate OTP
-        const otp = parseInt(otpGenerator.generate(4, { digits: true, alphabets: false, upperCase: false, specialChars: false }));
+        // Generate OTP - manual generation to ensure only digits
+        const otp = Math.floor(1000 + Math.random() * 9000); // Generate 4-digit number
+        console.log('Generated OTP:', otp);
+        console.log('Is valid number:', !isNaN(otp));
         
-        // Save OTP
+        // Save OTP with debugging
+        console.log('Creating OTP data:', { userId: savedUser._id, email, otp });
         const otpData = new otpModel({
             userId: savedUser._id,
             email: email,
             otp: otp
         });
-        await otpData.save();
+        
+        try {
+            await otpData.save();
+            console.log('OTP saved successfully');
+        } catch (otpError) {
+            console.log('Error saving OTP:', otpError.message);
+            throw new Error('Failed to save OTP: ' + otpError.message);
+        }
         
         // Send OTP email
-        await sendOtpMail(email, otp, firstname, lastname);
-        console.log('OTP for user:', email, 'is:', otp);
+        try {
+            await sendOtpMail(email, otp, firstname, lastname);
+            console.log('OTP email sent successfully to:', email, 'OTP:', otp);
+        } catch (emailError) {
+            console.log('Error sending OTP email:', emailError.message);
+            // Don't throw error here, user is created successfully
+            console.log('User created but email failed to send');
+        }
         
         const response = {
             status: true,
@@ -124,30 +141,60 @@ const SignUp = async (req, res) => {
 // Verify OTP
 const VerifyOtp = async (req, res) => {
     try {
-        const { userId, otp } = req.body;
+        console.log('=== VERIFY OTP REQUEST ===');
+        console.log('Request body:', req.body);
         
-        const otpData = await otpModel.findOne({ userId, otp });
+        const { userId, email, otp } = req.body;
+        console.log('Extracted userId:', userId, 'email:', email, 'otp:', otp);
+        
+        let otpData;
+        
+        if (userId) {
+            // Find by userId and otp
+            otpData = await otpModel.findOne({ userId, otp });
+            console.log('OTP search by userId - found:', otpData);
+        } else if (email) {
+            // Find by email and otp
+            otpData = await otpModel.findOne({ email, otp });
+            console.log('OTP search by email - found:', otpData);
+        } else {
+            console.log('=== MISSING PARAMETERS ===');
+            return res.status(400).json({
+                status: false,
+                message: "Missing userId or email parameter"
+            });
+        }
         
         if (!otpData) {
+            console.log('=== OTP VERIFICATION FAILED ===');
+            console.log('No matching OTP found for', userId ? `userId: ${userId}` : `email: ${email}`, 'otp:', otp);
             return res.status(400).json({
                 status: false,
                 message: "Invalid OTP"
             });
         }
         
+        // Get userId from otpData if not provided
+        const finalUserId = userId || otpData.userId;
+        
         // Update user verification status
-        await userModel.findByIdAndUpdate(userId, { isOTPVerified: 1 });
+        await userModel.findByIdAndUpdate(finalUserId, { isOTPVerified: 1 });
+        console.log('User verification status updated for userId:', finalUserId);
         
         // Delete OTP
-        await otpModel.deleteOne({ userId, otp });
+        await otpModel.deleteOne({ _id: otpData._id });
+        console.log('OTP deleted successfully');
         
+        console.log('=== OTP VERIFICATION SUCCESS ===');
         return res.status(200).json({
             status: true,
             message: "OTP verified successfully"
         });
         
     } catch (error) {
-        console.log(error.message);
+        console.error('=== VERIFY OTP ERROR ===');
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
         return res.status(500).json({
             status: false,
             message: "Internal server error"
@@ -262,9 +309,19 @@ const isVerifyAccount = async (req, res) => {
 // Resend OTP
 const resendOtp = async (req, res) => {
     try {
-        const { userId } = req.body;
+        const { userId, email } = req.body;
         
-        const user = await userModel.findById(userId);
+        let user;
+        if (userId) {
+            user = await userModel.findById(userId);
+        } else if (email) {
+            user = await userModel.findOne({ email });
+        } else {
+            return res.status(400).json({
+                status: false,
+                message: "Either userId or email is required"
+            });
+        }
         
         if (!user) {
             return res.status(404).json({
@@ -274,14 +331,14 @@ const resendOtp = async (req, res) => {
         }
         
         // Delete existing OTP
-        await otpModel.deleteMany({ userId });
+        await otpModel.deleteMany({ userId: user._id });
         
         // Generate new OTP
-        const otp = parseInt(otpGenerator.generate(4, { digits: true, alphabets: false, upperCase: false, specialChars: false }));
+        const otp = Math.floor(1000 + Math.random() * 9000); // Consistent with signup
         
         // Save new OTP
         const otpData = new otpModel({
-            userId: userId,
+            userId: user._id,
             email: user.email,
             otp: otp
         });

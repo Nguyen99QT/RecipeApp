@@ -417,7 +417,9 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                         custom_widgets.CustomLabelCountryCodeWidget(
                           width: double.infinity,
                           height: 56.0,
-                          initialCountryCode: FFAppState().countryName,
+                          initialCountryCode: FFAppState().countryName.isNotEmpty 
+                              ? FFAppState().countryName 
+                              : 'VN', // Default to Vietnam for better UX in Vietnam
                         ),
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(
@@ -575,7 +577,7 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                                 if (RecipeAppGroup.signupApiCall.success(
                                       (_model.singupFunction?.jsonBody ?? ''),
                                     ) ==
-                                    1) {
+                                    true) {
                                   if (Navigator.of(context).canPop()) {
                                     context.pop();
                                   }

@@ -205,7 +205,7 @@ class _VerificationScreenWidgetState extends State<VerificationScreenWidget> {
                           if (RecipeAppGroup.verifyOtpApiCall.success(
                                 (_model.verifyOtpFunction?.jsonBody ?? ''),
                               ) ==
-                              1) {
+                              true) {
                             await actions.showCustomToastBottom(
                               RecipeAppGroup.verifyOtpApiCall.message(
                                 (_model.verifyOtpFunction?.jsonBody ?? ''),
@@ -218,14 +218,14 @@ class _VerificationScreenWidgetState extends State<VerificationScreenWidget> {
                               email: widget.email,
                               password: widget.password,
                               deviceId: widget.deviceId,
-                              registrationToken: widget.registrationToken,
+                              registrationToken: FFAppState().fcmToken,
                               token: FFAppState().token,
                             );
 
                             if (RecipeAppGroup.signInApiCall.success(
                                   (_model.loginApiFunction?.jsonBody ?? ''),
                                 ) ==
-                                1) {
+                                true) {
                               await actions.showCustomToastBottom(
                                 RecipeAppGroup.signInApiCall.message(
                                   (_model.loginApiFunction?.jsonBody ?? ''),
@@ -243,16 +243,16 @@ class _VerificationScreenWidgetState extends State<VerificationScreenWidget> {
                               FFAppState().userId =
                                   RecipeAppGroup.signInApiCall.useId(
                                 (_model.loginApiFunction?.jsonBody ?? ''),
-                              )!;
+                              ) ?? '';
                               FFAppState().phone =
                                   RecipeAppGroup.signInApiCall.phone(
                                 (_model.loginApiFunction?.jsonBody ?? ''),
-                              )!;
+                              ) ?? '';
                               FFAppState().countryCodeEdit =
                                   RecipeAppGroup.signInApiCall.countryCode(
                                 (_model.loginApiFunction?.jsonBody ?? ''),
-                              )!;
-                              FFAppState().currentPassword = widget.password!;
+                              ) ?? '';
+                              FFAppState().currentPassword = widget.password ?? '';
                               FFAppState().update(() {});
                               if (FFAppState().favChange == true) {
                                 _model.getFavourite = await RecipeAppGroup
