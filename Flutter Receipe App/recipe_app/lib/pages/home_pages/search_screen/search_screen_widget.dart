@@ -110,15 +110,18 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                           focusNode: _model.textFieldFocusNode,
                           onChanged: (_) => EasyDebounce.debounce(
                             '_model.textController',
-                            const Duration(milliseconds: 2000),
+                            const Duration(milliseconds: 1000), // Reduced from 2000ms to 1000ms for faster response
                             () async {
+                              print('[DEBUG] Search text changed: "${_model.textController.text}"');
                               if (_model.textController.text == '') {
+                                print('[DEBUG] Search text is empty - showing all recipes');
                                 _model.focus = false;
                                 safeSetState(() {});
                                 safeSetState(
                                     () => _model.apiRequestCompleter2 = null);
                                 await _model.waitForApiRequestCompleted2();
                               } else {
+                                print('[DEBUG] Search text entered - filtering recipes');
                                 _model.focus = true;
                                 safeSetState(() {});
                                 safeSetState(
@@ -299,8 +302,16 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                                               )))
                                         .future,
                                     builder: (context, snapshot) {
+                                      // Add debug logging
+                                      print('[DEBUG] Search FutureBuilder state:');
+                                      print('  - hasData: ${snapshot.hasData}');
+                                      print('  - hasError: ${snapshot.hasError}');
+                                      print('  - connectionState: ${snapshot.connectionState}');
+                                      print('  - search query: "${_model.textController.text}"');
+                                      
                                       // Customize what your widget looks like when it's loading.
                                       if (!snapshot.hasData) {
+                                        print('[DEBUG] No data - showing loading/all recipes');
                                         return const Center(
                                           child: SizedBox(
                                             width: 0.0,
@@ -311,6 +322,15 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                                       }
                                       final containerSearchRecipesApiResponse =
                                           snapshot.data!;
+                                      
+                                      // Debug API response
+                                      print('[DEBUG] Search API Response:');
+                                      print('  - statusCode: ${containerSearchRecipesApiResponse.statusCode}');
+                                      print('  - succeeded: ${containerSearchRecipesApiResponse.succeeded}');
+                                      if (containerSearchRecipesApiResponse.jsonBody != null) {
+                                        final recipeList = RecipeAppGroup.searchRecipesApiCall.recipeList(containerSearchRecipesApiResponse.jsonBody);
+                                        print('  - recipes found: ${recipeList?.length ?? 0}');
+                                      }
 
                                       return Container(
                                         width: double.infinity,

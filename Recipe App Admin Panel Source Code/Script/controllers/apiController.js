@@ -828,18 +828,41 @@ const FilterRecipe = async (req, res) => {
 // Search recipes
 const SearchRecipes = async (req, res) => {
     try {
-        const { searchTerm } = req.body;
+        const { recipeName, searchTerm } = req.body;
         
-        const recipes = await recipeModel.find({
-            $or: [
-                { name: { $regex: searchTerm, $options: 'i' } },
-                { ingredients: { $regex: searchTerm, $options: 'i' } },
-                { overview: { $regex: searchTerm, $options: 'i' } }
-            ]
-        })
-            .populate('categoryId', 'name')
-            .populate('cuisinesId', 'name')
-            .sort({ createdAt: -1 });
+        // Support both recipeName (from Flutter) and searchTerm parameters
+        const searchQuery = recipeName || searchTerm || '';
+        
+        console.log('[DEBUG] SearchRecipes API called');
+        console.log('[DEBUG] recipeName:', recipeName);
+        console.log('[DEBUG] searchTerm:', searchTerm);
+        console.log('[DEBUG] searchQuery:', searchQuery);
+        
+        let recipes;
+        
+        // If no search query, return all recipes
+        if (!searchQuery || searchQuery.trim() === '') {
+            console.log('[DEBUG] No search query - returning all recipes');
+            recipes = await recipeModel.find({})
+                .populate('categoryId', 'name')
+                .populate('cuisinesId', 'name')
+                .sort({ createdAt: -1 });
+        } else {
+            // Search for recipes matching the query
+            console.log('[DEBUG] Searching for recipes with query:', searchQuery);
+            recipes = await recipeModel.find({
+                $or: [
+                    { name: { $regex: searchQuery, $options: 'i' } },
+                    { ingredients: { $regex: searchQuery, $options: 'i' } },
+                    { overview: { $regex: searchQuery, $options: 'i' } }
+                ]
+            })
+                .populate('categoryId', 'name')
+                .populate('cuisinesId', 'name')
+                .sort({ createdAt: -1 });
+        }
+        
+        console.log('[DEBUG] Found recipes:', recipes.length);
         
         return res.status(200).json({
             status: true,
@@ -847,7 +870,7 @@ const SearchRecipes = async (req, res) => {
         });
         
     } catch (error) {
-        console.log(error.message);
+        console.log('[ERROR] SearchRecipes:', error.message);
         return res.status(500).json({
             status: false,
             message: "Internal server error"

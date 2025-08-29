@@ -1,0 +1,40 @@
+{
+    "folders": [
+        {
+            "name": "Recipe App Root",
+            "path": "."
+        },
+        {
+            "name": "Spring Boot Backend",
+            "path": "./backend"
+        },
+        {
+            "name": "Flutter App",
+            "path": "./Flutter Receipe App/recipe_app"
+        }
+    ],
+    "settings": {
+        "java.configuration.workspaces": [
+            "backend"
+        ],
+        "java.project.sourcePaths": [
+            "backend/src/main/java"
+        ],
+        "java.project.outputPath": "backend/target/classes",
+        "files.exclude": {
+            "**/target": true,
+            "**/.settings": true,
+            "**/.project": true,
+            "**/.classpath": true,
+            "**/node_modules": true
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "vscjava.vscode-java-pack",
+            "vscjava.vscode-spring-boot-dashboard",
+            "Dart-Code.flutter",
+            "Dart-Code.dart-code"
+        ]
+    }
+}

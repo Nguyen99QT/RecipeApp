@@ -11,6 +11,9 @@ class HomePageComponantModel extends FlutterFlowModel<HomePageComponantWidget> {
 
   String? categoryId;
 
+  // Add a trigger for favorite changes
+  int favoriteUpdateTrigger = 0;
+
   ///  State fields for stateful widgets in this component.
 
   bool apiRequestCompleted3 = false;

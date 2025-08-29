@@ -18,7 +18,16 @@ bool? checkFavOrNot(
   bool value = false;
   if (favList != null && favList.isNotEmpty) {
     for (var element in favList) {
-      if (element["_id"].toString() == recipeId!.toString()) {
+      // For new API structure: element["recipeId"]["_id"]
+      // For old API structure: element["_id"]
+      String? elementId;
+      if (element["recipeId"] != null && element["recipeId"]["_id"] != null) {
+        elementId = element["recipeId"]["_id"].toString();
+      } else if (element["_id"] != null) {
+        elementId = element["_id"].toString();
+      }
+      
+      if (elementId == recipeId!.toString()) {
         value = true;
         break;
       }

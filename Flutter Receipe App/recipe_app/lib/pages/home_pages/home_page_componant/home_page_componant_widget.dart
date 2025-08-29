@@ -295,6 +295,7 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                 builder: (context) {
                   if (FFAppState().connected == true) {
                     return FutureBuilder<ApiCallResponse>(
+                      key: ValueKey(_model.favoriteUpdateTrigger), // Add this line for rebuild trigger
                       future: FFAppState().getrFavouriteCache(
                         requestFn: () =>
                             RecipeAppGroup.getAllFavouriteRecipesApiCall.call(
@@ -676,6 +677,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
 
                                                               FFAppState()
                                                                   .clearGetrFavouriteCacheCache();
+                                                              _model.favoriteUpdateTrigger++;
+                                                              safeSetState(() {});
                                                             } else {
                                                               FFAppState()
                                                                       .favChange =
@@ -927,6 +930,9 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                     )
                                                     ?.toList() ??
                                                 [];
+                                            
+                                            print('[DEBUG] categoryList length: ${categoryList.length}');
+                                            print('[DEBUG] categoryList sample: ${categoryList.take(2).toList()}');
 
                                             return ListView.separated(
                                               padding: const EdgeInsets.fromLTRB(
@@ -960,6 +966,7 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                     highlightColor:
                                                         Colors.transparent,
                                                     onTap: () async {
+                                                      print('[DEBUG] Category button clicked: ${getJsonField(categoryListItem, r'''$.name''')}');
                                                       _model.isSelectcategory =
                                                           false;
                                                       _model.categoryId =
@@ -967,6 +974,7 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                         categoryListItem,
                                                         r'''$._id''',
                                                       ).toString();
+                                                      print('[DEBUG] Selected categoryId: ${_model.categoryId}');
                                                       safeSetState(() {});
                                                       _model.getRecipeByCategoryId =
                                                           await RecipeAppGroup
@@ -978,6 +986,10 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                             FFAppState().userId,
                                                         token: FFAppState().token,
                                                       );
+                                                      print('[DEBUG] GetRecipeByCategoryId API result:');
+                                                      print('[DEBUG] - statusCode: ${_model.getRecipeByCategoryId?.statusCode}');
+                                                      print('[DEBUG] - succeeded: ${_model.getRecipeByCategoryId?.succeeded}');
+                                                      print('[DEBUG] - bodyText: ${_model.getRecipeByCategoryId?.bodyText}');
 
                                                       safeSetState(() {});
                                                     },
@@ -1208,6 +1220,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
 
                                                   FFAppState()
                                                       .clearGetrFavouriteCacheCache();
+                                                  _model.favoriteUpdateTrigger++;
+                                                  safeSetState(() {});
                                                 } else {
                                                   FFAppState().favChange = true;
                                                   FFAppState().recipeId =
@@ -1253,6 +1267,13 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                   } else {
                                     return Builder(
                                       builder: (context) {
+                                        print('[DEBUG] Building category recipe list...');
+                                        print('[DEBUG] _model.getRecipeByCategoryId is null: ${_model.getRecipeByCategoryId == null}');
+                                        if (_model.getRecipeByCategoryId != null) {
+                                          print('[DEBUG] Category API statusCode: ${_model.getRecipeByCategoryId?.statusCode}');
+                                          print('[DEBUG] Category API bodyText: ${_model.getRecipeByCategoryId?.bodyText}');
+                                        }
+                                        
                                         final getRecipeByCategoryIdList =
                                             (RecipeAppGroup
                                                         .getRecipeByCategoryIdApiCall
@@ -1265,6 +1286,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                     [])
                                                 .take(3)
                                                 .toList();
+                                        print('[DEBUG] Category recipe list length: ${getRecipeByCategoryIdList.length}');
+                                        print('[DEBUG] Category recipe list items: ${getRecipeByCategoryIdList.take(2).toList()}');
                                         if (getRecipeByCategoryIdList.isEmpty) {
                                           return const Center(
                                             child: SizedBox(
@@ -1391,6 +1414,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
 
                                                     FFAppState()
                                                         .clearGetrFavouriteCacheCache();
+                                                    _model.favoriteUpdateTrigger++;
+                                                    safeSetState(() {});
                                                   } else {
                                                     FFAppState().favChange =
                                                         true;

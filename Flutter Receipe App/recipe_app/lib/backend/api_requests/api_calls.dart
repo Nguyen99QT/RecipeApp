@@ -806,12 +806,12 @@ class GetAllFavouriteRecipesApiCall {
       ));
   List? favouriteRecipeList(dynamic response) => getJsonField(
         response,
-        r'''$.data.favouriteRecipe''',
+        r'''$.data''',
         true,
       ) as List?;
   List<String>? gallery(dynamic response) => (getJsonField(
         response,
-        r'''$.data.favouriteRecipe[:].gallery''',
+        r'''$.data[:].recipeId.gallery''',
         true,
       ) as List?)
           ?.withoutNulls
@@ -820,27 +820,27 @@ class GetAllFavouriteRecipesApiCall {
           .toList();
   String? name(dynamic response) => castToType<String>(getJsonField(
         response,
-        r'''$.data.favouriteRecipe[:].name''',
+        r'''$.data[:].recipeId.name''',
       ));
   String? image(dynamic response) => castToType<String>(getJsonField(
         response,
-        r'''$.data.favouriteRecipe[:].image''',
+        r'''$.data[:].recipeId.image''',
       ));
   String? totalCookTime(dynamic response) => castToType<String>(getJsonField(
         response,
-        r'''$.data.favouriteRecipe[:].totalCookTime''',
+        r'''$.data[:].recipeId.totalCookTime''',
       ));
   bool? isFavourite(dynamic response) => castToType<bool>(getJsonField(
         response,
-        r'''$.data.favouriteRecipe[:].isFavourite''',
+        r'''$.data[:].recipeId.isFavourite''',
       ));
   int? totalRating(dynamic response) => castToType<int>(getJsonField(
         response,
-        r'''$.data.favouriteRecipe[:].totalRating''',
+        r'''$.data[:].recipeId.totalRating''',
       ));
   int? averageRating(dynamic response) => castToType<int>(getJsonField(
         response,
-        r'''$.data.favouriteRecipe[:].averageRating''',
+        r'''$.data[:].recipeId.averageRating''',
       ));
 }
 
@@ -977,7 +977,7 @@ class GetAllCategoryApiCall {
           .toList();
   List? categoryList(dynamic response) => getJsonField(
         response,
-        r'''$.data.category''',
+        r'''$.data''',
         true,
       ) as List?;
   List<String>? categoryId(dynamic response) => (getJsonField(
