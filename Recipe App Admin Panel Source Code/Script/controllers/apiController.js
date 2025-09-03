@@ -964,17 +964,36 @@ const DeleteFavouriteRecipe = async (req, res) => {
 // Add review
 const AddReview = async (req, res) => {
     try {
-        const { recipeId, rating, review } = req.body;
+        const { recipeId, rating, review, comment } = req.body;
         const userId = req.userId;
+        
+        console.log('[DEBUG] AddReview API called');
+        console.log('[DEBUG] userId:', userId);
+        console.log('[DEBUG] recipeId:', recipeId);
+        console.log('[DEBUG] rating:', rating);
+        console.log('[DEBUG] review:', review);
+        console.log('[DEBUG] comment:', comment);
+        
+        // Support both 'review' and 'comment' parameters
+        const reviewText = review || comment || '';
+        
+        if (!recipeId || !rating) {
+            return res.status(400).json({
+                status: false,
+                message: "Recipe ID and rating are required"
+            });
+        }
         
         const newReview = new reviewModel({
             userId,
             recipeId,
             rating,
-            review
+            comment: reviewText
         });
         
         await newReview.save();
+        
+        console.log('[DEBUG] Review saved successfully');
         
         return res.status(200).json({
             status: true,
@@ -982,7 +1001,7 @@ const AddReview = async (req, res) => {
         });
         
     } catch (error) {
-        console.log(error.message);
+        console.log('[ERROR] AddReview:', error.message);
         return res.status(500).json({
             status: false,
             message: "Internal server error"

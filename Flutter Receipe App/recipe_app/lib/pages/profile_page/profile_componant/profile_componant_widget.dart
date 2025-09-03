@@ -112,7 +112,7 @@ class _ProfileComponantWidgetState extends State<ProfileComponantWidget> {
                                         fadeOutDuration:
                                             const Duration(milliseconds: 200),
                                         imageUrl:
-                                            'http://recipe.templatevictory.com/uploads/images/${RecipeAppGroup.getUserApiCall.avatar(
+                                            '${FFAppConstants.imageUrl}${RecipeAppGroup.getUserApiCall.avatar(
                                           listViewGetUserApiResponse.jsonBody,
                                         )}',
                                         width: 100.0,

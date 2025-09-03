@@ -494,7 +494,10 @@ class _LoginScreenWidgetState extends State<LoginScreenWidget> {
                                   }.withoutNulls,
                                 );
                               } else {
-                                await actions.showCustomToastBottom(message);
+                                await actions.showBeautifulErrorToast(
+                                  context,
+                                  message,
+                                );
                               }
                             }
 
@@ -526,39 +529,38 @@ class _LoginScreenWidgetState extends State<LoginScreenWidget> {
                             borderRadius: BorderRadius.circular(16.0),
                           ),
                         ),
-                        if (FFAppState().isLogin == false)
-                          Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(
-                                0.0, 24.0, 0.0, 0.0),
-                            child: InkWell(
-                              splashColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              onTap: () async {
-                                FFAppState().isLogin = false;
-                                FFAppState().update(() {});
+                        Padding(
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              0.0, 24.0, 0.0, 0.0),
+                          child: InkWell(
+                            splashColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            onTap: () async {
+                              FFAppState().isLogin = false;
+                              FFAppState().update(() {});
 
-                                context.goNamed('HomePage');
-                              },
-                              child: Text(
-                                'Skip',
-                                textAlign: TextAlign.center,
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      fontFamily: 'SF Pro Display',
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryTextColor,
-                                      fontSize: 17.0,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.normal,
-                                      useGoogleFonts: false,
-                                      lineHeight: 1.5,
-                                    ),
-                              ),
+                              context.goNamed('HomePage');
+                            },
+                            child: Text(
+                              'Skip',
+                              textAlign: TextAlign.center,
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .override(
+                                    fontFamily: 'SF Pro Display',
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryTextColor,
+                                    fontSize: 17.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FontWeight.normal,
+                                    useGoogleFonts: false,
+                                    lineHeight: 1.5,
+                                  ),
                             ),
                           ),
+                        ),
                       ],
                     ),
                   ),

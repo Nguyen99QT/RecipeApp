@@ -14,8 +14,8 @@ async function testAPI() {
         // Test 2: Test login with known credentials
         console.log('\n2. Testing login...');
         const loginData = {
-            email: 'admin@gmail.com',
-            password: '123456'
+            email: 'admin@recipeapp.com',
+            password: 'admin123'
         };
         
         try {

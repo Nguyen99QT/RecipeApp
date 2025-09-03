@@ -37,6 +37,8 @@ class _RateUsBottomsheetWidgetState extends State<RateUsBottomsheetWidget> {
   @override
   void initState() {
     super.initState();
+    print('[DEBUG] RateUsBottomsheetWidget initState called!');
+    print('[DEBUG] rateId: ${widget.rateId}');
     _model = createModel(context, () => RateUsBottomsheetModel());
 
     _model.textController ??= TextEditingController();
@@ -315,10 +317,22 @@ class _RateUsBottomsheetWidgetState extends State<RateUsBottomsheetWidget> {
                           hoverColor: Colors.transparent,
                           highlightColor: Colors.transparent,
                           onTap: () async {
+                            print('[DEBUG] Rate Us button tapped');
+                            print('[DEBUG] Form validation started');
+                            
                             if (_model.formKey.currentState == null ||
                                 !_model.formKey.currentState!.validate()) {
+                              print('[DEBUG] Form validation failed');
                               return;
                             }
+                            
+                            print('[DEBUG] Form validation passed');
+                            print('[DEBUG] Making API call with:');
+                            print('[DEBUG] - recipeId: ${widget.rateId}');
+                            print('[DEBUG] - rating: ${_model.ratingBarValue?.round()}');
+                            print('[DEBUG] - comment: ${_model.textController.text}');
+                            print('[DEBUG] - token: ${FFAppState().token}');
+                            
                             _model.addReviewFunction =
                                 await RecipeAppGroup.addReviewApiCall.call(
                               recipeId: widget.rateId,
@@ -327,10 +341,15 @@ class _RateUsBottomsheetWidgetState extends State<RateUsBottomsheetWidget> {
                               token: FFAppState().token,
                             );
 
+                            print('[DEBUG] API call completed');
+                            print('[DEBUG] Response status: ${_model.addReviewFunction?.statusCode}');
+                            print('[DEBUG] Response body: ${_model.addReviewFunction?.jsonBody}');
+
                             if (RecipeAppGroup.addReviewApiCall.success(
                                   (_model.addReviewFunction?.jsonBody ?? ''),
                                 ) ==
-                                1) {
+                                true) {
+                              print('[DEBUG] Review success - showing dialog');
                               await showDialog(
                                 barrierDismissible: false,
                                 context: context,
@@ -349,6 +368,8 @@ class _RateUsBottomsheetWidgetState extends State<RateUsBottomsheetWidget> {
                                 },
                               );
                             } else {
+                              print('[DEBUG] Review failed - showing error');
+                              print('[DEBUG] Error message: ${RecipeAppGroup.addReviewApiCall.message((_model.addReviewFunction?.jsonBody ?? ''))}');
                               Navigator.pop(context);
                               await actions.showCustomToastBottom(
                                 RecipeAppGroup.addReviewApiCall.message(

@@ -118,6 +118,22 @@ class _MainContainerWidgetState extends State<MainContainerWidget> {
                       height: 128.0,
                       fit: BoxFit.cover,
                       alignment: const Alignment(0.0, 0.0),
+                      errorWidget: (context, error, stackTrace) => Container(
+                        width: double.infinity,
+                        height: 128.0,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(12.0),
+                            topRight: Radius.circular(12.0),
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.error_outline,
+                          color: Colors.grey,
+                          size: 32.0,
+                        ),
+                      ),
                     ),
                   ),
                   Padding(

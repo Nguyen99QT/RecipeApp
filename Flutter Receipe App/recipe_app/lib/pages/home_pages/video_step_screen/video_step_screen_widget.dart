@@ -262,7 +262,7 @@ class _VideoStepScreenWidgetState extends State<VideoStepScreenWidget>
                                                       } else {
                                                         return FlutterFlowVideoPlayer(
                                                           path:
-                                                              'https://recipe.templatevictory.com/uploads/video/${widget.videoPath}',
+                                                              '${FFAppConstants.videoUrl}${widget.videoPath}',
                                                           videoType:
                                                               VideoType.network,
                                                           width:
@@ -354,79 +354,40 @@ class _VideoStepScreenWidgetState extends State<VideoStepScreenWidget>
                                               highlightColor:
                                                   Colors.transparent,
                                               onTap: () async {
-                                                await actions
-                                                    .showRewardedVideoAd(
-                                                  () async {
-                                                    await showModalBottomSheet(
-                                                      isScrollControlled: true,
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      enableDrag: false,
-                                                      useSafeArea: true,
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return WebViewAware(
-                                                          child:
-                                                              GestureDetector(
-                                                            onTap: () =>
-                                                                FocusScope.of(
-                                                                        context)
-                                                                    .unfocus(),
-                                                            child: Padding(
-                                                              padding: MediaQuery
-                                                                  .viewInsetsOf(
-                                                                      context),
-                                                              child: SizedBox(
-                                                                height: 552.0,
-                                                                child:
-                                                                    RateUsBottomsheetWidget(
-                                                                  rateId: widget
-                                                                      .recipeDetailId,
-                                                                ),
-                                                              ),
+                                                print('[DEBUG] Rate Us button tapped! Showing Rate Us bottomsheet directly...');
+                                                await showModalBottomSheet(
+                                                  isScrollControlled: true,
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  enableDrag: false,
+                                                  useSafeArea: true,
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return WebViewAware(
+                                                      child:
+                                                          GestureDetector(
+                                                        onTap: () =>
+                                                            FocusScope.of(
+                                                                    context)
+                                                                .unfocus(),
+                                                        child: Padding(
+                                                          padding: MediaQuery
+                                                              .viewInsetsOf(
+                                                                  context),
+                                                          child: SizedBox(
+                                                            height: 552.0,
+                                                            child:
+                                                                RateUsBottomsheetWidget(
+                                                              rateId: widget
+                                                                  .recipeDetailId,
                                                             ),
                                                           ),
-                                                        );
-                                                      },
-                                                    ).then((value) =>
-                                                        safeSetState(() {}));
+                                                        ),
+                                                      ),
+                                                    );
                                                   },
-                                                  () async {
-                                                    await showModalBottomSheet(
-                                                      isScrollControlled: true,
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      enableDrag: false,
-                                                      useSafeArea: true,
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return WebViewAware(
-                                                          child:
-                                                              GestureDetector(
-                                                            onTap: () =>
-                                                                FocusScope.of(
-                                                                        context)
-                                                                    .unfocus(),
-                                                            child: Padding(
-                                                              padding: MediaQuery
-                                                                  .viewInsetsOf(
-                                                                      context),
-                                                              child: SizedBox(
-                                                                height: 552.0,
-                                                                child:
-                                                                    RateUsBottomsheetWidget(
-                                                                  rateId: widget
-                                                                      .recipeDetailId,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        );
-                                                      },
-                                                    ).then((value) =>
-                                                        safeSetState(() {}));
-                                                  },
-                                                );
+                                                ).then((value) =>
+                                                    safeSetState(() {}));
                                               },
                                               child: wrapWithModel(
                                                 model:

@@ -1,5 +1,7 @@
 export 'connected.dart' show connected;
 export 'show_custom_toast_bottom.dart' show showCustomToastBottom;
+export 'show_beautiful_error_toast.dart' show showBeautifulErrorToast;
+export 'show_beautiful_success_toast.dart' show showBeautifulSuccessToast;
 export 'get_device_id.dart' show getDeviceId;
 export 'get_country_code.dart' show getCountryCode;
 export 'get_f_c_m.dart' show getFCM;

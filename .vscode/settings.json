@@ -16,5 +16,6 @@
     "java.project.sourcePaths": [
         "backend/src/main/java"
     ],
-    "java.project.outputPath": "backend/target/classes"
+    "java.project.outputPath": "backend/target/classes",
+    "compile-hero.disable-compile-files-on-did-save-code": true
 }

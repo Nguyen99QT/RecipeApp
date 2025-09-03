@@ -691,7 +691,7 @@ class _RecipeDetailScreenWidgetState extends State<RecipeDetailScreenWidget>
                                             recipeDetailScreenGetRecipeByIdApiResponse
                                                 .jsonBody,
                                           ),
-                                          'Name',
+                                          '',
                                         ) !=
                                         '')
                                   Padding(
@@ -704,7 +704,7 @@ class _RecipeDetailScreenWidgetState extends State<RecipeDetailScreenWidget>
                                           recipeDetailScreenGetRecipeByIdApiResponse
                                               .jsonBody,
                                         ),
-                                        'Name',
+                                        '',
                                       ),
                                       style: FlutterFlowTheme.of(context)
                                           .bodyMedium

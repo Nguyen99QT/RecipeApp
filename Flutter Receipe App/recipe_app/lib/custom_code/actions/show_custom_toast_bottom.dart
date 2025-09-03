@@ -8,12 +8,12 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-// import 'package:fluttertoast/fluttertoast.dart';
-
 Future showCustomToastBottom(
   String text,
 ) async {
   // Add your function code here!
-  // Simplified implementation - just print message
   print("Toast: $text");
+  
+  // For now, just print to console until we can access the UI context
+  // TODO: Implement proper UI feedback once we have access to BuildContext
 }
