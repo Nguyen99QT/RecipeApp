@@ -108,10 +108,10 @@ class _PrivacypolicyScreenWidgetState extends State<PrivacypolicyScreenWidget> {
                             if (RecipeAppGroup.getPolicyAndTermsApiCall.success(
                                   listViewGetPolicyAndTermsApiResponse.jsonBody,
                                 ) ==
-                                1)
+                                true)
                               custom_widgets.HtmlConverter(
                                 width: double.infinity,
-                                height: 50.0,
+                                height: 1000.0,
                                 text: RecipeAppGroup.getPolicyAndTermsApiCall
                                     .privatePolicy(
                                   listViewGetPolicyAndTermsApiResponse.jsonBody,

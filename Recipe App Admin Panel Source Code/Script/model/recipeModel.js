@@ -71,6 +71,11 @@ const recipeSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true
+    },
+    status: {
+        type: Number,
+        default: 1,
+        enum: [0, 1] // 0 = inactive, 1 = active
     }
 
 },
@@ -80,4 +85,4 @@ const recipeSchema = new mongoose.Schema({
 );
 
 
-module.exports = new mongoose.model("recipes", recipeSchema);
+module.exports = mongoose.model("recipes", recipeSchema);

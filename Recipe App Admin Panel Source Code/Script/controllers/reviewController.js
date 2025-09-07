@@ -9,13 +9,23 @@ const loadReview = async (req, res) => {
 
     try {
 
-        // fetch review
-        const reviews = await reviewModel.find().populate("userId recipeId");
+        // fetch review với populate có điều kiện
+        const reviews = await reviewModel.find()
+            .populate("userId")
+            .populate({
+                path: "recipeId",
+                select: "name image"
+            })
+            .sort({ createdAt: -1 }); // Sắp xếp mới nhất trước
+
+        console.log('[DEBUG] Found reviews:', reviews.length);
+        console.log('[DEBUG] App feedbacks (no recipeId):', reviews.filter(r => !r.recipeId).length);
 
         return res.render("review", { reviews });
 
     } catch (error) {
-        console.log(error.message);
+        console.log('[ERROR] loadReview:', error.message);
+        return res.render("review", { reviews: [] });
     }
 }
 

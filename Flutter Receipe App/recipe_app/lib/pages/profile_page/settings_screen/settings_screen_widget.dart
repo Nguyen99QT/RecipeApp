@@ -2,6 +2,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/pages/componants/custom_appbar/custom_appbar_widget.dart';
 import '/pages/componants/rate_us_bottomsheet/rate_us_bottomsheet_widget.dart';
+import '/pages/componants/app_feedback_bottomsheet/app_feedback_bottomsheet_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -126,6 +127,12 @@ class _SettingsScreenWidgetState extends State<SettingsScreenWidget> {
   }
 
   void _showFeedbackBottomSheet(BuildContext context) {
+    // Check if user is logged in
+    if (!FFAppState().isLogin) {
+      _showLoginDialog(context);
+      return;
+    }
+    
     showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -134,7 +141,34 @@ class _SettingsScreenWidgetState extends State<SettingsScreenWidget> {
       builder: (context) {
         return Padding(
           padding: MediaQuery.viewInsetsOf(context),
-          child: const RateUsBottomsheetWidget(),
+          child: const AppFeedbackBottomsheetWidget(),
+        );
+      },
+    );
+  }
+
+  void _showLoginDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Login Required'),
+          content: const Text('Please login to submit feedback.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+                context.pushNamed('login_screen'); // Navigate to login
+              },
+              child: const Text('Login'),
+            ),
+          ],
         );
       },
     );

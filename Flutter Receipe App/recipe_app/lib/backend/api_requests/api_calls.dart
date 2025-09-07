@@ -13,8 +13,11 @@ const _kPrivateApiFunctionName = 'ffPrivateApiCall';
 class RecipeAppGroup {
   static String getBaseUrl({
     String? token = '',
-  }) =>
-      'http://10.0.2.2:8190/api';
+  }) {
+    // Use computer's IP address instead of localhost for real device testing
+    // Change this IP if your computer's IP changes
+    return 'http://192.168.101.207:8190/api';
+  }
   static Map<String, String> headers = {
     'Authorization': 'Bearer [token]',
   };
@@ -49,6 +52,7 @@ class RecipeAppGroup {
   static GetAllCuisinesApiCall getAllCuisinesApiCall = GetAllCuisinesApiCall();
   static PopularRecipeApiCall popularRecipeApiCall = PopularRecipeApiCall();
   static AddReviewApiCall addReviewApiCall = AddReviewApiCall();
+  static AddAppFeedbackApiCall addAppFeedbackApiCall = AddAppFeedbackApiCall();
   static GetReviewByRecipeIdApiCall getReviewByRecipeIdApiCall =
       GetReviewByRecipeIdApiCall();
   static GetPolicyAndTermsApiCall getPolicyAndTermsApiCall =
@@ -1053,13 +1057,17 @@ class GetRecipeByIdApiCall {
         response,
         r'''$.data.difficultyLevel''',
       ));
-  int? averageRating(dynamic response) => castToType<int>(getJsonField(
+  double? averageRating(dynamic response) => castToType<double>(getJsonField(
         response,
         r'''$.data.averageRating''',
       ));
   int? totalRating(dynamic response) => castToType<int>(getJsonField(
         response,
         r'''$.data.totalRating''',
+      ));
+  int? totalReviews(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.data.totalReviews''',
       ));
   String? howtocook(dynamic response) => castToType<String>(getJsonField(
         response,
@@ -1221,7 +1229,7 @@ class GetAllCuisinesApiCall {
 
   List? cuisinesList(dynamic response) => getJsonField(
         response,
-        r'''$.data.cuisines''',
+        r'''$.data''',
         true,
       ) as List?;
   List<String>? cuisinesId(dynamic response) => (getJsonField(
@@ -1373,6 +1381,50 @@ class AddReviewApiCall {
       ));
 }
 
+class AddAppFeedbackApiCall {
+  Future<ApiCallResponse> call({
+    int? rating,
+    String? comment = '',
+    String? token = '',
+  }) async {
+    final baseUrl = RecipeAppGroup.getBaseUrl(
+      token: token,
+    );
+
+    final ffApiRequestBody = '''
+{
+  "rating": $rating,
+  "comment": "$comment"
+}''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'AddAppFeedbackApi',
+      apiUrl: '$baseUrl/AddAppFeedback',
+      callType: ApiCallType.POST,
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.status''',
+      ));
+  String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
+}
+
 class GetReviewByRecipeIdApiCall {
   Future<ApiCallResponse> call({
     String? recipeId = '',
@@ -1438,12 +1490,12 @@ class GetPolicyAndTermsApiCall {
       ));
   String? privatePolicy(dynamic response) => castToType<String>(getJsonField(
         response,
-        r'''$.data.setting[:].privatePolicy''',
+        r'''$.data[0].privatePolicy''',
       ));
   String? termsAndConditions(dynamic response) =>
       castToType<String>(getJsonField(
         response,
-        r'''$.data.setting[:].termsAndConditions''',
+        r'''$.data[0].termsAndConditions''',
       ));
 }
 
@@ -1457,7 +1509,7 @@ class GetAllFaqApiCall {
 
     return ApiManager.instance.makeApiCall(
       callName: 'getAllFaqApi',
-      apiUrl: '$baseUrl/getAllFaq',
+      apiUrl: '$baseUrl/GetAllFaq',
       callType: ApiCallType.POST,
       headers: {
         'Authorization': 'Bearer $token',
@@ -1483,12 +1535,12 @@ class GetAllFaqApiCall {
       ));
   List? faqList(dynamic response) => getJsonField(
         response,
-        r'''$.data.faq''',
+        r'''$.data''',
         true,
       ) as List?;
   List<String>? question(dynamic response) => (getJsonField(
         response,
-        r'''$.data.faq[:].question''',
+        r'''$.data[:].question''',
         true,
       ) as List?)
           ?.withoutNulls
@@ -1497,7 +1549,7 @@ class GetAllFaqApiCall {
           .toList();
   List<String>? answer(dynamic response) => (getJsonField(
         response,
-        r'''$.data.faq[:].answer''',
+        r'''$.data[:].answer''',
         true,
       ) as List?)
           ?.withoutNulls
@@ -1622,13 +1674,18 @@ class GetAllNotificationApiCall {
       token: token,
     );
 
+    // Debug logging
+    print('[DEBUG] GetAllNotificationApi - baseUrl: $baseUrl');
+    print('[DEBUG] GetAllNotificationApi - full URL: $baseUrl/GetAllNotification');
+    print('[DEBUG] GetAllNotificationApi - token: ${token?.isNotEmpty == true ? 'present' : 'empty'}');
+
     return ApiManager.instance.makeApiCall(
       callName: 'GetAllNotificationApi',
       apiUrl: '$baseUrl/GetAllNotification',
       callType: ApiCallType.POST,
-      headers: {
+      headers: token?.isNotEmpty == true ? {
         'Authorization': 'Bearer $token',
-      },
+      } : {},
       params: {},
       bodyType: BodyType.JSON,
       returnBody: true,
@@ -1744,7 +1801,7 @@ class FilterRecipeApiCall {
 {
   "userId": "$userId",
   "categoryId": "$categoryId",
-  "cuisinesId": $cuisinesId
+  "cuisinesIdList": $cuisinesId
 }''';
     return ApiManager.instance.makeApiCall(
       callName: 'FilterRecipeApi',
@@ -1771,7 +1828,7 @@ class FilterRecipeApiCall {
       ));
   List? filteredRecipesList(dynamic response) => getJsonField(
         response,
-        r'''$.data.filteredRecipes''',
+        r'''$.data''',
         true,
       ) as List?;
 }

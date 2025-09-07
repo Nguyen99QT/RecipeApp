@@ -131,6 +131,14 @@ routes.get("/send-notification", isLogin, settingController.loadSendNotification
 
 routes.post("/send-notification", settingController.sendNotification);
 
+routes.post("/update-notification", settingController.updateNotification);
+
+routes.get("/notification-history", isLogin, settingController.loadNotificationHistory);
+
+routes.post("/toggle-notification-status/:id", isLogin, settingController.toggleNotificationStatus);
+
+routes.delete("/delete-notification/:id", isLogin, settingController.deleteNotification);
+
 // Routes For abs
 routes.get("/ads", isLogin, adsController.loadAdConfig);
 

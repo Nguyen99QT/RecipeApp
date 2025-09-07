@@ -107,7 +107,7 @@ const isActiveUser = async (req, res) => {
             // Find current user
             const currentUser = await userModel.findById({ _id: id });
 
-            await userModel.findByIdAndUpdate({ _id: id }, { $set: { isOTPVerified: currentUser.isOTPVerified === 0 ? 1 : 0 } }, { new: true });
+            await userModel.findByIdAndUpdate({ _id: id }, { $set: { is_active: currentUser.is_active === 0 ? 1 : 0 } }, { new: true });
 
             return res.redirect('back');
         }

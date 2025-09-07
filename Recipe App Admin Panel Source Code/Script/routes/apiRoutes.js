@@ -79,7 +79,16 @@ routes.post("/DeleteFavouriteRecipe", checkAuthorization, apiController.DeleteFa
 //Routes For Reviews
 routes.post("/AddReview", checkAuthorization, apiController.AddReview);
 
+routes.post("/AddAppFeedback", checkAuthorization, apiController.AddAppFeedback);
+
 routes.post("/GetReviewByRecipeId", apiController.GetReviewByRecipeId);
+
+// Admin Routes For Review Management
+routes.post("/GetAllReviewsForApproval", apiController.GetAllReviewsForApproval);
+
+routes.post("/ApproveReview", apiController.ApproveReview);
+
+routes.post("/RejectReview", apiController.RejectReview);
 
 // Routes For FAQ
 routes.post("/getAllFaq", apiController.getAllFaq);

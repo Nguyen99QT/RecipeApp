@@ -139,7 +139,13 @@
                       <tr>
                         <td class="text-center"><%= i+1 %></td>
                         <td class="text-center pe-0"><%= reviews[i].userId.firstname  %>&nbsp;<%= reviews[i].userId.lastname  %> </td>
-                        <td class="text-center pe-0"><%= reviews[i].recipeId.name  %> </td>
+                        <td class="text-center pe-0">
+                          <% if (reviews[i].recipeId && reviews[i].recipeId.name) { %>
+                            <%= reviews[i].recipeId.name %>
+                          <% } else { %>
+                            <span class="badge badge-light-info">App Feedback</span>
+                          <% } %>
+                        </td>
 
                         <td class="pe-0" data-order="rating-<%= reviews[i].rating %>">
                           <div class="rating justify-content-center">

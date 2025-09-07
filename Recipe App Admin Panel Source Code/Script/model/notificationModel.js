@@ -13,6 +13,24 @@ const notificationSchema = new mongoose.Schema({
     message: {
         type: String,
         required: true
+    },
+    type: {
+        type: String,
+        enum: ['general', 'new_recipe'],
+        default: 'general'
+    },
+    recipeId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'recipes',
+        required: false
+    },
+    recipeName: {
+        type: String,
+        required: false
+    },
+    isEnabled: {
+        type: Boolean,
+        default: true
     }
 
 },

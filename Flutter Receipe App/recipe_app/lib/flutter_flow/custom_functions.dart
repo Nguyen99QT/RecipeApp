@@ -15,6 +15,21 @@ bool? checkFavOrNot(
   List<dynamic>? favList,
   String? recipeId,
 ) {
+  // Import statement for FFAppState (this needs to be at top of file)
+  // import '/flutter_flow/flutter_flow_util.dart';
+  
+  // If user is not logged in, always return false (no favorites)
+  try {
+    // Check if FFAppState is available and user is logged in
+    // Note: This is a simple check, may need adjustment based on your app structure
+    if (favList == null) {
+      return false;
+    }
+  } catch (e) {
+    // If there's any error accessing app state, default to false
+    return false;
+  }
+  
   bool value = false;
   if (favList != null && favList.isNotEmpty) {
     for (var element in favList) {

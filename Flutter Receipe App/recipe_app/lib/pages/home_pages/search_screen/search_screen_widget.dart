@@ -450,7 +450,7 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                                                                   recipeListItem,
                                                                   r'''$.totalCookTime''',
                                                                 ).toString(),
-                                                                favCondition: functions.checkFavOrNot(
+                                                                favCondition: FFAppState().isLogin == true ? functions.checkFavOrNot(
                                                                         RecipeAppGroup.getAllFavouriteRecipesApiCall
                                                                             .favouriteRecipeList(
                                                                               containerGetAllFavouriteRecipesApiResponse.jsonBody,
@@ -460,7 +460,7 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                                                                           recipeListItem,
                                                                           r'''$._id''',
                                                                         ).toString()) ==
-                                                                    true,
+                                                                    true : false,
                                                                 onFavTap:
                                                                     () async {
                                                                   if (FFAppState()
@@ -735,7 +735,7 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                                                                   filterRecipeSearchListItem,
                                                                   r'''$.totalCookTime''',
                                                                 ).toString(),
-                                                                favCondition: functions.checkFavOrNot(
+                                                                favCondition: FFAppState().isLogin == true ? functions.checkFavOrNot(
                                                                         RecipeAppGroup.getAllFavouriteRecipesApiCall
                                                                             .favouriteRecipeList(
                                                                               containerGetAllFavouriteRecipesApiResponse.jsonBody,
@@ -745,7 +745,7 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                                                                           filterRecipeSearchListItem,
                                                                           r'''$._id''',
                                                                         ).toString()) ==
-                                                                    true,
+                                                                    true : false,
                                                                 onFavTap:
                                                                     () async {
                                                                   if (FFAppState()

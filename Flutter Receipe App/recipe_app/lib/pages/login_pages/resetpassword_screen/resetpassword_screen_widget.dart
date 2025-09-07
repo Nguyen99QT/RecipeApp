@@ -370,7 +370,7 @@ class _ResetpasswordScreenWidgetState extends State<ResetpasswordScreenWidget> {
                                               ?.jsonBody ??
                                           ''),
                                     ) ==
-                                    1) {
+                                    true) {
                                   await showDialog(
                                     barrierDismissible: false,
                                     context: context,

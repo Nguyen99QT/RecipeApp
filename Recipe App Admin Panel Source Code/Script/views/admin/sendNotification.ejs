@@ -87,7 +87,13 @@
                   <div class="card-header border-0 cursor-pointer" role="button" data-bs-toggle="collapse" data-bs-target="#kt_account_profile_details" aria-expanded="true" aria-controls="kt_account_profile_details">
                     <!--begin::Card title-->
                     <div class="card-title m-0">
-                      <h3 class="fw-bold m-0 fs-1">Send Notification</h3>
+                      <h3 class="fw-bold m-0 fs-1">
+                        <% if (typeof isEditMode !== 'undefined' && isEditMode) { %>
+                          Edit Notification
+                        <% } else { %>
+                          Send Notification
+                        <% } %>
+                      </h3>
                     </div>
                     <!--end::Card title-->
                   </div>
@@ -96,7 +102,13 @@
                   <div id="kt_account_settings_profile_details" class="collapse show">
 
                     <!--begin::Form-->
-                    <form class="form" method="post" id="kt_docs_formvalidation_password">
+                    <form class="form" method="post" id="kt_docs_formvalidation_password" 
+                          action="<% if (typeof isEditMode !== 'undefined' && isEditMode) { %>/update-notification<% } else { %>/send-notification<% } %>">
+                      
+                      <% if (typeof isEditMode !== 'undefined' && isEditMode && editNotification) { %>
+                        <!-- Hidden field for notification ID in edit mode -->
+                        <input type="hidden" name="notification_id" value="<%= editNotification._id %>">
+                      <% } %>
                       <!--begin::Card body-->
                       <div class="card-body border-top">
 
@@ -137,11 +149,69 @@
                         <!--begin::Input group-->
                         <div class="row mb-6">
                           <!--begin::Label-->
+                          <label class="col-lg-3 col-form-label required fw-semibold fs-6">Notification Type</label>
+                          <!--end::Label-->
+                          <!--begin::Col-->
+                          <div class="col-lg-9 fv-row">
+                            <div class="nav-group nav-group-outline" data-kt-buttons="true">
+                              <label class="btn btn-outline btn-outline-dashed btn-active-light-primary <% if (typeof editNotification === 'undefined' || !editNotification || editNotification.type === 'general') { %>active<% } %>">
+                                <input class="btn-check" type="radio" name="notification_type" value="general" <% if (typeof editNotification === 'undefined' || !editNotification || editNotification.type === 'general') { %>checked<% } %> />
+                                <i class="ki-duotone ki-notification-on fs-2hx">
+                                  <span class="path1"></span>
+                                  <span class="path2"></span>
+                                  <span class="path3"></span>
+                                </i>
+                                <span class="fs-7 fw-semibold d-block">General Notification</span>
+                                <span class="fs-8 text-muted">Send to all users</span>
+                              </label>
+                              
+                              <label class="btn btn-outline btn-outline-dashed btn-active-light-primary <% if (typeof editNotification !== 'undefined' && editNotification && editNotification.type === 'new_recipe') { %>active<% } %>">
+                                <input class="btn-check" type="radio" name="notification_type" value="new_recipe" <% if (typeof editNotification !== 'undefined' && editNotification && editNotification.type === 'new_recipe') { %>checked<% } %> />
+                                <i class="ki-duotone ki-chef-hat fs-2hx">
+                                  <span class="path1"></span>
+                                  <span class="path2"></span>
+                                </i>
+                                <span class="fs-7 fw-semibold d-block">New Recipe</span>
+                                <span class="fs-8 text-muted">Notify about new recipe</span>
+                              </label>
+                            </div>
+                          </div>
+                          <!--end::Col-->
+                        </div>
+                        <!--end::Input group-->
+
+                        <!--begin::Recipe Selection (hidden by default)-->
+                        <div class="row mb-6" id="recipe_selection" style="display: none;">
+                          <!--begin::Label-->
+                          <label class="col-lg-3 col-form-label fw-semibold fs-6">Select Recipe</label>
+                          <!--end::Label-->
+                          <!--begin::Col-->
+                          <div class="col-lg-9 fv-row">
+                            <select class="form-select form-select-solid" name="recipe_id" id="recipe_select">
+                              <option value="">Choose a recipe...</option>
+                              <% if (typeof recipes !== 'undefined' && recipes.length > 0) { %>
+                                <% recipes.forEach(recipe => { %>
+                                  <option value="<%= recipe._id %>" 
+                                    <% if (typeof editNotification !== 'undefined' && editNotification && editNotification.recipeId && editNotification.recipeId._id === recipe._id) { %>selected<% } %>>
+                                    <%= recipe.name %>
+                                  </option>
+                                <% }); %>
+                              <% } %>
+                            </select>
+                          </div>
+                          <!--end::Col-->
+                        </div>
+                        <!--end::Recipe Selection-->
+
+                        <!--begin::Input group-->
+                        <div class="row mb-6">
+                          <!--begin::Label-->
                           <label class="col-lg-3 col-form-label required fw-semibold fs-6">Title</label>
                           <!--end::Label-->
                           <!--begin::Col-->
                           <div class="col-lg-9 fv-row fv-plugins-icon-container">
-                            <input class="form-control form-control-lg form-control-solid" type="title" placeholder="Enter Title" name="title" autocomplete="off" required />
+                            <input class="form-control form-control-lg form-control-solid" type="text" placeholder="Enter Title" name="title" autocomplete="off" required 
+                                   value="<% if (typeof editNotification !== 'undefined' && editNotification) { %><%= editNotification.title %><% } %>" />
                           </div>
                           <!--end::Col-->
                         </div>
@@ -154,7 +224,7 @@
                           <!--end::Label-->
                           <!--begin::Col-->
                           <div class="col-lg-9 fv-row fv-plugins-icon-container">
-                            <textarea name="description" id="kt_docs_first_ckeditor_classic" ></textarea>
+                            <textarea name="description" id="kt_docs_first_ckeditor_classic"><% if (typeof editNotification !== 'undefined' && editNotification) { %><%= editNotification.message %><% } %></textarea>
                           </div>
                           <!--end::Col-->
                         </div>
@@ -164,7 +234,13 @@
                       <!--end::Card body-->
                       <!--begin::Actions-->
                       <div class="card-footer d-flex justify-content-start py-6 px-9">
-                        <button type="submit" class="btn btn-primary me-4">Send</button>
+                        <button type="submit" class="btn btn-primary me-4">
+                          <% if (typeof isEditMode !== 'undefined' && isEditMode) { %>
+                            Update Notification
+                          <% } else { %>
+                            Send Notification
+                          <% } %>
+                        </button>
                       </div>
                       <!--end::Actions-->
                     </form>
@@ -212,6 +288,36 @@
   </i>
 </div>
 <!--end::Scrolltop-->
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const radioButtons = document.querySelectorAll('input[name="notification_type"]');
+    const recipeSelection = document.getElementById('recipe_selection');
+    const recipeSelect = document.getElementById('recipe_select');
+    
+    // Function to toggle recipe selection visibility
+    function toggleRecipeSelection() {
+        const checkedRadio = document.querySelector('input[name="notification_type"]:checked');
+        if (checkedRadio && checkedRadio.value === 'new_recipe') {
+            recipeSelection.style.display = 'flex';
+            recipeSelect.required = true;
+        } else {
+            recipeSelection.style.display = 'none';
+            recipeSelect.required = false;
+            if (!checkedRadio || checkedRadio.value !== 'new_recipe') {
+                recipeSelect.value = '';
+            }
+        }
+    }
+    
+    // Initialize on page load (for edit mode)
+    toggleRecipeSelection();
+    
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', toggleRecipeSelection);
+    });
+});
+</script>
 
 
 <!-- partial:partials/header -->

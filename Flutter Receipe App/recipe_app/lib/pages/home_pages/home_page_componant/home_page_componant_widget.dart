@@ -595,7 +595,7 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                             popularListItem,
                                                             r'''$.totalCookTime''',
                                                           ).toString(),
-                                                          favCondition: functions
+                                                          favCondition: FFAppState().isLogin == true ? functions
                                                                   .checkFavOrNot(
                                                                       RecipeAppGroup
                                                                           .getAllFavouriteRecipesApiCall
@@ -607,7 +607,7 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                                         popularListItem,
                                                                         r'''$._id''',
                                                                       ).toString()) ==
-                                                              true,
+                                                              true : false,
                                                           onFavTap: () async {
                                                             print('[DEBUG] Heart favorite button tapped!');
                                                             print('[DEBUG] isLogin: ${FFAppState().isLogin}');
@@ -1155,7 +1155,7 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                 allListItem,
                                                 r'''$.totalRating''',
                                               ) ?? 0.0).toDouble(),
-                                              onfavCondition:
+                                              onfavCondition: FFAppState().isLogin == true ?
                                                   functions.checkFavOrNot(
                                                           RecipeAppGroup
                                                               .getAllFavouriteRecipesApiCall
@@ -1168,7 +1168,7 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                             allListItem,
                                                             r'''$._id''',
                                                           ).toString()) ==
-                                                      true,
+                                                      true : false,
                                               onFavTap: () async {
                                                 if (FFAppState().isLogin ==
                                                     true) {
@@ -1347,7 +1347,7 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                   getRecipeByCategoryIdListItem,
                                                   r'''$.totalRating''',
                                                 ) ?? 0.0).toDouble(),
-                                                onfavCondition:
+                                                onfavCondition: FFAppState().isLogin == true ?
                                                     functions.checkFavOrNot(
                                                             RecipeAppGroup
                                                                 .getAllFavouriteRecipesApiCall
@@ -1360,7 +1360,7 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                               getRecipeByCategoryIdListItem,
                                                               r'''$._id''',
                                                             ).toString()) ==
-                                                        true,
+                                                        true : false,
                                                 onFavTap: () async {
                                                   if (FFAppState().isLogin ==
                                                       true) {

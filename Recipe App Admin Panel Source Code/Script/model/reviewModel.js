@@ -10,7 +10,7 @@ const reviewSchema = new mongoose.Schema({
     recipeId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'recipes',
-        required: true
+        required: false // Allow null for app feedback
     },
     rating: {
         type: Number,
@@ -20,7 +20,16 @@ const reviewSchema = new mongoose.Schema({
     },
     comment: {
         type: String,
-        required: true
+        required: false // Allow empty comments
+    },
+    feedbackType: {
+        type: String,
+        enum: ['recipe', 'app'],
+        default: 'recipe'
+    },
+    isApproved: {
+        type: Boolean,
+        default: false // Reviews need admin approval before showing to public
     },
     isEnable: {
         type: Boolean,

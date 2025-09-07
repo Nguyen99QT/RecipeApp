@@ -211,7 +211,7 @@ class _RecipeComponantWidgetState extends State<RecipeComponantWidget> {
                                                       getAllRecipeListsItem,
                                                       r'''$.totalCookTime''',
                                                     ).toString(),
-                                                    favCondition:
+                                                    favCondition: FFAppState().isLogin == true ?
                                                         functions.checkFavOrNot(
                                                                 RecipeAppGroup
                                                                     .getAllFavouriteRecipesApiCall
@@ -224,7 +224,7 @@ class _RecipeComponantWidgetState extends State<RecipeComponantWidget> {
                                                                   getAllRecipeListsItem,
                                                                   r'''$._id''',
                                                                 ).toString()) ==
-                                                            true,
+                                                            true : false,
                                                     onFavTap: () async {
                                                       if (FFAppState()
                                                               .isLogin ==

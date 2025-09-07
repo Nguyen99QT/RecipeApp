@@ -1,7 +1,7 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:1:1-68:12
-MERGED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:1:1-68:12
+ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:1:1-70:12
+MERGED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:1:1-70:12
 INJECTED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\debug\AndroidManifest.xml:1:1-7:12
 INJECTED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\debug\AndroidManifest.xml:1:1-7:12
 INJECTED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\debug\AndroidManifest.xml:1:1-7:12
@@ -157,7 +157,7 @@ ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\
 	android:name
 		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:9:22-72
 application
-ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:11:5-67:19
+ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:11:5-69:19
 INJECTED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\debug\AndroidManifest.xml
 MERGED from [:image_picker_android] C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:8:5-32:19
 MERGED from [:image_picker_android] C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:8:5-32:19
@@ -211,86 +211,90 @@ MERGED from [androidx.room:room-runtime:2.2.5] C:\Users\caong\.gradle\caches\tra
 		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:12:9-34
 	android:icon
 		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:14:9-43
+	android:networkSecurityConfig
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:17:9-69
 	tools:replace
 		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:13:9-38
+	android:usesCleartextTraffic
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:16:9-44
 activity#com.food.receipeapp.MainActivity
-ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:17:9-55:20
+ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:19:9-57:20
 	android:launchMode
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:20:13-43
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:22:13-43
 	android:hardwareAccelerated
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:23:13-47
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:25:13-47
 	android:windowSoftInputMode
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:24:13-55
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:26:13-55
 	android:exported
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:19:13-36
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:21:13-36
 	android:configChanges
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:22:13-163
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:24:13-163
 	android:theme
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:21:13-47
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:23:13-47
 	android:name
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:18:13-41
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:20:13-41
 meta-data#io.flutter.embedding.android.NormalTheme
-ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:29:13-32:17
+ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:31:13-34:17
 	android:resource
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:31:15-52
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:33:15-52
 	android:name
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:30:15-70
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:32:15-70
 meta-data#io.flutter.embedding.android.SplashScreenDrawable
-ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:38:13-41:17
+ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:40:13-43:17
 	android:resource
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:40:15-61
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:42:15-61
 	android:name
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:39:15-79
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:41:15-79
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:42:13-45:29
+ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:44:13-47:29
 action#android.intent.action.MAIN
-ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:43:17-68
+ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:45:17-68
 	android:name
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:43:25-66
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:45:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:44:17-76
+ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:46:17-76
 	android:name
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:44:27-74
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:46:27-74
 meta-data#flutter_deeplinking_enabled
-ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:47:13-90
+ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:49:13-90
 	android:value
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:47:67-87
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:49:67-87
 	android:name
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:47:24-66
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:49:24-66
 intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:host:recipeapp.com+data:scheme:recipeapp
-ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:48:13-53:29
+ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:50:13-55:29
 	android:autoVerify
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:48:28-53
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:50:28-53
 action#android.intent.action.VIEW
-ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:49:17-69
+ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:51:17-69
 	android:name
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:49:25-66
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:51:25-66
 category#android.intent.category.DEFAULT
-ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:50:17-76
+ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:52:17-76
 	android:name
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:50:27-73
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:52:27-73
 category#android.intent.category.BROWSABLE
-ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:51:17-78
+ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:53:17-78
 	android:name
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:51:27-75
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:53:27-75
 data
-ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:52:17-81
+ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:54:17-81
 	android:host
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:52:50-78
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:54:50-78
 	android:scheme
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:52:23-49
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:54:23-49
 meta-data#flutterEmbedding
-ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:59:9-61:33
+ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:61:9-63:33
 	android:value
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:61:13-30
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:63:13-30
 	android:name
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:60:13-44
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:62:13-44
 meta-data#com.google.android.gms.ads.APPLICATION_ID
-ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:63:9-65:69
+ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:65:9-67:69
 	android:value
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:65:13-67
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:67:13-67
 	android:name
-		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:64:13-69
+		ADDED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\main\AndroidManifest.xml:66:13-69
 uses-sdk
 INJECTED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\debug\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\android\app\src\debug\AndroidManifest.xml

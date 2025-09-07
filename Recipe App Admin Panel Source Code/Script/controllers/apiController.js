@@ -19,6 +19,7 @@ const reviewModel = require("../model/reviewModel");
 const notificationModel = require("../model/notificationModel");
 
 // Importing services
+const combineRecipeReview = require("../services/combineRecipeReview");
 const sendOtpMail = require("../services/sendOtpMail");
 
 // Check if user is already registered
@@ -224,6 +225,16 @@ const SignIn = async (req, res) => {
             });
         }
         
+        // Check if account is deactivated
+        if (user.is_active === 0) {
+            console.log('Login failed: Account deactivated for', email);
+            return res.status(400).json({
+                status: false,
+                message: "Your account has been deactivated. Please contact admin for support.",
+                isDeactivated: true
+            });
+        }
+        
         if (user.isOTPVerified === 0) {
             console.log('Login failed: Email not verified for', email);
             return res.status(400).json({
@@ -375,8 +386,8 @@ const ForgotPassword = async (req, res) => {
             });
         }
         
-        // Generate OTP
-        const otp = parseInt(otpGenerator.generate(4, { digits: true, alphabets: false, upperCase: false, specialChars: false }));
+        // Generate OTP - using simple random number generation
+        const otp = Math.floor(1000 + Math.random() * 9000); // Generate 4-digit number (1000-9999)
         
         // Delete existing forgot password OTP
         await ForgotPasswordOtpModel.deleteMany({ userId: user._id });
@@ -410,24 +421,55 @@ const ForgotPassword = async (req, res) => {
 // Forgot password verification
 const ForgotPasswordVerification = async (req, res) => {
     try {
-        const { userId, otp } = req.body;
+        console.log('=== FORGOT PASSWORD VERIFICATION REQUEST ===');
+        console.log('Request body:', req.body);
         
-        const otpData = await ForgotPasswordOtpModel.findOne({ userId, otp });
+        const { userId, email, otp } = req.body;
+        
+        let otpData;
+        
+        // Try to find OTP by userId first, then by email
+        if (userId) {
+            console.log('Searching OTP by userId:', userId);
+            otpData = await ForgotPasswordOtpModel.findOne({ userId, otp });
+        } else if (email) {
+            console.log('Searching OTP by email:', email);
+            // Find user first to get userId
+            const user = await userModel.findOne({ email });
+            if (!user) {
+                console.log('User not found with email:', email);
+                return res.status(404).json({
+                    status: false,
+                    message: "User not found"
+                });
+            }
+            console.log('Found user:', user._id);
+            otpData = await ForgotPasswordOtpModel.findOne({ userId: user._id, otp });
+        } else {
+            console.log('Missing userId and email parameters');
+            return res.status(400).json({
+                status: false,
+                message: "Either userId or email is required"
+            });
+        }
         
         if (!otpData) {
+            console.log('Invalid OTP - not found in database');
             return res.status(400).json({
                 status: false,
                 message: "Invalid OTP"
             });
         }
         
+        console.log('OTP verification successful');
         return res.status(200).json({
             status: true,
-            message: "OTP verified successfully"
+            message: "OTP verified successfully",
+            userId: otpData.userId
         });
         
     } catch (error) {
-        console.log(error.message);
+        console.error('ForgotPasswordVerification error:', error.message);
         return res.status(500).json({
             status: false,
             message: "Internal server error"
@@ -438,24 +480,64 @@ const ForgotPasswordVerification = async (req, res) => {
 // Reset password
 const ResetPassword = async (req, res) => {
     try {
-        const { userId, otp, newPassword } = req.body;
+        console.log('=== RESET PASSWORD REQUEST ===');
+        console.log('Request body:', req.body);
         
-        const otpData = await ForgotPasswordOtpModel.findOne({ userId, otp });
+        const { userId, email, otp, newPassword } = req.body;
         
-        if (!otpData) {
+        let finalUserId = userId;
+        let otpData;
+        
+        // If no userId provided, find user by email
+        if (!finalUserId && email) {
+            console.log('Finding user by email:', email);
+            const user = await userModel.findOne({ email });
+            if (!user) {
+                console.log('User not found with email:', email);
+                return res.status(404).json({
+                    status: false,
+                    message: "User not found"
+                });
+            }
+            finalUserId = user._id;
+            console.log('Found user ID:', finalUserId);
+        }
+        
+        if (!finalUserId) {
             return res.status(400).json({
                 status: false,
-                message: "Invalid OTP"
+                message: "Either userId or email is required"
+            });
+        }
+        
+        // For reset password, we don't need OTP verification again since it was already verified
+        // Just check if there's a recent OTP record for this user
+        const recentOtp = await ForgotPasswordOtpModel.findOne({ userId: finalUserId });
+        
+        if (!recentOtp) {
+            console.log('No OTP found for user - please verify OTP first');
+            return res.status(400).json({
+                status: false,
+                message: "Please verify OTP first"
+            });
+        }
+        
+        if (!newPassword) {
+            return res.status(400).json({
+                status: false,
+                message: "New password is required"
             });
         }
         
         const hashedPassword = sha256.x2(newPassword);
         
         // Update password
-        await userModel.findByIdAndUpdate(userId, { password: hashedPassword });
+        await userModel.findByIdAndUpdate(finalUserId, { password: hashedPassword });
+        console.log('Password updated for user:', finalUserId);
         
-        // Delete OTP
-        await ForgotPasswordOtpModel.deleteOne({ userId, otp });
+        // Delete all OTP records for this user
+        await ForgotPasswordOtpModel.deleteMany({ userId: finalUserId });
+        console.log('OTP records deleted for user:', finalUserId);
         
         return res.status(200).json({
             status: true,
@@ -463,7 +545,7 @@ const ResetPassword = async (req, res) => {
         });
         
     } catch (error) {
-        console.log(error.message);
+        console.error('ResetPassword error:', error.message);
         return res.status(500).json({
             status: false,
             message: "Internal server error"
@@ -757,9 +839,15 @@ const GetRecipeById = async (req, res) => {
             });
         }
         
+        // Get all reviews for rating calculation
+        const reviews = await reviewModel.find({ isEnable: true });
+        
+        // Combine recipe with review data (rating & reviews)
+        const recipeWithReviews = await combineRecipeReview(recipe, reviews, []);
+        
         return res.status(200).json({
             status: true,
-            data: recipe
+            data: recipeWithReviews
         });
         
     } catch (error) {
@@ -798,18 +886,44 @@ const GetRecipeByCategoryId = async (req, res) => {
 // Filter recipes
 const FilterRecipe = async (req, res) => {
     try {
-        const { categoryId, cuisinesId, difficultyLevel } = req.body;
+        const { categoryId, cuisinesIdList, difficultyLevel } = req.body;
+        
+        console.log('[DEBUG] FilterRecipe API called');
+        console.log('[DEBUG] categoryId:', categoryId);
+        console.log('[DEBUG] cuisinesIdList:', cuisinesIdList);
+        console.log('[DEBUG] difficultyLevel:', difficultyLevel);
         
         let query = {};
         
-        if (categoryId) query.categoryId = categoryId;
-        if (cuisinesId) query.cuisinesId = cuisinesId;
-        if (difficultyLevel) query.difficultyLevel = difficultyLevel;
+        // Filter by category
+        if (categoryId && categoryId.trim() !== '') {
+            query.categoryId = categoryId;
+        }
+        
+        // Filter by cuisines (support both single ID and array)
+        if (cuisinesIdList) {
+            if (Array.isArray(cuisinesIdList) && cuisinesIdList.length > 0) {
+                // If it's an array, use $in operator
+                query.cuisinesId = { $in: cuisinesIdList };
+            } else if (typeof cuisinesIdList === 'string' && cuisinesIdList.trim() !== '') {
+                // If it's a single string
+                query.cuisinesId = cuisinesIdList;
+            }
+        }
+        
+        // Filter by difficulty level
+        if (difficultyLevel && difficultyLevel.trim() !== '') {
+            query.difficultyLevel = difficultyLevel;
+        }
+        
+        console.log('[DEBUG] MongoDB query:', JSON.stringify(query));
         
         const recipes = await recipeModel.find(query)
             .populate('categoryId', 'name')
             .populate('cuisinesId', 'name')
             .sort({ createdAt: -1 });
+        
+        console.log('[DEBUG] Found filtered recipes:', recipes.length);
         
         return res.status(200).json({
             status: true,
@@ -817,7 +931,7 @@ const FilterRecipe = async (req, res) => {
         });
         
     } catch (error) {
-        console.log(error.message);
+        console.log('[ERROR] FilterRecipe:', error.message);
         return res.status(500).json({
             status: false,
             message: "Internal server error"
@@ -1009,14 +1123,71 @@ const AddReview = async (req, res) => {
     }
 };
 
-// Get reviews by recipe ID
+// Add app feedback (for general feedback from settings)
+const AddAppFeedback = async (req, res) => {
+    try {
+        const { rating, comment } = req.body;
+        const userId = req.userId;
+        
+        console.log('[DEBUG] AddAppFeedback API called');
+        console.log('[DEBUG] userId:', userId);
+        console.log('[DEBUG] rating:', rating);
+        console.log('[DEBUG] comment:', comment);
+        
+        if (!rating) {
+            return res.status(400).json({
+                status: false,
+                message: "Rating is required"
+            });
+        }
+        
+        const newFeedback = new reviewModel({
+            userId,
+            recipeId: null, // null for app feedback
+            rating,
+            comment: comment || '',
+            feedbackType: 'app' // distinguish app feedback from recipe feedback
+        });
+        
+        await newFeedback.save();
+        
+        console.log('[DEBUG] App feedback saved successfully');
+        
+        return res.status(200).json({
+            status: true,
+            message: "Feedback submitted successfully"
+        });
+        
+    } catch (error) {
+        console.log('[ERROR] AddAppFeedback:', error.message);
+        return res.status(500).json({
+            status: false,
+            message: "Internal server error"
+        });
+    }
+};
+
+// Get reviews by recipe ID (only approved reviews for public)
 const GetReviewByRecipeId = async (req, res) => {
     try {
         const { recipeId } = req.body;
         
-        const reviews = await reviewModel.find({ recipeId })
+        console.log('[DEBUG] GetReviewByRecipeId called for recipeId:', recipeId);
+        
+        // Only return enabled reviews for public viewing (simplified system)
+        const reviews = await reviewModel.find({ 
+            recipeId,
+            isEnable: true,   // Only enabled reviews
+            $or: [
+                { feedbackType: 'recipe' },     // New reviews with feedbackType
+                { feedbackType: { $exists: false } }, // Old reviews without feedbackType
+                { feedbackType: null }          // Reviews with null feedbackType
+            ]
+        })
             .populate('userId', 'firstname lastname avatar')
             .sort({ createdAt: -1 });
+        
+        console.log('[DEBUG] Found approved reviews:', reviews.length);
         
         return res.status(200).json({
             status: true,
@@ -1024,7 +1195,7 @@ const GetReviewByRecipeId = async (req, res) => {
         });
         
     } catch (error) {
-        console.log(error.message);
+        console.log('[ERROR] GetReviewByRecipeId:', error.message);
         return res.status(500).json({
             status: false,
             message: "Internal server error"
@@ -1092,15 +1263,136 @@ const GetPolicyAndTerms = async (req, res) => {
 // Get all notifications
 const GetAllNotification = async (req, res) => {
     try {
-        const notifications = await notificationModel.find().sort({ createdAt: -1 });
+        const notifications = await notificationModel.find({ isEnabled: { $ne: false } })
+            .populate('recipeId', 'name image')
+            .sort({ createdAt: -1 });
+        
+        // Map fields to match Flutter app expectations
+        const mappedNotifications = notifications.map(notification => ({
+            _id: notification._id,
+            title: notification.title,
+            description: notification.message, // Map message to description for Flutter app
+            message: notification.message, // Keep original for backward compatibility
+            date: notification.date,
+            type: notification.type,
+            recipeId: notification.recipeId,
+            recipeName: notification.recipeName,
+            isEnabled: notification.isEnabled,
+            createdAt: notification.createdAt,
+            updatedAt: notification.updatedAt
+        }));
         
         return res.status(200).json({
             status: true,
-            data: notifications
+            data: {
+                notification: mappedNotifications
+            }
         });
         
     } catch (error) {
         console.log(error.message);
+        return res.status(500).json({
+            status: false,
+            message: "Internal server error"
+        });
+    }
+};
+
+// Admin API: Get all reviews for approval
+const GetAllReviewsForApproval = async (req, res) => {
+    try {
+        console.log('[DEBUG] GetAllReviewsForApproval called');
+        
+        const reviews = await reviewModel.find({
+            feedbackType: 'recipe' // Only recipe reviews, not app feedback
+        })
+            .populate('userId', 'firstname lastname avatar')
+            .populate('recipeId', 'name image')
+            .sort({ createdAt: -1 });
+        
+        console.log('[DEBUG] Found total reviews for approval:', reviews.length);
+        
+        return res.status(200).json({
+            status: true,
+            data: reviews
+        });
+        
+    } catch (error) {
+        console.log('[ERROR] GetAllReviewsForApproval:', error.message);
+        return res.status(500).json({
+            status: false,
+            message: "Internal server error"
+        });
+    }
+};
+
+// Admin API: Approve review
+const ApproveReview = async (req, res) => {
+    try {
+        const { reviewId } = req.body;
+        
+        console.log('[DEBUG] ApproveReview called for reviewId:', reviewId);
+        
+        const updatedReview = await reviewModel.findByIdAndUpdate(
+            reviewId,
+            { isApproved: true },
+            { new: true }
+        );
+        
+        if (!updatedReview) {
+            return res.status(404).json({
+                status: false,
+                message: "Review not found"
+            });
+        }
+        
+        console.log('[DEBUG] Review approved successfully');
+        
+        return res.status(200).json({
+            status: true,
+            message: "Review approved successfully",
+            data: updatedReview
+        });
+        
+    } catch (error) {
+        console.log('[ERROR] ApproveReview:', error.message);
+        return res.status(500).json({
+            status: false,
+            message: "Internal server error"
+        });
+    }
+};
+
+// Admin API: Reject review
+const RejectReview = async (req, res) => {
+    try {
+        const { reviewId } = req.body;
+        
+        console.log('[DEBUG] RejectReview called for reviewId:', reviewId);
+        
+        const updatedReview = await reviewModel.findByIdAndUpdate(
+            reviewId,
+            { isApproved: false },
+            { new: true }
+        );
+        
+        if (!updatedReview) {
+            return res.status(404).json({
+                status: false,
+                message: "Review not found"
+            });
+        }
+        
+        console.log('[DEBUG] Review rejected successfully');
+        
+        return res.status(200).json({
+            status: true,
+            message: "Review rejected successfully",
+            data: updatedReview
+        });
+        
+    } catch (error) {
+        console.log('[ERROR] RejectReview:', error.message);
         return res.status(500).json({
             status: false,
             message: "Internal server error"
@@ -1137,7 +1429,11 @@ module.exports = {
     GetAllFavouriteRecipes,
     DeleteFavouriteRecipe,
     AddReview,
+    AddAppFeedback,
     GetReviewByRecipeId,
+    GetAllReviewsForApproval,
+    ApproveReview,
+    RejectReview,
     getAllFaq,
     getAdmob,
     GetPolicyAndTerms,

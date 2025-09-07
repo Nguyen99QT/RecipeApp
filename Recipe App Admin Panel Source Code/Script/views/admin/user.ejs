@@ -162,7 +162,7 @@
                             <div class="d-flex justify-content-center py-5" data-bs-toggle="modal" data-bs-target="#kt_modal_Enable/Disable_user<%= i %>">
                               <label class=" switch">
                                 <button class="buttonslider ms-5">
-                                  <input type="checkbox" name="isOTPVerified" <% if(user[i].isOTPVerified === 1){%> checked <%} %> style="display: none;">
+                                  <input type="checkbox" name="is_active" <% if(user[i].is_active === 1){%> checked <%} %> style="display: none;">
                                   <span class="slider round"></span>
                                 </button>
                               </label>
@@ -186,7 +186,7 @@
                               </div>
 
                               <div class="modal-body">
-                                <% if (user[i].isOTPVerified === 0) { %>
+                                <% if (user[i].is_active === 0) { %>
                                 <p class="message text-center fs-3">Are you sure..!! you want to active the user account <b><%= user[i].firstname %> <%= user[i].lastname %></b> ...?</p>
                                 <% } else { %>
                                 <p class="message text-center fs-3">Are you sure..!! you want to disactive the user account <b><%= user[i].firstname %> <%= user[i].lastname %></b> ...?</p>
@@ -195,7 +195,7 @@
 
                               <div class="modal-footer">
                                 <a href="/active-user?id=<%= user[i]._id %>">
-                                  <% if (user[i].isOTPVerified === 0) { %>
+                                  <% if (user[i].is_active === 0) { %>
                                   <button type="button" class="btn btn-success btn-lg">Active</button>
                                   <% } else { %>
                                   <button type="button" class="btn btn-danger btn-lg">Disactive</button>

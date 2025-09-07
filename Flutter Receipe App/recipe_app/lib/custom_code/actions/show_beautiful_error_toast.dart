@@ -39,7 +39,7 @@ Future showBeautifulErrorToast(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Lỗi đăng nhập',
+                    'Login Error',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16.0,
@@ -70,7 +70,7 @@ Future showBeautifulErrorToast(
       margin: EdgeInsets.fromLTRB(16.0, 0, 16.0, 100.0),
       elevation: 8.0,
       action: SnackBarAction(
-        label: 'Đóng',
+        label: 'Close',
         textColor: Colors.white,
         backgroundColor: Colors.white.withOpacity(0.2),
         onPressed: () {

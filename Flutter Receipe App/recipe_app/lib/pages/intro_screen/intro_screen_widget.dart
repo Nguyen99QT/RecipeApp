@@ -145,6 +145,37 @@ class _IntroScreenWidgetState extends State<IntroScreenWidget> {
                       print('    succeeded: ${stackGetAllIntroApiResponse.succeeded}');
                       print('    bodyText: ${stackGetAllIntroApiResponse.bodyText}');
 
+                      // Check if API call failed
+                      if (!stackGetAllIntroApiResponse.succeeded) {
+                        print('  - API call failed, showing error state');
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.error_outline,
+                                size: 60,
+                                color: FlutterFlowTheme.of(context).secondaryText,
+                              ),
+                              SizedBox(height: 20),
+                              Text(
+                                'Không thể tải dữ liệu',
+                                style: FlutterFlowTheme.of(context).headlineSmall,
+                              ),
+                              SizedBox(height: 10),
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _model.clearIntroCacheCache();
+                                  });
+                                },
+                                child: Text('Thử lại'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+
                       return Stack(
                         alignment: const AlignmentDirectional(0.0, 1.0),
                         children: [
@@ -417,14 +448,11 @@ class _IntroScreenWidgetState extends State<IntroScreenWidget> {
                               hoverColor: Colors.transparent,
                               highlightColor: Colors.transparent,
                               onTap: () async {
-                                if (FFAppState().introIndex ==
-                                    (RecipeAppGroup.getAllIntroApiCall
-                                            .introList(
-                                              stackGetAllIntroApiResponse
-                                                  .jsonBody,
-                                            )!
-                                            .length -
-                                        1)) {
+                                final introList = RecipeAppGroup.getAllIntroApiCall
+                                    .introList(stackGetAllIntroApiResponse.jsonBody);
+                                    
+                                if (introList != null && 
+                                    FFAppState().introIndex == (introList.length - 1)) {
                                   FFAppState().intro = true;
                                   FFAppState().update(() {});
 
@@ -440,31 +468,31 @@ class _IntroScreenWidgetState extends State<IntroScreenWidget> {
                                 model: _model.customAppButtonModel,
                                 updateCallback: () => safeSetState(() {}),
                                 child: CustomAppButtonWidget(
-                                  tittle: FFAppState().introIndex ==
-                                          (RecipeAppGroup.getAllIntroApiCall
-                                                  .introList(
-                                                    stackGetAllIntroApiResponse
-                                                        .jsonBody,
-                                                  )!
-                                                  .length -
-                                              1)
-                                      ? 'Get started'
-                                      : 'Next',
+                                  tittle: () {
+                                    final introList = RecipeAppGroup.getAllIntroApiCall
+                                        .introList(stackGetAllIntroApiResponse.jsonBody);
+                                    if (introList == null || introList.isEmpty) {
+                                      return 'Get started'; // Default when no data
+                                    }
+                                    return FFAppState().introIndex == (introList.length - 1)
+                                        ? 'Get started'
+                                        : 'Next';
+                                  }(),
                                 ),
                               ),
                             ),
                           ),
                           Opacity(
-                            opacity: FFAppState().introIndex ==
-                                    (RecipeAppGroup.getAllIntroApiCall
-                                            .introList(
-                                              stackGetAllIntroApiResponse
-                                                  .jsonBody,
-                                            )!
-                                            .length -
-                                        1)
-                                ? 0.0
-                                : 1.0,
+                            opacity: () {
+                              final introList = RecipeAppGroup.getAllIntroApiCall
+                                  .introList(stackGetAllIntroApiResponse.jsonBody);
+                              if (introList == null || introList.isEmpty) {
+                                return 0.0; // Hide when no data
+                              }
+                              return FFAppState().introIndex == (introList.length - 1)
+                                  ? 0.0
+                                  : 1.0;
+                            }(),
                             child: Padding(
                               padding: const EdgeInsetsDirectional.fromSTEB(
                                   0.0, 0.0, 0.0, 20.0),

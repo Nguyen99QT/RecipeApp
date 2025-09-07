@@ -39,6 +39,7 @@ async function combineRecipeReview(recipesOrRecipe, reviews, favouriteRecipes) {
             isFavourite: isFavourite,
             rating: ratingCounts,
             totalRating,
+            totalReviews: matchingReviews.length, // Add count of reviews
             averageRating,
             reviews: matchingReviews
         };

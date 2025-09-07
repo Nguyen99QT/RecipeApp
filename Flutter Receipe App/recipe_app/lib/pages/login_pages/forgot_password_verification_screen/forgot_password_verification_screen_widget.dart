@@ -190,7 +190,7 @@ class _ForgotPasswordVerificationScreenWidgetState
                                         ?.jsonBody ??
                                     ''),
                               ) ==
-                              1) {
+                              true) {
                             await actions.showCustomToastBottom(
                               RecipeAppGroup.forgotPasswordVerificationApiCall
                                   .message(

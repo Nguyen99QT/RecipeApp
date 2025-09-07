@@ -38,6 +38,20 @@ app.use(flashmiddleware.setflash);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Add CORS support for Flutter app
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+    } else {
+        next();
+    }
+});
+
 // Configure body-parser for handling form data
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -49,7 +63,8 @@ app.use('/', adminRoutes);
 const apiRoutes = require("./routes/apiRoutes");
 app.use('/api', apiRoutes);
 
-// Start the server on the specified port
-app.listen(process.env.SERVER_PORT, () => {
+// Start the server on the specified port and listen on all interfaces
+app.listen(process.env.SERVER_PORT, '0.0.0.0', () => {
     console.log("server is start", process.env.SERVER_PORT);
+    console.log("server listening on all interfaces (0.0.0.0)");
 })

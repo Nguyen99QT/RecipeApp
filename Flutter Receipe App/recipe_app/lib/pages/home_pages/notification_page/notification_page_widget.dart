@@ -73,8 +73,41 @@ class _NotificationPageWidgetState extends State<NotificationPageWidget> {
                                 RecipeAppGroup.getAllNotificationApiCall.call(),
                           ),
                           builder: (context, snapshot) {
+                            // Debug logging
+                            print('[DEBUG] NotificationPage FutureBuilder state:');
+                            print('  - hasData: ${snapshot.hasData}');
+                            print('  - hasError: ${snapshot.hasError}');
+                            print('  - connectionState: ${snapshot.connectionState}');
+                            
+                            if (snapshot.hasError) {
+                              print('  - Error: ${snapshot.error}');
+                              return Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.error_outline,
+                                      size: 64,
+                                      color: FlutterFlowTheme.of(context).error,
+                                    ),
+                                    SizedBox(height: 16),
+                                    Text(
+                                      'Failed to load notifications',
+                                      style: FlutterFlowTheme.of(context).headlineSmall,
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'Please check your internet connection',
+                                      style: FlutterFlowTheme.of(context).bodyMedium,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                            
                             // Customize what your widget looks like when it's loading.
                             if (!snapshot.hasData) {
+                              print('  - Loading data...');
                               return Center(
                                 child: SizedBox(
                                   width: 50.0,
@@ -87,8 +120,14 @@ class _NotificationPageWidgetState extends State<NotificationPageWidget> {
                                 ),
                               );
                             }
-                            final listViewGetAllNotificationApiResponse =
-                                snapshot.data!;
+                            
+                            final listViewGetAllNotificationApiResponse = snapshot.data!;
+                            
+                            // Debug API response
+                            print('  - API Response received:');
+                            print('    statusCode: ${listViewGetAllNotificationApiResponse.statusCode}');
+                            print('    succeeded: ${listViewGetAllNotificationApiResponse.succeeded}');
+                            print('    bodyText: ${listViewGetAllNotificationApiResponse.bodyText}');
 
                             return Builder(
                               builder: (context) {
@@ -100,7 +139,19 @@ class _NotificationPageWidgetState extends State<NotificationPageWidget> {
                                             )
                                             ?.toList() ??
                                         [];
+                                
+                                // Debug notification data
+                                print('  - Notification list length: ${notificationList.length}');
+                                if (notificationList.isNotEmpty) {
+                                  print('  - First notification sample:');
+                                  final first = notificationList.first;
+                                  print('    title: ${getJsonField(first, r'''$.title''')}');
+                                  print('    description: ${getJsonField(first, r'''$.description''')}');
+                                  print('    date: ${getJsonField(first, r'''$.date''')}');
+                                }
+                                
                                 if (notificationList.isEmpty) {
+                                  print('  - No notifications found, showing empty state');
                                   return const Center(
                                     child: SizedBox(
                                       width: double.infinity,
@@ -253,6 +304,79 @@ class _NotificationPageWidgetState extends State<NotificationPageWidget> {
                                                               lineHeight: 1.5,
                                                             ),
                                                       ),
+                                                      // Show "View Details" button for new_recipe notifications
+                                                      if (getJsonField(
+                                                        notificationListItem,
+                                                        r'''$.type''',
+                                                      ) == 'new_recipe' && getJsonField(
+                                                        notificationListItem,
+                                                        r'''$.recipeId._id''',
+                                                      ) != null)
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(top: 8.0),
+                                                          child: ElevatedButton(
+                                                            onPressed: () async {
+                                                              final recipeId = getJsonField(
+                                                                notificationListItem,
+                                                                r'''$.recipeId._id''',
+                                                              ).toString();
+                                                              
+                                                              final recipeName = getJsonField(
+                                                                notificationListItem,
+                                                                r'''$.recipeId.name''',
+                                                              ).toString();
+                                                              
+                                                              // Navigate to recipe detail page
+                                                              context.pushNamed(
+                                                                'recipe_detail_screen',
+                                                                queryParameters: {
+                                                                  'recipeDetailId': serializeParam(
+                                                                    recipeId,
+                                                                    ParamType.String,
+                                                                  ),
+                                                                  'name': serializeParam(
+                                                                    recipeName,
+                                                                    ParamType.String,
+                                                                  ),
+                                                                }.withoutNulls,
+                                                              );
+                                                            },
+                                                            style: ElevatedButton.styleFrom(
+                                                              backgroundColor: FlutterFlowTheme.of(context).primaryTheme,
+                                                              foregroundColor: FlutterFlowTheme.of(context).samewhite,
+                                                              padding: const EdgeInsets.symmetric(
+                                                                horizontal: 16.0,
+                                                                vertical: 8.0,
+                                                              ),
+                                                              shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(8.0),
+                                                              ),
+                                                            ),
+                                                            child: Row(
+                                                              mainAxisSize: MainAxisSize.min,
+                                                              children: [
+                                                                Icon(
+                                                                  Icons.visibility,
+                                                                  size: 16.0,
+                                                                  color: FlutterFlowTheme.of(context).samewhite,
+                                                                ),
+                                                                const SizedBox(width: 6.0),
+                                                                Text(
+                                                                  'Xem chi tiết',
+                                                                  style: FlutterFlowTheme.of(context)
+                                                                      .bodyMedium
+                                                                      .override(
+                                                                        fontFamily: 'SF Pro Display',
+                                                                        color: FlutterFlowTheme.of(context).samewhite,
+                                                                        fontSize: 14.0,
+                                                                        fontWeight: FontWeight.w600,
+                                                                        useGoogleFonts: false,
+                                                                      ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
                                                     ].divide(
                                                         const SizedBox(height: 4.0)),
                                                   ),

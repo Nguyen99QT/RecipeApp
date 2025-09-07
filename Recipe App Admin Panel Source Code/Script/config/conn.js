@@ -1,5 +1,6 @@
 // Importing required modules 
 const mongoose = require("mongoose");
+require("dotenv").config();
 
 const connectUrl = process.env.DB_CONNECTION
 

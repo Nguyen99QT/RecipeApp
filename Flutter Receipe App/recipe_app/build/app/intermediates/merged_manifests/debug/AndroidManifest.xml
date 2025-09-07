@@ -78,7 +78,9 @@
         android:extractNativeLibs="true"
         android:icon="@mipmap/ic_launcher"
         android:label="RecipeApp"
-        android:requestLegacyExternalStorage="true" >
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic="true" >
         <activity
             android:name="com.food.receipeapp.MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

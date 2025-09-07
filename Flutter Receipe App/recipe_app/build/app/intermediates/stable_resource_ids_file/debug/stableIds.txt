@@ -1461,6 +1461,7 @@ com.food.receipeapp:dimen/tooltip_y_offset_non_touch = 0x7f060098
 com.food.receipeapp:dimen/highlight_alpha_material_colored = 0x7f06006e
 com.food.receipeapp:attr/placeholderActivityName = 0x7f0301c3
 com.food.receipeapp:attr/flow_wrapMode = 0x7f0300f7
+com.food.receipeapp:xml/network_security_config = 0x7f100003
 com.food.receipeapp:attr/layout_goneMarginRight = 0x7f030163
 com.food.receipeapp:layout/notification_template_part_time = 0x7f0b0035
 com.food.receipeapp:attr/persistent = 0x7f0301c1
