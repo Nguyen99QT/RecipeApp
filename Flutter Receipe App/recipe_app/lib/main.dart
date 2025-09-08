@@ -1,6 +1,7 @@
 import '/custom_code/actions/index.dart' as actions;
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
@@ -12,6 +13,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   GoRouter.optionURLReflectsImperativeAPIs = true;
   usePathUrlStrategy();
+
+  // Load environment variables
+  await dotenv.load(fileName: ".env");
+
   // await initFirebase();
 
   // Start initial custom actions code
@@ -73,7 +78,10 @@ class _MyAppState extends State<MyApp> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [Locale('en', '')],
+      supportedLocales: const [
+        Locale('en', ''), // English
+        Locale('vi', ''), // Vietnamese
+      ],
       theme: ThemeData(
         brightness: Brightness.light,
       ),

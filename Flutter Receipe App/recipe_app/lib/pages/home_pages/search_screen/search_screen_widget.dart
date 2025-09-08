@@ -9,6 +9,7 @@ import '/pages/home_pages/filter_bottomsheet/filter_bottomsheet_widget.dart';
 import '/pages/shimmers/shimmer_grid_view_component/shimmer_grid_view_component_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
+import '/utils/vietnamese_input_helper.dart';
 import 'dart:async';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +79,8 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 8.0),
+                padding:
+                    const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 8.0),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12.0),
@@ -90,8 +92,8 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Padding(
-                        padding:
-                            const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
+                        padding: const EdgeInsetsDirectional.fromSTEB(
+                            16.0, 0.0, 0.0, 0.0),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(0.0),
                           child: SvgPicture.asset(
@@ -110,18 +112,23 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                           focusNode: _model.textFieldFocusNode,
                           onChanged: (_) => EasyDebounce.debounce(
                             '_model.textController',
-                            const Duration(milliseconds: 1000), // Reduced from 2000ms to 1000ms for faster response
+                            const Duration(
+                                milliseconds:
+                                    1000), // Reduced from 2000ms to 1000ms for faster response
                             () async {
-                              print('[DEBUG] Search text changed: "${_model.textController.text}"');
+                              print(
+                                  '[DEBUG] Search text changed: "${_model.textController.text}"');
                               if (_model.textController.text == '') {
-                                print('[DEBUG] Search text is empty - showing all recipes');
+                                print(
+                                    '[DEBUG] Search text is empty - showing all recipes');
                                 _model.focus = false;
                                 safeSetState(() {});
                                 safeSetState(
                                     () => _model.apiRequestCompleter2 = null);
                                 await _model.waitForApiRequestCompleted2();
                               } else {
-                                print('[DEBUG] Search text entered - filtering recipes');
+                                print(
+                                    '[DEBUG] Search text entered - filtering recipes');
                                 _model.focus = true;
                                 safeSetState(() {});
                                 safeSetState(
@@ -136,10 +143,14 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                             await _model.waitForApiRequestCompleted2();
                           },
                           autofocus: true,
+                          inputFormatters:
+                              VietnameseInputHelper.vietnameseFormatters,
                           textInputAction: TextInputAction.search,
+                          textCapitalization: TextCapitalization.sentences,
+                          keyboardType: TextInputType.text,
                           obscureText: false,
                           decoration: InputDecoration(
-                            hintText: 'Search a recipe...',
+                            hintText: 'Tìm kiếm công thức...',
                             hintStyle: FlutterFlowTheme.of(context)
                                 .labelMedium
                                 .override(
@@ -190,8 +201,9 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                             filled: true,
                             fillColor:
                                 FlutterFlowTheme.of(context).backgroundColor,
-                            contentPadding: const EdgeInsetsDirectional.fromSTEB(
-                                16.0, 15.0, 16.0, 15.0),
+                            contentPadding:
+                                const EdgeInsetsDirectional.fromSTEB(
+                                    16.0, 15.0, 16.0, 15.0),
                           ),
                           style:
                               FlutterFlowTheme.of(context).bodyMedium.override(
@@ -303,15 +315,20 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                                         .future,
                                     builder: (context, snapshot) {
                                       // Add debug logging
-                                      print('[DEBUG] Search FutureBuilder state:');
+                                      print(
+                                          '[DEBUG] Search FutureBuilder state:');
                                       print('  - hasData: ${snapshot.hasData}');
-                                      print('  - hasError: ${snapshot.hasError}');
-                                      print('  - connectionState: ${snapshot.connectionState}');
-                                      print('  - search query: "${_model.textController.text}"');
-                                      
+                                      print(
+                                          '  - hasError: ${snapshot.hasError}');
+                                      print(
+                                          '  - connectionState: ${snapshot.connectionState}');
+                                      print(
+                                          '  - search query: "${_model.textController.text}"');
+
                                       // Customize what your widget looks like when it's loading.
                                       if (!snapshot.hasData) {
-                                        print('[DEBUG] No data - showing loading/all recipes');
+                                        print(
+                                            '[DEBUG] No data - showing loading/all recipes');
                                         return const Center(
                                           child: SizedBox(
                                             width: 0.0,
@@ -322,14 +339,23 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                                       }
                                       final containerSearchRecipesApiResponse =
                                           snapshot.data!;
-                                      
+
                                       // Debug API response
                                       print('[DEBUG] Search API Response:');
-                                      print('  - statusCode: ${containerSearchRecipesApiResponse.statusCode}');
-                                      print('  - succeeded: ${containerSearchRecipesApiResponse.succeeded}');
-                                      if (containerSearchRecipesApiResponse.jsonBody != null) {
-                                        final recipeList = RecipeAppGroup.searchRecipesApiCall.recipeList(containerSearchRecipesApiResponse.jsonBody);
-                                        print('  - recipes found: ${recipeList?.length ?? 0}');
+                                      print(
+                                          '  - statusCode: ${containerSearchRecipesApiResponse.statusCode}');
+                                      print(
+                                          '  - succeeded: ${containerSearchRecipesApiResponse.succeeded}');
+                                      if (containerSearchRecipesApiResponse
+                                              .jsonBody !=
+                                          null) {
+                                        final recipeList = RecipeAppGroup
+                                            .searchRecipesApiCall
+                                            .recipeList(
+                                                containerSearchRecipesApiResponse
+                                                    .jsonBody);
+                                        print(
+                                            '  - recipes found: ${recipeList?.length ?? 0}');
                                       }
 
                                       return Container(
@@ -366,7 +392,8 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                                                       .waitForApiRequestCompleted2();
                                                 },
                                                 child: ListView(
-                                                  padding: const EdgeInsets.fromLTRB(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
                                                     0,
                                                     8.0,
                                                     0,
@@ -379,11 +406,8 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                                                     Padding(
                                                       padding:
                                                           const EdgeInsetsDirectional
-                                                              .fromSTEB(
-                                                                  16.0,
-                                                                  0.0,
-                                                                  16.0,
-                                                                  0.0),
+                                                              .fromSTEB(16.0,
+                                                              0.0, 16.0, 0.0),
                                                       child: Builder(
                                                         builder: (context) {
                                                           final recipeList =
@@ -437,14 +461,18 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                                                                 ).toString(),
                                                                 avreragerating:
                                                                     (getJsonField(
-                                                                  recipeListItem,
-                                                                  r'''$.averageRating''',
-                                                                ) ?? 0.0).toDouble(),
+                                                                              recipeListItem,
+                                                                              r'''$.averageRating''',
+                                                                            ) ??
+                                                                            0.0)
+                                                                        .toDouble(),
                                                                 totalReview:
                                                                     (getJsonField(
-                                                                  recipeListItem,
-                                                                  r'''$.totalRating''',
-                                                                ) ?? 0.0).toDouble(),
+                                                                              recipeListItem,
+                                                                              r'''$.totalRating''',
+                                                                            ) ??
+                                                                            0.0)
+                                                                        .toDouble(),
                                                                 totaltime:
                                                                     getJsonField(
                                                                   recipeListItem,
@@ -651,7 +679,8 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                                                       .waitForApiRequestCompleted1();
                                                 },
                                                 child: ListView(
-                                                  padding: const EdgeInsets.fromLTRB(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
                                                     0,
                                                     16.0,
                                                     0,
@@ -664,11 +693,8 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                                                     Padding(
                                                       padding:
                                                           const EdgeInsetsDirectional
-                                                              .fromSTEB(
-                                                                  16.0,
-                                                                  0.0,
-                                                                  16.0,
-                                                                  0.0),
+                                                              .fromSTEB(16.0,
+                                                              0.0, 16.0, 0.0),
                                                       child: Builder(
                                                         builder: (context) {
                                                           final filterRecipeSearchList =
@@ -722,14 +748,18 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                                                                 ).toString(),
                                                                 avreragerating:
                                                                     (getJsonField(
-                                                                  filterRecipeSearchListItem,
-                                                                  r'''$.averageRating''',
-                                                                ) ?? 0.0).toDouble(),
+                                                                              filterRecipeSearchListItem,
+                                                                              r'''$.averageRating''',
+                                                                            ) ??
+                                                                            0.0)
+                                                                        .toDouble(),
                                                                 totalReview:
                                                                     (getJsonField(
-                                                                  filterRecipeSearchListItem,
-                                                                  r'''$.totalRating''',
-                                                                ) ?? 0.0).toDouble(),
+                                                                              filterRecipeSearchListItem,
+                                                                              r'''$.totalRating''',
+                                                                            ) ??
+                                                                            0.0)
+                                                                        .toDouble(),
                                                                 totaltime:
                                                                     getJsonField(
                                                                   filterRecipeSearchListItem,

@@ -65,7 +65,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
         userId: FFAppState().userId,
         token: FFAppState().token,
       );
-      print('[DEBUG] Initial recipes loaded - statusCode: ${_model.allListApi?.statusCode}');
+      print(
+          '[DEBUG] Initial recipes loaded - statusCode: ${_model.allListApi?.statusCode}');
       _model.isSelectcategory = true;
       safeSetState(() {});
     });
@@ -115,13 +116,14 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 24.0),
+              padding:
+                  const EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 24.0),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Padding(
-                    padding:
-                        const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 16.0, 0.0),
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        0.0, 0.0, 16.0, 0.0),
                     child: Container(
                       width: 40.0,
                       height: 40.0,
@@ -188,8 +190,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                   ),
                   if (FFAppState().isLogin == true)
                     Padding(
-                      padding:
-                          const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
+                      padding: const EdgeInsetsDirectional.fromSTEB(
+                          16.0, 0.0, 0.0, 0.0),
                       child: InkWell(
                         splashColor: Colors.transparent,
                         focusColor: Colors.transparent,
@@ -222,7 +224,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
               ).animateOnPageLoad(animationsMap['rowOnPageLoadAnimation']!),
             ),
             Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 8.0),
+              padding:
+                  const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 8.0),
               child: InkWell(
                 splashColor: Colors.transparent,
                 focusColor: Colors.transparent,
@@ -248,8 +251,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                   ),
                   alignment: const AlignmentDirectional(0.0, 0.0),
                   child: Padding(
-                    padding:
-                        const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        16.0, 0.0, 16.0, 0.0),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
@@ -290,12 +293,15 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                 ),
               ),
             ),
+
+            // Expanded list section - removed AI Recipe Creator button
             Expanded(
               child: Builder(
                 builder: (context) {
                   if (FFAppState().connected == true) {
                     return FutureBuilder<ApiCallResponse>(
-                      key: ValueKey(_model.favoriteUpdateTrigger), // Add this line for rebuild trigger
+                      key: ValueKey(_model
+                          .favoriteUpdateTrigger), // Add this line for rebuild trigger
                       future: FFAppState().getrFavouriteCache(
                         requestFn: () =>
                             RecipeAppGroup.getAllFavouriteRecipesApiCall.call(
@@ -304,17 +310,23 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                       ),
                       builder: (context, snapshot) {
                         // Debug logging for getAllFavouriteRecipes
-                        print('[DEBUG] getAllFavouriteRecipes - hasData: ${snapshot.hasData}');
-                        print('[DEBUG] getAllFavouriteRecipes - hasError: ${snapshot.hasError}');
+                        print(
+                            '[DEBUG] getAllFavouriteRecipes - hasData: ${snapshot.hasData}');
+                        print(
+                            '[DEBUG] getAllFavouriteRecipes - hasError: ${snapshot.hasError}');
                         if (snapshot.hasData) {
-                          print('[DEBUG] getAllFavouriteRecipes - statusCode: ${snapshot.data?.statusCode}');
-                          print('[DEBUG] getAllFavouriteRecipes - succeeded: ${snapshot.data?.succeeded}');
-                          print('[DEBUG] getAllFavouriteRecipes - bodyText: ${snapshot.data?.bodyText}');
+                          print(
+                              '[DEBUG] getAllFavouriteRecipes - statusCode: ${snapshot.data?.statusCode}');
+                          print(
+                              '[DEBUG] getAllFavouriteRecipes - succeeded: ${snapshot.data?.succeeded}');
+                          print(
+                              '[DEBUG] getAllFavouriteRecipes - bodyText: ${snapshot.data?.bodyText}');
                         }
                         if (snapshot.hasError) {
-                          print('[DEBUG] getAllFavouriteRecipes - error: ${snapshot.error}');
+                          print(
+                              '[DEBUG] getAllFavouriteRecipes - error: ${snapshot.error}');
                         }
-                        
+
                         // Customize what your widget looks like when it's loading.
                         if (!snapshot.hasData) {
                           return const Center(
@@ -364,10 +376,13 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                               if (true /* Warning: Trying to access variable not yet defined. */)
                                 FutureBuilder<ApiCallResponse>(
                                   future: (() {
-                                    print('[DEBUG] Starting Popular Recipe API call...');
-                                    print('[DEBUG] userId: ${FFAppState().userId}');
-                                    print('[DEBUG] token: ${FFAppState().token}');
-                                    
+                                    print(
+                                        '[DEBUG] Starting Popular Recipe API call...');
+                                    print(
+                                        '[DEBUG] userId: ${FFAppState().userId}');
+                                    print(
+                                        '[DEBUG] token: ${FFAppState().token}');
+
                                     return FFAppState()
                                         .popularListCaCh(
                                       uniqueQueryKey: FFAppState().userId,
@@ -379,8 +394,10 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                       ),
                                     )
                                         .then((result) {
-                                      print('[DEBUG] Popular Recipe API result: ${result.statusCode}');
-                                      print('[DEBUG] Popular Recipe API body: ${result.bodyText}');
+                                      print(
+                                          '[DEBUG] Popular Recipe API result: ${result.statusCode}');
+                                      print(
+                                          '[DEBUG] Popular Recipe API body: ${result.bodyText}');
                                       try {
                                         _model.apiRequestCompleted1 = true;
                                         _model.apiRequestLastUniqueKey1 =
@@ -410,9 +427,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                           CrossAxisAlignment.start,
                                       children: [
                                         Padding(
-                                          padding:
-                                              const EdgeInsetsDirectional.fromSTEB(
-                                                  16.0, 0.0, 16.0, 0.0),
+                                          padding: const EdgeInsetsDirectional
+                                              .fromSTEB(16.0, 0.0, 16.0, 0.0),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment:
@@ -477,7 +493,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                       ),
                                                 ),
                                               ),
-                                            ].divide(const SizedBox(width: 12.0)),
+                                            ].divide(
+                                                const SizedBox(width: 12.0)),
                                           ),
                                         ),
                                         Container(
@@ -499,16 +516,21 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                       [])
                                                   .take(3)
                                                   .toList();
-                                              
-                                              print('[DEBUG] Popular list length: ${popularList.length}');
-                                              print('[DEBUG] Popular list data: $popularList');
-                                              
+
+                                              print(
+                                                  '[DEBUG] Popular list length: ${popularList.length}');
+                                              print(
+                                                  '[DEBUG] Popular list data: $popularList');
+
                                               if (popularList.isEmpty) {
-                                                print('[DEBUG] Popular list is empty!');
+                                                print(
+                                                    '[DEBUG] Popular list is empty!');
                                                 return Center(
                                                   child: Text(
                                                     'No popular recipes found',
-                                                    style: FlutterFlowTheme.of(context).bodyMedium,
+                                                    style: FlutterFlowTheme.of(
+                                                            context)
+                                                        .bodyMedium,
                                                   ),
                                                 );
                                               }
@@ -532,7 +554,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                       .waitForApiRequestCompleted2();
                                                 },
                                                 child: ListView.separated(
-                                                  padding: const EdgeInsets.fromLTRB(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
                                                     16.0,
                                                     0,
                                                     16.0,
@@ -544,7 +567,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                       Axis.horizontal,
                                                   itemCount: popularList.length,
                                                   separatorBuilder: (_, __) =>
-                                                      const SizedBox(width: 16.0),
+                                                      const SizedBox(
+                                                          width: 16.0),
                                                   itemBuilder: (context,
                                                       popularListIndex) {
                                                     final popularListItem =
@@ -553,11 +577,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                     return Padding(
                                                       padding:
                                                           const EdgeInsetsDirectional
-                                                              .fromSTEB(
-                                                                  0.0,
-                                                                  16.0,
-                                                                  0.0,
-                                                                  16.0),
+                                                              .fromSTEB(0.0,
+                                                              16.0, 0.0, 16.0),
                                                       child: Container(
                                                         width: 190.0,
                                                         height: 220.0,
@@ -582,14 +603,18 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                           ).toString(),
                                                           avreragerating:
                                                               (getJsonField(
-                                                            popularListItem,
-                                                            r'''$.averageRating''',
-                                                          ) ?? 0.0).toDouble(),
+                                                                        popularListItem,
+                                                                        r'''$.averageRating''',
+                                                                      ) ??
+                                                                      0.0)
+                                                                  .toDouble(),
                                                           totalReview:
                                                               (getJsonField(
-                                                            popularListItem,
-                                                            r'''$.totalRating''',
-                                                          ) ?? 0.0).toDouble(),
+                                                                        popularListItem,
+                                                                        r'''$.totalRating''',
+                                                                      ) ??
+                                                                      0.0)
+                                                                  .toDouble(),
                                                           totaltime:
                                                               getJsonField(
                                                             popularListItem,
@@ -609,19 +634,24 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                                       ).toString()) ==
                                                               true,
                                                           onFavTap: () async {
-                                                            print('[DEBUG] Heart favorite button tapped!');
-                                                            print('[DEBUG] isLogin: ${FFAppState().isLogin}');
-                                                            print('[DEBUG] token: ${FFAppState().token}');
-                                                            
+                                                            print(
+                                                                '[DEBUG] Heart favorite button tapped!');
+                                                            print(
+                                                                '[DEBUG] isLogin: ${FFAppState().isLogin}');
+                                                            print(
+                                                                '[DEBUG] token: ${FFAppState().token}');
+
                                                             if (FFAppState()
                                                                     .isLogin ==
                                                                 true) {
-                                                              final recipeId = getJsonField(
+                                                              final recipeId =
+                                                                  getJsonField(
                                                                 popularListItem,
                                                                 r'''$._id''',
                                                               ).toString();
-                                                              print('[DEBUG] Recipe ID: $recipeId');
-                                                              
+                                                              print(
+                                                                  '[DEBUG] Recipe ID: $recipeId');
+
                                                               if (functions.checkFavOrNot(
                                                                       RecipeAppGroup.getAllFavouriteRecipesApiCall
                                                                           .favouriteRecipeList(
@@ -630,19 +660,23 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                                           ?.toList(),
                                                                       recipeId) ==
                                                                   true) {
-                                                                print('[DEBUG] Removing from favorites...');
+                                                                print(
+                                                                    '[DEBUG] Removing from favorites...');
                                                                 _model.popularDelete =
                                                                     await RecipeAppGroup
                                                                         .deleteFavouriteRecipeApiCall
                                                                         .call(
-                                                                  recipeId: recipeId,
+                                                                  recipeId:
+                                                                      recipeId,
                                                                   token:
                                                                       FFAppState()
                                                                           .token,
                                                                 );
 
-                                                                print('[DEBUG] Delete API response: ${_model.popularDelete?.statusCode}');
-                                                                print('[DEBUG] Delete API body: ${_model.popularDelete?.bodyText}');
+                                                                print(
+                                                                    '[DEBUG] Delete API response: ${_model.popularDelete?.statusCode}');
+                                                                print(
+                                                                    '[DEBUG] Delete API body: ${_model.popularDelete?.bodyText}');
 
                                                                 await actions
                                                                     .showCustomToastBottom(
@@ -650,7 +684,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                                       .unFavText,
                                                                 );
                                                               } else {
-                                                                print('[DEBUG] Adding to favorites...');
+                                                                print(
+                                                                    '[DEBUG] Adding to favorites...');
                                                                 _model.popularAdd =
                                                                     await RecipeAppGroup
                                                                         .addFavouriteRecipeCall
@@ -665,8 +700,10 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                                           .token,
                                                                 );
 
-                                                                print('[DEBUG] Add API response: ${_model.popularAdd?.statusCode}');
-                                                                print('[DEBUG] Add API body: ${_model.popularAdd?.bodyText}');
+                                                                print(
+                                                                    '[DEBUG] Add API response: ${_model.popularAdd?.statusCode}');
+                                                                print(
+                                                                    '[DEBUG] Add API body: ${_model.popularAdd?.bodyText}');
 
                                                                 await actions
                                                                     .showCustomToastBottom(
@@ -677,8 +714,10 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
 
                                                               FFAppState()
                                                                   .clearGetrFavouriteCacheCache();
-                                                              _model.favoriteUpdateTrigger++;
-                                                              safeSetState(() {});
+                                                              _model
+                                                                  .favoriteUpdateTrigger++;
+                                                              safeSetState(
+                                                                  () {});
                                                             } else {
                                                               FFAppState()
                                                                       .favChange =
@@ -809,8 +848,9 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                   scrollDirection: Axis.horizontal,
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsetsDirectional.fromSTEB(
-                                          16.0, 0.0, 0.0, 0.0),
+                                      padding:
+                                          const EdgeInsetsDirectional.fromSTEB(
+                                              16.0, 0.0, 0.0, 0.0),
                                       child: InkWell(
                                         splashColor: Colors.transparent,
                                         focusColor: Colors.transparent,
@@ -848,12 +888,11 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                       .black20,
                                             ),
                                           ),
-                                          alignment:
-                                              const AlignmentDirectional(0.0, 0.0),
+                                          alignment: const AlignmentDirectional(
+                                              0.0, 0.0),
                                           child: Padding(
-                                            padding:
-                                                const EdgeInsetsDirectional.fromSTEB(
-                                                    16.0, 9.0, 16.0, 9.0),
+                                            padding: const EdgeInsetsDirectional
+                                                .fromSTEB(16.0, 9.0, 16.0, 9.0),
                                             child: Text(
                                               'All',
                                               style: FlutterFlowTheme.of(
@@ -898,17 +937,23 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                       }),
                                       builder: (context, snapshot) {
                                         // Debug logging for getAllCategory
-                                        print('[DEBUG] getAllCategory - hasData: ${snapshot.hasData}');
-                                        print('[DEBUG] getAllCategory - hasError: ${snapshot.hasError}');
+                                        print(
+                                            '[DEBUG] getAllCategory - hasData: ${snapshot.hasData}');
+                                        print(
+                                            '[DEBUG] getAllCategory - hasError: ${snapshot.hasError}');
                                         if (snapshot.hasData) {
-                                          print('[DEBUG] getAllCategory - statusCode: ${snapshot.data?.statusCode}');
-                                          print('[DEBUG] getAllCategory - succeeded: ${snapshot.data?.succeeded}');
-                                          print('[DEBUG] getAllCategory - bodyText: ${snapshot.data?.bodyText}');
+                                          print(
+                                              '[DEBUG] getAllCategory - statusCode: ${snapshot.data?.statusCode}');
+                                          print(
+                                              '[DEBUG] getAllCategory - succeeded: ${snapshot.data?.succeeded}');
+                                          print(
+                                              '[DEBUG] getAllCategory - bodyText: ${snapshot.data?.bodyText}');
                                         }
                                         if (snapshot.hasError) {
-                                          print('[DEBUG] getAllCategory - error: ${snapshot.error}');
+                                          print(
+                                              '[DEBUG] getAllCategory - error: ${snapshot.error}');
                                         }
-                                        
+
                                         // Customize what your widget looks like when it's loading.
                                         if (!snapshot.hasData) {
                                           return const SizedBox(
@@ -930,12 +975,15 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                     )
                                                     ?.toList() ??
                                                 [];
-                                            
-                                            print('[DEBUG] categoryList length: ${categoryList.length}');
-                                            print('[DEBUG] categoryList sample: ${categoryList.take(2).toList()}');
+
+                                            print(
+                                                '[DEBUG] categoryList length: ${categoryList.length}');
+                                            print(
+                                                '[DEBUG] categoryList sample: ${categoryList.take(2).toList()}');
 
                                             return ListView.separated(
-                                              padding: const EdgeInsets.fromLTRB(
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
                                                 12.0,
                                                 0,
                                                 16.0,
@@ -966,7 +1014,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                     highlightColor:
                                                         Colors.transparent,
                                                     onTap: () async {
-                                                      print('[DEBUG] Category button clicked: ${getJsonField(categoryListItem, r'''$.name''')}');
+                                                      print(
+                                                          '[DEBUG] Category button clicked: ${getJsonField(categoryListItem, r'''$.name''')}');
                                                       _model.isSelectcategory =
                                                           false;
                                                       _model.categoryId =
@@ -974,7 +1023,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                         categoryListItem,
                                                         r'''$._id''',
                                                       ).toString();
-                                                      print('[DEBUG] Selected categoryId: ${_model.categoryId}');
+                                                      print(
+                                                          '[DEBUG] Selected categoryId: ${_model.categoryId}');
                                                       safeSetState(() {});
                                                       _model.getRecipeByCategoryId =
                                                           await RecipeAppGroup
@@ -984,12 +1034,17 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                             _model.categoryId,
                                                         userId:
                                                             FFAppState().userId,
-                                                        token: FFAppState().token,
+                                                        token:
+                                                            FFAppState().token,
                                                       );
-                                                      print('[DEBUG] GetRecipeByCategoryId API result:');
-                                                      print('[DEBUG] - statusCode: ${_model.getRecipeByCategoryId?.statusCode}');
-                                                      print('[DEBUG] - succeeded: ${_model.getRecipeByCategoryId?.succeeded}');
-                                                      print('[DEBUG] - bodyText: ${_model.getRecipeByCategoryId?.bodyText}');
+                                                      print(
+                                                          '[DEBUG] GetRecipeByCategoryId API result:');
+                                                      print(
+                                                          '[DEBUG] - statusCode: ${_model.getRecipeByCategoryId?.statusCode}');
+                                                      print(
+                                                          '[DEBUG] - succeeded: ${_model.getRecipeByCategoryId?.succeeded}');
+                                                      print(
+                                                          '[DEBUG] - bodyText: ${_model.getRecipeByCategoryId?.bodyText}');
 
                                                       safeSetState(() {});
                                                     },
@@ -1033,11 +1088,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                       child: Padding(
                                                         padding:
                                                             const EdgeInsetsDirectional
-                                                                .fromSTEB(
-                                                                    16.0,
-                                                                    9.0,
-                                                                    16.0,
-                                                                    9.0),
+                                                                .fromSTEB(16.0,
+                                                                9.0, 16.0, 9.0),
                                                         child: Text(
                                                           getJsonField(
                                                             categoryListItem,
@@ -1090,13 +1142,17 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                               ),
                               Builder(
                                 builder: (context) {
-                                  print('[DEBUG] isSelectcategory: ${_model.isSelectcategory}');
-                                  print('[DEBUG] allListApi is null: ${_model.allListApi == null}');
+                                  print(
+                                      '[DEBUG] isSelectcategory: ${_model.isSelectcategory}');
+                                  print(
+                                      '[DEBUG] allListApi is null: ${_model.allListApi == null}');
                                   if (_model.allListApi != null) {
-                                    print('[DEBUG] allListApi statusCode: ${_model.allListApi?.statusCode}');
-                                    print('[DEBUG] allListApi bodyText: ${_model.allListApi?.bodyText}');
+                                    print(
+                                        '[DEBUG] allListApi statusCode: ${_model.allListApi?.statusCode}');
+                                    print(
+                                        '[DEBUG] allListApi bodyText: ${_model.allListApi?.bodyText}');
                                   }
-                                  
+
                                   if (_model.isSelectcategory == true) {
                                     return Builder(
                                       builder: (context) {
@@ -1112,8 +1168,10 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                 .take(4)
                                                 .toList();
 
-                                        print('[DEBUG] allList length: ${allList.length}');
-                                        print('[DEBUG] allList items: $allList');
+                                        print(
+                                            '[DEBUG] allList length: ${allList.length}');
+                                        print(
+                                            '[DEBUG] allList items: $allList');
 
                                         return ListView.separated(
                                           padding: const EdgeInsets.fromLTRB(
@@ -1148,13 +1206,17 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                 r'''$.totalCookTime''',
                                               ).toString(),
                                               averageReview: (getJsonField(
-                                                allListItem,
-                                                r'''$.averageRating''',
-                                              ) ?? 0.0).toDouble(),
+                                                        allListItem,
+                                                        r'''$.averageRating''',
+                                                      ) ??
+                                                      0.0)
+                                                  .toDouble(),
                                               totalReview: (getJsonField(
-                                                allListItem,
-                                                r'''$.totalRating''',
-                                              ) ?? 0.0).toDouble(),
+                                                        allListItem,
+                                                        r'''$.totalRating''',
+                                                      ) ??
+                                                      0.0)
+                                                  .toDouble(),
                                               onfavCondition:
                                                   functions.checkFavOrNot(
                                                           RecipeAppGroup
@@ -1220,7 +1282,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
 
                                                   FFAppState()
                                                       .clearGetrFavouriteCacheCache();
-                                                  _model.favoriteUpdateTrigger++;
+                                                  _model
+                                                      .favoriteUpdateTrigger++;
                                                   safeSetState(() {});
                                                 } else {
                                                   FFAppState().favChange = true;
@@ -1267,13 +1330,18 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                   } else {
                                     return Builder(
                                       builder: (context) {
-                                        print('[DEBUG] Building category recipe list...');
-                                        print('[DEBUG] _model.getRecipeByCategoryId is null: ${_model.getRecipeByCategoryId == null}');
-                                        if (_model.getRecipeByCategoryId != null) {
-                                          print('[DEBUG] Category API statusCode: ${_model.getRecipeByCategoryId?.statusCode}');
-                                          print('[DEBUG] Category API bodyText: ${_model.getRecipeByCategoryId?.bodyText}');
+                                        print(
+                                            '[DEBUG] Building category recipe list...');
+                                        print(
+                                            '[DEBUG] _model.getRecipeByCategoryId is null: ${_model.getRecipeByCategoryId == null}');
+                                        if (_model.getRecipeByCategoryId !=
+                                            null) {
+                                          print(
+                                              '[DEBUG] Category API statusCode: ${_model.getRecipeByCategoryId?.statusCode}');
+                                          print(
+                                              '[DEBUG] Category API bodyText: ${_model.getRecipeByCategoryId?.bodyText}');
                                         }
-                                        
+
                                         final getRecipeByCategoryIdList =
                                             (RecipeAppGroup
                                                         .getRecipeByCategoryIdApiCall
@@ -1286,8 +1354,10 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                     [])
                                                 .take(3)
                                                 .toList();
-                                        print('[DEBUG] Category recipe list length: ${getRecipeByCategoryIdList.length}');
-                                        print('[DEBUG] Category recipe list items: ${getRecipeByCategoryIdList.take(2).toList()}');
+                                        print(
+                                            '[DEBUG] Category recipe list length: ${getRecipeByCategoryIdList.length}');
+                                        print(
+                                            '[DEBUG] Category recipe list items: ${getRecipeByCategoryIdList.take(2).toList()}');
                                         if (getRecipeByCategoryIdList.isEmpty) {
                                           return const Center(
                                             child: SizedBox(
@@ -1300,7 +1370,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                         }
 
                                         return RefreshIndicator(
-                                          key: const Key('RefreshIndicator_eg8ehb83'),
+                                          key: const Key(
+                                              'RefreshIndicator_eg8ehb83'),
                                           color: FlutterFlowTheme.of(context)
                                               .tertiary,
                                           onRefresh: () async {},
@@ -1340,13 +1411,17 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                                                   r'''$.totalCookTime''',
                                                 ).toString(),
                                                 averageReview: (getJsonField(
-                                                  getRecipeByCategoryIdListItem,
-                                                  r'''$.averageRating''',
-                                                ) ?? 0.0).toDouble(),
+                                                          getRecipeByCategoryIdListItem,
+                                                          r'''$.averageRating''',
+                                                        ) ??
+                                                        0.0)
+                                                    .toDouble(),
                                                 totalReview: (getJsonField(
-                                                  getRecipeByCategoryIdListItem,
-                                                  r'''$.totalRating''',
-                                                ) ?? 0.0).toDouble(),
+                                                          getRecipeByCategoryIdListItem,
+                                                          r'''$.totalRating''',
+                                                        ) ??
+                                                        0.0)
+                                                    .toDouble(),
                                                 onfavCondition:
                                                     functions.checkFavOrNot(
                                                             RecipeAppGroup
@@ -1414,7 +1489,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
 
                                                     FFAppState()
                                                         .clearGetrFavouriteCacheCache();
-                                                    _model.favoriteUpdateTrigger++;
+                                                    _model
+                                                        .favoriteUpdateTrigger++;
                                                     safeSetState(() {});
                                                   } else {
                                                     FFAppState().favChange =

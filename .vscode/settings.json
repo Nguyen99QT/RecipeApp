@@ -17,5 +17,6 @@
         "backend/src/main/java"
     ],
     "java.project.outputPath": "backend/target/classes",
-    "compile-hero.disable-compile-files-on-did-save-code": true
+    "compile-hero.disable-compile-files-on-did-save-code": true,
+    "cmake.sourceDirectory": "C:/RecipeAPPAI2/pic2plate/linux"
 }
