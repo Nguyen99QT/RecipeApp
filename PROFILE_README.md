@@ -120,18 +120,41 @@ I'm a **Full-Stack Developer** with expertise in end-to-end application developm
 - Real-time equipment tracking system
 - Role-based access control implementation
 
+## 💼 Professional Experience
+
+### 🌟 **Software Development Experience (2024 - Present)**
+- **Full-Stack Developer & Team Leader** for multiple projects
+- **AI Integration Specialist** with Google Gemini API experience
+- **Mobile Development** with Flutter and cross-platform expertise
+- **Backend Development** with Node.js, Express.js, and MongoDB
+
+### 🌍 **International Work Experience**
+- **Production Specialist at SANLUX Company (Taiwan)** - 2024-Present
+- **Manufacturing Experience at EMINENT Company (Taiwan)** - 2021-2022
+- **Cross-cultural collaboration** and Mandarin communication skills
+- **Quality control** and process optimization experience
+
 ## 🎯 Current Focus
 
 - 🤖 **AI/ML Integration:** Exploring advanced AI APIs and machine learning integration
 - 🏗️ **System Architecture:** Designing scalable, maintainable application architectures
 - 👥 **Team Leadership:** Mentoring developers and managing technical projects
 - 🌐 **Full-Stack Mastery:** Continuously improving both frontend and backend skills
+- ☁️ **Cloud Technologies:** Learning AWS, Docker, and microservices architecture
 
 ## 📈 Activity Overview
 
 <div align="center">
   <img src="https://github-readme-activity-graph.vercel.app/graph?username=HUYDUU19&theme=react-dark&hide_border=true&area=true" alt="Contribution Graph" />
 </div>
+
+## 🏅 Achievements & Certifications
+
+- 🎓 **Advanced Diploma in Software Engineering (ADSE)** - FPT APTECH
+- 🚀 **Successfully led 2+ technical projects** with 100% feature completion
+- 🌟 **AI Integration Experience** with production-ready applications
+- 🌍 **International Work Experience** in Taiwan with cross-cultural skills
+- 💻 **Full-Stack Development** from mobile frontend to backend APIs
 
 ## 🤝 Let's Connect!
 
@@ -144,6 +167,9 @@ I'm a **Full-Stack Developer** with expertise in end-to-end application developm
   </a>
   <a href="tel:+84839191200">
     <img src="https://img.shields.io/badge/Phone-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="Phone">
+  </a>
+  <a href="https://www.linkedin.com/in/huy-du-han/">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn">
   </a>
 </div>
 
@@ -161,4 +187,13 @@ I'm a **Full-Stack Developer** with expertise in end-to-end application developm
   
   **🚀 Available for Full-Stack Development Opportunities | Team Leadership | AI/ML Projects 🚀**
   
+  [![Hire Me](https://img.shields.io/badge/Hire%20Me-Available-brightgreen?style=for-the-badge)](mailto:huyduu19@gmail.com)
+  [![Portfolio](https://img.shields.io/badge/Portfolio-View%20Projects-blue?style=for-the-badge)](https://github.com/HUYDUU19)
+  
+</div>
+
+---
+
+<div align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=100&section=footer"/>
 </div>
