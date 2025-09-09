@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import '../../domain/entities/ai_meal.dart';
 import '../../domain/entities/ai_recipe_request.dart';

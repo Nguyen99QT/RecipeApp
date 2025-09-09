@@ -4,7 +4,6 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/pages/componants/single_appbar/single_appbar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import 'ai_recipe_detail_model.dart';
 export 'ai_recipe_detail_model.dart';
 
