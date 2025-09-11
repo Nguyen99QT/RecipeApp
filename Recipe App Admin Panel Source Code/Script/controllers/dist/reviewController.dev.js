@@ -9,45 +9,176 @@ var adminLoginModel = require("../model/adminLoginModel"); // Load view for all 
 
 
 var loadReview = function loadReview(req, res) {
-  var reviews;
+  var statusFilter, typeFilter, query, conditions, reviews, totalReviews, enabledReviews, disabledReviews, recipeReviews, appReviews, approvedReviews, stats;
   return regeneratorRuntime.async(function loadReview$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
           _context.prev = 0;
-          _context.next = 3;
-          return regeneratorRuntime.awrap(reviewModel.find().populate("userId").populate({
+          // Get filter parameter
+          statusFilter = req.query.status || 'all';
+          typeFilter = req.query.type || 'all'; // Build query based on filters
+
+          query = {};
+          conditions = []; // Status filter
+
+          if (statusFilter === 'enabled') {
+            conditions.push({
+              isEnable: true
+            });
+          } else if (statusFilter === 'disabled') {
+            conditions.push({
+              isEnable: false
+            });
+          } // Type filter with enhanced logic
+
+
+          if (typeFilter === 'recipe') {
+            // Recipe reviews: either feedbackType='recipe' OR have a recipeId
+            conditions.push({
+              $or: [{
+                feedbackType: 'recipe'
+              }, {
+                recipeId: {
+                  $exists: true,
+                  $ne: null
+                }
+              }]
+            });
+          } else if (typeFilter === 'app') {
+            // App reviews: feedbackType='app' OR no recipeId
+            conditions.push({
+              $or: [{
+                feedbackType: 'app'
+              }, {
+                recipeId: {
+                  $exists: false
+                }
+              }, {
+                recipeId: null
+              }]
+            });
+          } // Combine all conditions with $and
+
+
+          if (conditions.length > 0) {
+            query = {
+              $and: conditions
+            };
+          }
+
+          console.log('[DEBUG] Review Filter Query:', JSON.stringify(query, null, 2));
+          console.log('[DEBUG] Status filter:', statusFilter);
+          console.log('[DEBUG] Type filter:', typeFilter); // fetch review với populate có điều kiện
+
+          _context.next = 13;
+          return regeneratorRuntime.awrap(reviewModel.find(query).populate("userId").populate({
             path: "recipeId",
             select: "name image"
           }).sort({
             createdAt: -1
           }));
 
-        case 3:
+        case 13:
           reviews = _context.sent;
-          // Sắp xếp mới nhất trước
-          console.log('[DEBUG] Found reviews:', reviews.length);
-          console.log('[DEBUG] App feedbacks (no recipeId):', reviews.filter(function (r) {
-            return !r.recipeId;
-          }).length);
-          return _context.abrupt("return", res.render("review", {
-            reviews: reviews
+          _context.next = 16;
+          return regeneratorRuntime.awrap(reviewModel.countDocuments({}));
+
+        case 16:
+          totalReviews = _context.sent;
+          _context.next = 19;
+          return regeneratorRuntime.awrap(reviewModel.countDocuments({
+            isEnable: true
           }));
 
-        case 9:
-          _context.prev = 9;
+        case 19:
+          enabledReviews = _context.sent;
+          _context.next = 22;
+          return regeneratorRuntime.awrap(reviewModel.countDocuments({
+            isEnable: false
+          }));
+
+        case 22:
+          disabledReviews = _context.sent;
+          _context.next = 25;
+          return regeneratorRuntime.awrap(reviewModel.countDocuments({
+            $or: [{
+              feedbackType: 'recipe'
+            }, {
+              recipeId: {
+                $exists: true,
+                $ne: null
+              }
+            }]
+          }));
+
+        case 25:
+          recipeReviews = _context.sent;
+          _context.next = 28;
+          return regeneratorRuntime.awrap(reviewModel.countDocuments({
+            $or: [{
+              feedbackType: 'app'
+            }, {
+              recipeId: {
+                $exists: false
+              }
+            }, {
+              recipeId: null
+            }]
+          }));
+
+        case 28:
+          appReviews = _context.sent;
+          _context.next = 31;
+          return regeneratorRuntime.awrap(reviewModel.countDocuments({
+            isApproved: true
+          }));
+
+        case 31:
+          approvedReviews = _context.sent;
+          stats = {
+            total: totalReviews,
+            enabled: enabledReviews,
+            disabled: disabledReviews,
+            recipe: recipeReviews,
+            app: appReviews,
+            approved: approvedReviews
+          };
+          console.log('[DEBUG] Found reviews:', reviews.length);
+          console.log('[DEBUG] Status filter:', statusFilter);
+          console.log('[DEBUG] Type filter:', typeFilter);
+          console.log('[DEBUG] Stats:', stats);
+          return _context.abrupt("return", res.render("review", {
+            reviews: reviews,
+            currentStatusFilter: statusFilter,
+            currentTypeFilter: typeFilter,
+            stats: stats
+          }));
+
+        case 40:
+          _context.prev = 40;
           _context.t0 = _context["catch"](0);
           console.log('[ERROR] loadReview:', _context.t0.message);
           return _context.abrupt("return", res.render("review", {
-            reviews: []
+            reviews: [],
+            currentStatusFilter: 'all',
+            currentTypeFilter: 'all',
+            stats: {
+              total: 0,
+              enabled: 0,
+              disabled: 0,
+              recipe: 0,
+              app: 0,
+              approved: 0
+            }
           }));
 
-        case 13:
+        case 44:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[0, 9]]);
+  }, null, null, [[0, 40]]);
 }; //for active review
 
 

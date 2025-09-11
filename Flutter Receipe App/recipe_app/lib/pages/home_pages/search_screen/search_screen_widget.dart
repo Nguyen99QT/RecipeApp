@@ -840,7 +840,10 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                                                                       ),
                                                                       'name':
                                                                           serializeParam(
-                                                                        '',
+                                                                        getJsonField(
+                                                                          filterRecipeSearchListItem,
+                                                                          r'''$.name''',
+                                                                        ).toString(),
                                                                         ParamType
                                                                             .String,
                                                                       ),

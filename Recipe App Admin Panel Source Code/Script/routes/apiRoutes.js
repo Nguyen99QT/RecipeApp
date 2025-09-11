@@ -47,6 +47,7 @@ routes.post("/DeleteAccountUser", checkAuthorization, apiController.DeleteAccoun
 
 // Routes For Intro
 routes.post("/getAllIntro", apiController.getAllIntro);
+routes.get("/getAllIntro", apiController.getAllIntro);
 
 //Routes For Category
 routes.post("/GetAllCategory", apiController.GetAllCategory);

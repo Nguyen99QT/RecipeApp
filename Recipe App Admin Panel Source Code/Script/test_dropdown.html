@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Dropdown Functionality</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        select { padding: 10px; margin: 10px; border: 1px solid #ccc; }
+        .log { background: #f5f5f5; padding: 10px; margin: 10px 0; border-left: 4px solid #007bff; }
+    </style>
+</head>
+<body>
+    <h1>Test Review Filter Dropdowns</h1>
+    
+    <div>
+        <label for="statusFilter">Status Filter:</label>
+        <select id="statusFilter">
+            <option value="all">All Status</option>
+            <option value="enabled">Enabled</option>
+            <option value="disabled">Disabled</option>
+        </select>
+    </div>
+    
+    <div>
+        <label for="typeFilter">Type Filter:</label>
+        <select id="typeFilter">
+            <option value="all">All Types</option>
+            <option value="recipe">Recipe Reviews</option>
+            <option value="app">App Feedback</option>
+        </select>
+    </div>
+    
+    <div id="log" class="log">
+        <strong>Log:</strong><br>
+        <div id="logContent">Ready to test...</div>
+    </div>
+    
+    <script>
+        const logDiv = document.getElementById('logContent');
+        
+        function addLog(message) {
+            const time = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<br>[${time}] ${message}`;
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            addLog('🔧 DOM Ready - Initializing filters...');
+            
+            const statusFilter = document.getElementById('statusFilter');
+            const typeFilter = document.getElementById('typeFilter');
+            
+            addLog(`StatusFilter found: ${statusFilter ? '✅' : '❌'}`);
+            addLog(`TypeFilter found: ${typeFilter ? '✅' : '❌'}`);
+            
+            function applyFilters() {
+                const status = statusFilter.value;
+                const type = typeFilter.value;
+                
+                addLog(`🔄 Applying filters - Status: ${status}, Type: ${type}`);
+                
+                // Build query parameters
+                const params = new URLSearchParams();
+                if (status && status !== 'all') {
+                    params.set('status', status);
+                }
+                if (type && type !== 'all') {
+                    params.set('type', type);
+                }
+                
+                const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+                addLog(`🔀 Would redirect to: ${newUrl}`);
+                
+                // Don't actually redirect for testing
+                // window.location.href = newUrl;
+            }
+            
+            // Add event listeners
+            statusFilter.addEventListener('change', function() {
+                addLog(`📊 Status filter changed to: ${this.value}`);
+                applyFilters();
+            });
+            
+            typeFilter.addEventListener('change', function() {
+                addLog(`📝 Type filter changed to: ${this.value}`);
+                applyFilters();
+            });
+            
+            addLog('✅ Filters initialized successfully');
+        });
+    </script>
+</body>
+</html>

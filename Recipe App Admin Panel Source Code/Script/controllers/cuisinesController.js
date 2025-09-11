@@ -31,13 +31,22 @@ const loadCuisines = async (req, res) => {
 
     try {
 
-        // Fetch all  cuisines data 
+        // Fetch all cuisines data 
         const cuisines = await cuisinesModel.find();
+
+        // Add recipe count for each cuisine
+        const cuisinesWithCounts = await Promise.all(cuisines.map(async (cuisine) => {
+            const recipeCount = await recipeModel.countDocuments({ cuisinesId: cuisine._id });
+            return {
+                ...cuisine.toObject(),
+                recipeCount: recipeCount
+            };
+        }));
 
         //  fetch admin
         const loginData = await loginModel.find();
 
-        return res.render("cuisines", { cuisines, loginData });
+        return res.render("cuisines", { cuisines: cuisinesWithCounts, loginData });
 
     } catch (error) {
         console.log(error.message);
@@ -71,39 +80,38 @@ const deleteCuisines = async (req, res) => {
         // Extract data from the request
         const id = req.query.id;
 
-        const recipes = await recipeModel.find({ cuisinesId: id });
+        console.log(`[DELETE CUISINE] Checking cuisine ID: ${id}`);
 
-        recipes.map(async (item) => {
-            // delete image
-            deleteImages(item.image);
+        // First check if cuisine exists
+        const cuisine = await cuisinesModel.findById(id);
+        if (!cuisine) {
+            req.flash('error', 'Cuisine not found!');
+            return res.redirect('back');
+        }
 
-             // delete gallery
-             item.gallery.map((image) => {
-                deleteImages(image);
-            })
+        // Check if there are recipes using this cuisine
+        const recipeCount = await recipeModel.countDocuments({ cuisinesId: id });
+        console.log(`[DELETE CUISINE] Found ${recipeCount} recipes using this cuisine`);
 
-            if (item.video) {
-                //delete video
-                deleteVideo(item.video);
-            }
+        if (recipeCount > 0) {
+            // Prevent deletion and show error message
+            req.flash('error', `Cannot delete cuisine "${cuisine.name}" because it contains ${recipeCount} recipe(s). Please move or delete the recipes first.`);
+            console.log(`[DELETE CUISINE] Deletion blocked - cuisine contains ${recipeCount} recipes`);
+            return res.redirect('back');
+        }
 
-            // delete recipe review
-            await reviewModel.deleteMany({ recipeId: item._id });
+        // If no recipes, proceed with deletion
+        const deletedCuisine = await cuisinesModel.deleteOne({ _id: id });
+        console.log(`[DELETE CUISINE] Cuisine "${cuisine.name}" deleted successfully`);
 
-            //delete user favourite recipe
-            await favouriteRecipeModel.deleteMany({ recipeId: item._id });
-        })
-
-        // delete recipe
-        await recipeModel.deleteMany({ cuisinesId: id });
-
-        // delete cuisines
-        const deletedCuisines = await cuisinesModel.deleteOne({ _id: id });
+        req.flash('success', `Cuisine "${cuisine.name}" has been deleted successfully.`);
 
         return res.redirect('back');
 
     } catch (error) {
-        console.log(error.message);
+        console.log('[DELETE CUISINE ERROR]:', error.message);
+        req.flash('error', 'An error occurred while deleting the cuisine. Please try again.');
+        return res.redirect('back');
     }
 }
 

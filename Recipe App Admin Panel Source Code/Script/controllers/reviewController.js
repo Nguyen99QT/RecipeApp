@@ -9,8 +9,52 @@ const loadReview = async (req, res) => {
 
     try {
 
+        // Get filter parameter
+        const statusFilter = req.query.status || 'all';
+        const typeFilter = req.query.type || 'all';
+        
+        // Build query based on filters
+        let query = {};
+        let conditions = [];
+        
+        // Status filter
+        if (statusFilter === 'enabled') {
+            conditions.push({ isEnable: true });
+        } else if (statusFilter === 'disabled') {
+            conditions.push({ isEnable: false });
+        }
+        
+        // Type filter with enhanced logic
+        if (typeFilter === 'recipe') {
+            // Recipe reviews: either feedbackType='recipe' OR have a recipeId
+            conditions.push({
+                $or: [
+                    { feedbackType: 'recipe' },
+                    { recipeId: { $exists: true, $ne: null } }
+                ]
+            });
+        } else if (typeFilter === 'app') {
+            // App reviews: feedbackType='app' OR no recipeId
+            conditions.push({
+                $or: [
+                    { feedbackType: 'app' },
+                    { recipeId: { $exists: false } },
+                    { recipeId: null }
+                ]
+            });
+        }
+        
+        // Combine all conditions with $and
+        if (conditions.length > 0) {
+            query = { $and: conditions };
+        }
+
+        console.log('[DEBUG] Review Filter Query:', JSON.stringify(query, null, 2));
+        console.log('[DEBUG] Status filter:', statusFilter);
+        console.log('[DEBUG] Type filter:', typeFilter);
+
         // fetch review với populate có điều kiện
-        const reviews = await reviewModel.find()
+        const reviews = await reviewModel.find(query)
             .populate("userId")
             .populate({
                 path: "recipeId",
@@ -18,14 +62,59 @@ const loadReview = async (req, res) => {
             })
             .sort({ createdAt: -1 }); // Sắp xếp mới nhất trước
 
-        console.log('[DEBUG] Found reviews:', reviews.length);
-        console.log('[DEBUG] App feedbacks (no recipeId):', reviews.filter(r => !r.recipeId).length);
+        // Calculate statistics with enhanced logic
+        const totalReviews = await reviewModel.countDocuments({});
+        const enabledReviews = await reviewModel.countDocuments({ isEnable: true });
+        const disabledReviews = await reviewModel.countDocuments({ isEnable: false });
+        
+        // Recipe reviews: either feedbackType='recipe' OR have a recipeId
+        const recipeReviews = await reviewModel.countDocuments({
+            $or: [
+                { feedbackType: 'recipe' },
+                { recipeId: { $exists: true, $ne: null } }
+            ]
+        });
+        
+        // App reviews: feedbackType='app' OR no recipeId
+        const appReviews = await reviewModel.countDocuments({
+            $or: [
+                { feedbackType: 'app' },
+                { recipeId: { $exists: false } },
+                { recipeId: null }
+            ]
+        });
+        
+        const approvedReviews = await reviewModel.countDocuments({ isApproved: true });
 
-        return res.render("review", { reviews });
+        const stats = {
+            total: totalReviews,
+            enabled: enabledReviews,
+            disabled: disabledReviews,
+            recipe: recipeReviews,
+            app: appReviews,
+            approved: approvedReviews
+        };
+
+        console.log('[DEBUG] Found reviews:', reviews.length);
+        console.log('[DEBUG] Status filter:', statusFilter);
+        console.log('[DEBUG] Type filter:', typeFilter);
+        console.log('[DEBUG] Stats:', stats);
+
+        return res.render("review", { 
+            reviews, 
+            currentStatusFilter: statusFilter,
+            currentTypeFilter: typeFilter,
+            stats 
+        });
 
     } catch (error) {
         console.log('[ERROR] loadReview:', error.message);
-        return res.render("review", { reviews: [] });
+        return res.render("review", { 
+            reviews: [], 
+            currentStatusFilter: 'all',
+            currentTypeFilter: 'all',
+            stats: { total: 0, enabled: 0, disabled: 0, recipe: 0, app: 0, approved: 0 }
+        });
     }
 }
 

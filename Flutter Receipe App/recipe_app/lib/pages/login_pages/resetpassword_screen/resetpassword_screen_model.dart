@@ -19,9 +19,13 @@ class ResetpasswordScreenModel
   String? Function(BuildContext, String?)? textController1Validator;
   String? _textController1Validator(BuildContext context, String? val) {
     if (val == null || val.isEmpty) {
-      return 'Please enter a valid new password';
+      return 'Please enter a new password';
     }
-
+    
+    if (val.length < 6) {
+      return 'Password must be at least 6 characters long';
+    }
+    
     return null;
   }
 
@@ -32,9 +36,18 @@ class ResetpasswordScreenModel
   String? Function(BuildContext, String?)? textController2Validator;
   String? _textController2Validator(BuildContext context, String? val) {
     if (val == null || val.isEmpty) {
-      return 'Please enter a valid confirm password';
+      return 'Please enter confirm password';
     }
-
+    
+    if (val.length < 6) {
+      return 'Confirm password must be at least 6 characters long';
+    }
+    
+    // Check if passwords match
+    if (textController1?.text != null && val != textController1!.text) {
+      return 'Passwords do not match';
+    }
+    
     return null;
   }
 

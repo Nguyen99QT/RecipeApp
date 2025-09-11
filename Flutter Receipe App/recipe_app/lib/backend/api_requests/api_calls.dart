@@ -15,8 +15,8 @@ class RecipeAppGroup {
     String? token = '',
   }) {
     // Use computer's IP address instead of localhost for real device testing
-    // Change this IP if your computer's IP changes
-    return 'http://192.168.101.207:8190/api';
+    // Updated IP address to current machine IP
+    return 'http://172.16.2.199:8190/api';
   }
   static Map<String, String> headers = {
     'Authorization': 'Bearer [token]',
@@ -463,6 +463,7 @@ class ResetPasswordApiCall {
   Future<ApiCallResponse> call({
     String? email = '',
     String? newPassword = '',
+    String? confirmPassword = '',
     String? token = '',
   }) async {
     final baseUrl = RecipeAppGroup.getBaseUrl(
@@ -472,7 +473,8 @@ class ResetPasswordApiCall {
     final ffApiRequestBody = '''
 {
   "email": "$email",
-  "newPassword": "$newPassword"
+  "newPassword": "$newPassword",
+  "confirmPassword": "$confirmPassword"
 }''';
     return ApiManager.instance.makeApiCall(
       callName: 'ResetPasswordApi',

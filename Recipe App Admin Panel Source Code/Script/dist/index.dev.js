@@ -56,15 +56,15 @@ app.use(function (req, res, next) {
   }
 }); // Configure body-parser for handling form data
 
-app.use('/uploads', express["static"](path.join(__dirname, 'uploads'))); // Routes for the Admin section
-
-var adminRoutes = require("./routes/adminRoutes");
-
-app.use('/', adminRoutes); // Routes for the API section
+app.use('/uploads', express["static"](path.join(__dirname, 'uploads'))); // Routes for the API section (MUST be before admin routes)
 
 var apiRoutes = require("./routes/apiRoutes");
 
-app.use('/api', apiRoutes); // Start the server on the specified port and listen on all interfaces
+app.use('/api', apiRoutes); // Routes for the Admin section
+
+var adminRoutes = require("./routes/adminRoutes");
+
+app.use('/', adminRoutes); // Start the server on the specified port and listen on all interfaces
 
 app.listen(process.env.SERVER_PORT, '0.0.0.0', function () {
   console.log("server is start", process.env.SERVER_PORT);

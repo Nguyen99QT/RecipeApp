@@ -1,0 +1,87 @@
+<!-- IMPROVED ADMIN INTERFACE -->
+
+<div class="category-delete-modal">
+    <h3>Delete Category: "{{categoryName}}"</h3>
+    
+    {{#if recipeCount}}
+    <div class="warning-section">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p><strong>Warning:</strong> This category contains {{recipeCount}} recipe(s)</p>
+        
+        <div class="recipe-list">
+            {{#each recipes}}
+            <div class="recipe-item">
+                <img src="{{this.image}}" alt="{{this.name}}">
+                <span>{{this.name}}</span>
+                <small>{{this.reviewCount}} reviews, {{this.favouriteCount}} favourites</small>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+    
+    <div class="delete-options">
+        <h4>Choose deletion method:</h4>
+        
+        <label class="option">
+            <input type="radio" name="deleteMode" value="soft" checked>
+            <div class="option-content">
+                <strong>🔄 Move to "Uncategorized"</strong>
+                <p>Recipes will be preserved and moved to Uncategorized category</p>
+                <span class="recommendation">✅ Recommended</span>
+            </div>
+        </label>
+        
+        <label class="option">
+            <input type="radio" name="deleteMode" value="reassign">
+            <div class="option-content">
+                <strong>📋 Reassign to another category</strong>
+                <select name="targetCategory" disabled>
+                    <option value="">Select target category...</option>
+                    {{#each otherCategories}}
+                    <option value="{{this._id}}">{{this.name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </label>
+        
+        <label class="option danger">
+            <input type="radio" name="deleteMode" value="hard">
+            <div class="option-content">
+                <strong>🗑️ Permanently delete everything</strong>
+                <p>⚠️ This will permanently delete all recipes, images, reviews, and favourites</p>
+                <span class="warning">⛔ Cannot be undone!</span>
+            </div>
+        </label>
+    </div>
+    {{else}}
+    <div class="safe-delete">
+        <i class="fas fa-check-circle"></i>
+        <p>This category is empty and can be safely deleted</p>
+    </div>
+    {{/if}}
+    
+    <div class="modal-actions">
+        <button type="button" class="btn-cancel">Cancel</button>
+        <button type="button" class="btn-delete" onclick="confirmDelete()">
+            Delete Category
+        </button>
+    </div>
+</div>
+
+<script>
+function confirmDelete() {
+    const mode = document.querySelector('input[name="deleteMode"]:checked').value;
+    const categoryId = '{{categoryId}}';
+    
+    if (mode === 'hard') {
+        const confirmation = prompt('Type "DELETE" to confirm permanent deletion:');
+        if (confirmation !== 'DELETE') {
+            alert('Deletion cancelled');
+            return;
+        }
+    }
+    
+    // Proceed with deletion
+    window.location.href = `/delete-category?id=${categoryId}&mode=${mode}`;
+}
+</script>

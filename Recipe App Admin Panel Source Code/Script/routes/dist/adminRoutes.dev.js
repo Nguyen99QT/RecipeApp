@@ -67,6 +67,7 @@ routes.get("/delete-intro", isLogin, introController.deleteIntro); //Routes For 
 routes.post("/category", multiplefile, categoryController.addCategory);
 routes.get("/category", isLogin, categoryController.loadcategory);
 routes.post("/edit-category", categoryController.editCategory);
+routes.get("/check-category-usage", isLogin, categoryController.checkCategoryUsage);
 routes.get("/delete-category", isLogin, categoryController.deleteCategory); //Routes For Cuisines
 
 routes.post("/cuisines", cuisinesController.addCuisines);

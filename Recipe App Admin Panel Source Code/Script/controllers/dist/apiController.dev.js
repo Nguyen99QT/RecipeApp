@@ -84,7 +84,7 @@ var CheckRegisterUser = function CheckRegisterUser(req, res) {
           console.log(_context.t0.message);
           return _context.abrupt("return", res.status(500).json({
             status: false,
-            message: "Internal server error"
+            message: _context.t0.message || "Failed to check email availability"
           }));
 
         case 14:
@@ -219,7 +219,7 @@ var SignUp = function SignUp(req, res) {
           console.log('Error stack:', _context2.t2.stack);
           return _context2.abrupt("return", res.status(500).json({
             status: false,
-            message: "Internal server error"
+            message: _context2.t2.message || "Failed to register user"
           }));
 
         case 54:
@@ -332,7 +332,7 @@ var VerifyOtp = function VerifyOtp(req, res) {
           console.error('Error stack:', _context3.t0.stack);
           return _context3.abrupt("return", res.status(500).json({
             status: false,
-            message: "Internal server error"
+            message: _context3.t0.message || "Failed to verify OTP"
           }));
 
         case 42:
@@ -439,7 +439,7 @@ var SignIn = function SignIn(req, res) {
           console.log('Error stack:', _context4.t0.stack);
           return _context4.abrupt("return", res.status(500).json({
             status: false,
-            message: "Internal server error"
+            message: _context4.t0.message || "Failed to sign in"
           }));
 
         case 32:
@@ -532,7 +532,7 @@ var isVerifyAccount = function isVerifyAccount(req, res) {
 
 
 var resendOtp = function resendOtp(req, res) {
-  var _req$body5, userId, email, user, otp, otpData;
+  var _req$body5, userId, email, user, recentOtp, otp, otpData;
 
   return regeneratorRuntime.async(function resendOtp$(_context6) {
     while (1) {
@@ -589,35 +589,58 @@ var resendOtp = function resendOtp(req, res) {
 
         case 17:
           _context6.next = 19;
+          return regeneratorRuntime.awrap(otpModel.findOne({
+            userId: user._id,
+            createdAt: {
+              $gte: new Date(Date.now() - 60000)
+            } // 60 seconds ago
+
+          }));
+
+        case 19:
+          recentOtp = _context6.sent;
+
+          if (!recentOtp) {
+            _context6.next = 22;
+            break;
+          }
+
+          return _context6.abrupt("return", res.status(429).json({
+            status: false,
+            message: "Please wait 60 seconds before requesting a new OTP"
+          }));
+
+        case 22:
+          _context6.next = 24;
           return regeneratorRuntime.awrap(otpModel.deleteMany({
             userId: user._id
           }));
 
-        case 19:
+        case 24:
           // Generate new OTP
           otp = Math.floor(1000 + Math.random() * 9000); // Consistent with signup
-          // Save new OTP
+          // Save new OTP (with automatic expiration)
 
           otpData = new otpModel({
             userId: user._id,
             email: user.email,
             otp: otp
           });
-          _context6.next = 23;
+          _context6.next = 28;
           return regeneratorRuntime.awrap(otpData.save());
 
-        case 23:
-          _context6.next = 25;
+        case 28:
+          _context6.next = 30;
           return regeneratorRuntime.awrap(sendOtpMail(user.email, otp, user.firstname || 'User', user.lastname || ''));
 
-        case 25:
+        case 30:
           return _context6.abrupt("return", res.status(200).json({
             status: true,
-            message: "OTP sent successfully"
+            message: "OTP sent successfully. Valid for 5 minutes."
           }));
 
-        case 28:
-          _context6.prev = 28;
+        case 33:
+          _context6.prev = 33;
           _context6.t0 = _context6["catch"](0);
           console.log(_context6.t0.message);
           return _context6.abrupt("return", res.status(500).json({
@@ -625,12 +648,12 @@ var resendOtp = function resendOtp(req, res) {
             message: "Internal server error"
           }));
 
-        case 32:
+        case 37:
         case "end":
           return _context6.stop();
       }
     }
-  }, null, null, [[0, 28]]);
+  }, null, null, [[0, 33]]);
 }; // Forgot password
 
 
@@ -824,7 +847,7 @@ var ForgotPasswordVerification = function ForgotPasswordVerification(req, res) {
 
 
 var ResetPassword = function ResetPassword(req, res) {
-  var _req$body7, userId, email, otp, newPassword, finalUserId, otpData, user, recentOtp, hashedPassword;
+  var _req$body7, userId, email, otp, newPassword, confirmPassword, finalUserId, otpData, user, recentOtp, hashedPassword;
 
   return regeneratorRuntime.async(function ResetPassword$(_context9) {
     while (1) {
@@ -833,25 +856,70 @@ var ResetPassword = function ResetPassword(req, res) {
           _context9.prev = 0;
           console.log('=== RESET PASSWORD REQUEST ===');
           console.log('Request body:', req.body);
-          _req$body7 = req.body, userId = _req$body7.userId, email = _req$body7.email, otp = _req$body7.otp, newPassword = _req$body7.newPassword;
+          _req$body7 = req.body, userId = _req$body7.userId, email = _req$body7.email, otp = _req$body7.otp, newPassword = _req$body7.newPassword, confirmPassword = _req$body7.confirmPassword; // Validate required fields
+
+          if (newPassword) {
+            _context9.next = 6;
+            break;
+          }
+
+          return _context9.abrupt("return", res.status(400).json({
+            status: false,
+            message: "New password is required"
+          }));
+
+        case 6:
+          if (confirmPassword) {
+            _context9.next = 8;
+            break;
+          }
+
+          return _context9.abrupt("return", res.status(400).json({
+            status: false,
+            message: "Confirm password is required"
+          }));
+
+        case 8:
+          if (!(newPassword !== confirmPassword)) {
+            _context9.next = 10;
+            break;
+          }
+
+          return _context9.abrupt("return", res.status(400).json({
+            status: false,
+            message: "Password and confirm password do not match"
+          }));
+
+        case 10:
+          if (!(newPassword.length < 6)) {
+            _context9.next = 12;
+            break;
+          }
+
+          return _context9.abrupt("return", res.status(400).json({
+            status: false,
+            message: "Password must be at least 6 characters long"
+          }));
+
+        case 12:
           finalUserId = userId;
 
           if (!(!finalUserId && email)) {
-            _context9.next = 15;
+            _context9.next = 23;
             break;
           }
 
           console.log('Finding user by email:', email);
-          _context9.next = 9;
+          _context9.next = 17;
           return regeneratorRuntime.awrap(userModel.findOne({
             email: email
           }));
 
-        case 9:
+        case 17:
           user = _context9.sent;
 
           if (user) {
-            _context9.next = 13;
+            _context9.next = 21;
             break;
           }
 
@@ -861,13 +929,13 @@ var ResetPassword = function ResetPassword(req, res) {
             message: "User not found"
           }));
 
-        case 13:
+        case 21:
           finalUserId = user._id;
           console.log('Found user ID:', finalUserId);
 
-        case 15:
+        case 23:
           if (finalUserId) {
-            _context9.next = 17;
+            _context9.next = 25;
             break;
           }
 
@@ -876,17 +944,17 @@ var ResetPassword = function ResetPassword(req, res) {
             message: "Either userId or email is required"
           }));
 
-        case 17:
-          _context9.next = 19;
+        case 25:
+          _context9.next = 27;
           return regeneratorRuntime.awrap(ForgotPasswordOtpModel.findOne({
             userId: finalUserId
           }));
 
-        case 19:
+        case 27:
           recentOtp = _context9.sent;
 
           if (recentOtp) {
-            _context9.next = 23;
+            _context9.next = 31;
             break;
           }
 
@@ -896,42 +964,31 @@ var ResetPassword = function ResetPassword(req, res) {
             message: "Please verify OTP first"
           }));
 
-        case 23:
-          if (newPassword) {
-            _context9.next = 25;
-            break;
-          }
-
-          return _context9.abrupt("return", res.status(400).json({
-            status: false,
-            message: "New password is required"
-          }));
-
-        case 25:
+        case 31:
           hashedPassword = sha256.x2(newPassword); // Update password
 
-          _context9.next = 28;
+          _context9.next = 34;
           return regeneratorRuntime.awrap(userModel.findByIdAndUpdate(finalUserId, {
             password: hashedPassword
           }));
 
-        case 28:
+        case 34:
           console.log('Password updated for user:', finalUserId); // Delete all OTP records for this user
 
-          _context9.next = 31;
+          _context9.next = 37;
           return regeneratorRuntime.awrap(ForgotPasswordOtpModel.deleteMany({
             userId: finalUserId
           }));
 
-        case 31:
+        case 37:
           console.log('OTP records deleted for user:', finalUserId);
           return _context9.abrupt("return", res.status(200).json({
             status: true,
             message: "Password reset successfully"
           }));
 
-        case 35:
-          _context9.prev = 35;
+        case 41:
+          _context9.prev = 41;
           _context9.t0 = _context9["catch"](0);
           console.error('ResetPassword error:', _context9.t0.message);
           return _context9.abrupt("return", res.status(500).json({
@@ -939,12 +996,12 @@ var ResetPassword = function ResetPassword(req, res) {
             message: "Internal server error"
           }));
 
-        case 39:
+        case 45:
         case "end":
           return _context9.stop();
       }
     }
-  }, null, null, [[0, 35]]);
+  }, null, null, [[0, 41]]);
 }; // Edit user profile
 
 
@@ -2119,24 +2176,35 @@ var GetPolicyAndTerms = function GetPolicyAndTerms(req, res) {
 
 
 var GetAllNotification = function GetAllNotification(req, res) {
-  var notifications, mappedNotifications;
+  var showAll, filter, notifications, mappedNotifications;
   return regeneratorRuntime.async(function GetAllNotification$(_context34) {
     while (1) {
       switch (_context34.prev = _context34.next) {
         case 0:
           _context34.prev = 0;
-          _context34.next = 3;
-          return regeneratorRuntime.awrap(notificationModel.find({
-            isEnabled: {
-              $ne: false
-            }
-          }).populate('recipeId', 'name image').sort({
+          // Allow admin to see all notifications (including disabled) for debugging
+          showAll = req.query.showAll === 'true';
+          filter = {};
+
+          if (!showAll) {
+            // For normal app users: only show enabled notifications
+            filter = {
+              isEnabled: {
+                $ne: false
+              }
+            };
+          }
+
+          console.log("[DEBUG] GetAllNotification - showAll: ".concat(showAll, ", filter:"), filter);
+          _context34.next = 7;
+          return regeneratorRuntime.awrap(notificationModel.find(filter).populate('recipeId', 'name image').sort({
             createdAt: -1
           }));
 
-        case 3:
+        case 7:
           notifications = _context34.sent;
-          // Map fields to match Flutter app expectations
+          console.log("[DEBUG] Found ".concat(notifications.length, " notifications")); // Map fields to match Flutter app expectations
+
           mappedNotifications = notifications.map(function (notification) {
             return {
               _id: notification._id,
@@ -2161,8 +2229,8 @@ var GetAllNotification = function GetAllNotification(req, res) {
             }
           }));
 
-        case 8:
-          _context34.prev = 8;
+        case 13:
+          _context34.prev = 13;
           _context34.t0 = _context34["catch"](0);
           console.log(_context34.t0.message);
           return _context34.abrupt("return", res.status(500).json({
@@ -2170,12 +2238,12 @@ var GetAllNotification = function GetAllNotification(req, res) {
             message: "Internal server error"
           }));
 
-        case 12:
+        case 17:
         case "end":
           return _context34.stop();
       }
     }
-  }, null, null, [[0, 8]]);
+  }, null, null, [[0, 13]]);
 }; // Admin API: Get all reviews for approval
 
 

@@ -244,18 +244,44 @@ const sendNotification = async (req, res) => {
 // Load notification history page
 const loadNotificationHistory = async (req, res) => {
     try {
-        // Fetch all notifications with recipe details if applicable
-        const notifications = await notificationModel.find()
+        // Get filter parameter from query
+        const filter = req.query.filter || 'all'; // 'all', 'enabled', 'disabled'
+        
+        // Build query based on filter
+        let query = {};
+        if (filter === 'enabled') {
+            query.isEnabled = { $ne: false }; // Not false (true or undefined)
+        } else if (filter === 'disabled') {
+            query.isEnabled = false;
+        }
+        // 'all' means no filter applied
+        
+        console.log(`[NOTIFICATION HISTORY] Filter: ${filter}, Query:`, query);
+
+        // Fetch notifications based on filter
+        const notifications = await notificationModel.find(query)
             .populate('recipeId', 'name image') // Populate recipe details
             .sort({ createdAt: -1 }); // Sort by newest first
 
+        // Count notifications by status for stats
+        const stats = {
+            total: await notificationModel.countDocuments({}),
+            enabled: await notificationModel.countDocuments({ isEnabled: { $ne: false } }),
+            disabled: await notificationModel.countDocuments({ isEnabled: false })
+        };
+
+        console.log(`[NOTIFICATION HISTORY] Found ${notifications.length} notifications with filter '${filter}'`);
+        console.log(`[NOTIFICATION HISTORY] Stats:`, stats);
+
         return res.render("notificationHistory", { 
             notifications, 
+            currentFilter: filter,
+            stats,
             moment: require('moment') // For date formatting
         });
 
     } catch (error) {
-        console.log(error.message);
+        console.log('[NOTIFICATION HISTORY ERROR]:', error.message);
         req.flash('error', 'An error occurred while loading notification history.');
         return res.redirect('/dashboard');
     }

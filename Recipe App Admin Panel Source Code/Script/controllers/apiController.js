@@ -45,7 +45,7 @@ const CheckRegisterUser = async (req, res) => {
         console.log(error.message);
         return res.status(500).json({
             status: false,
-            message: "Internal server error"
+            message: error.message || "Failed to check email availability"
         });
     }
 };
@@ -134,7 +134,7 @@ const SignUp = async (req, res) => {
         console.log('Error stack:', error.stack);
         return res.status(500).json({
             status: false,
-            message: "Internal server error"
+            message: error.message || "Failed to register user"
         });
     }
 };
@@ -198,7 +198,7 @@ const VerifyOtp = async (req, res) => {
         console.error('Error stack:', error.stack);
         return res.status(500).json({
             status: false,
-            message: "Internal server error"
+            message: error.message || "Failed to verify OTP"
         });
     }
 };
@@ -274,7 +274,7 @@ const SignIn = async (req, res) => {
         console.log('Error stack:', error.stack);
         return res.status(500).json({
             status: false,
-            message: "Internal server error"
+            message: error.message || "Failed to sign in"
         });
     }
 };
@@ -341,13 +341,26 @@ const resendOtp = async (req, res) => {
             });
         }
         
+        // Check if there's a recent OTP (within last 60 seconds)
+        const recentOtp = await otpModel.findOne({ 
+            userId: user._id,
+            createdAt: { $gte: new Date(Date.now() - 60000) } // 60 seconds ago
+        });
+        
+        if (recentOtp) {
+            return res.status(429).json({
+                status: false,
+                message: "Please wait 60 seconds before requesting a new OTP"
+            });
+        }
+        
         // Delete existing OTP
         await otpModel.deleteMany({ userId: user._id });
         
         // Generate new OTP
         const otp = Math.floor(1000 + Math.random() * 9000); // Consistent with signup
         
-        // Save new OTP
+        // Save new OTP (with automatic expiration)
         const otpData = new otpModel({
             userId: user._id,
             email: user.email,
@@ -360,7 +373,7 @@ const resendOtp = async (req, res) => {
         
         return res.status(200).json({
             status: true,
-            message: "OTP sent successfully"
+            message: "OTP sent successfully. Valid for 5 minutes."
         });
         
     } catch (error) {
@@ -483,7 +496,38 @@ const ResetPassword = async (req, res) => {
         console.log('=== RESET PASSWORD REQUEST ===');
         console.log('Request body:', req.body);
         
-        const { userId, email, otp, newPassword } = req.body;
+        const { userId, email, otp, newPassword, confirmPassword } = req.body;
+        
+        // Validate required fields
+        if (!newPassword) {
+            return res.status(400).json({
+                status: false,
+                message: "New password is required"
+            });
+        }
+        
+        if (!confirmPassword) {
+            return res.status(400).json({
+                status: false,
+                message: "Confirm password is required"
+            });
+        }
+        
+        // Validate password match
+        if (newPassword !== confirmPassword) {
+            return res.status(400).json({
+                status: false,
+                message: "Password and confirm password do not match"
+            });
+        }
+        
+        // Validate password strength
+        if (newPassword.length < 6) {
+            return res.status(400).json({
+                status: false,
+                message: "Password must be at least 6 characters long"
+            });
+        }
         
         let finalUserId = userId;
         let otpData;
@@ -519,13 +563,6 @@ const ResetPassword = async (req, res) => {
             return res.status(400).json({
                 status: false,
                 message: "Please verify OTP first"
-            });
-        }
-        
-        if (!newPassword) {
-            return res.status(400).json({
-                status: false,
-                message: "New password is required"
             });
         }
         
@@ -1263,9 +1300,22 @@ const GetPolicyAndTerms = async (req, res) => {
 // Get all notifications
 const GetAllNotification = async (req, res) => {
     try {
-        const notifications = await notificationModel.find({ isEnabled: { $ne: false } })
+        // Allow admin to see all notifications (including disabled) for debugging
+        const showAll = req.query.showAll === 'true';
+        
+        let filter = {};
+        if (!showAll) {
+            // For normal app users: only show enabled notifications
+            filter = { isEnabled: { $ne: false } };
+        }
+        
+        console.log(`[DEBUG] GetAllNotification - showAll: ${showAll}, filter:`, filter);
+        
+        const notifications = await notificationModel.find(filter)
             .populate('recipeId', 'name image')
             .sort({ createdAt: -1 });
+        
+        console.log(`[DEBUG] Found ${notifications.length} notifications`);
         
         // Map fields to match Flutter app expectations
         const mappedNotifications = notifications.map(notification => ({

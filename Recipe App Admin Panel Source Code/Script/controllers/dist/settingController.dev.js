@@ -427,39 +427,86 @@ var sendNotification = function sendNotification(req, res) {
 
 
 var loadNotificationHistory = function loadNotificationHistory(req, res) {
-  var notifications;
+  var filter, query, notifications, stats;
   return regeneratorRuntime.async(function loadNotificationHistory$(_context7) {
     while (1) {
       switch (_context7.prev = _context7.next) {
         case 0:
           _context7.prev = 0;
-          _context7.next = 3;
-          return regeneratorRuntime.awrap(notificationModel.find().populate('recipeId', 'name image') // Populate recipe details
+          // Get filter parameter from query
+          filter = req.query.filter || 'all'; // 'all', 'enabled', 'disabled'
+          // Build query based on filter
+
+          query = {};
+
+          if (filter === 'enabled') {
+            query.isEnabled = {
+              $ne: false
+            }; // Not false (true or undefined)
+          } else if (filter === 'disabled') {
+            query.isEnabled = false;
+          } // 'all' means no filter applied
+
+
+          console.log("[NOTIFICATION HISTORY] Filter: ".concat(filter, ", Query:"), query); // Fetch notifications based on filter
+
+          _context7.next = 7;
+          return regeneratorRuntime.awrap(notificationModel.find(query).populate('recipeId', 'name image') // Populate recipe details
           .sort({
             createdAt: -1
           }));
 
-        case 3:
+        case 7:
           notifications = _context7.sent;
+          _context7.next = 10;
+          return regeneratorRuntime.awrap(notificationModel.countDocuments({}));
+
+        case 10:
+          _context7.t0 = _context7.sent;
+          _context7.next = 13;
+          return regeneratorRuntime.awrap(notificationModel.countDocuments({
+            isEnabled: {
+              $ne: false
+            }
+          }));
+
+        case 13:
+          _context7.t1 = _context7.sent;
+          _context7.next = 16;
+          return regeneratorRuntime.awrap(notificationModel.countDocuments({
+            isEnabled: false
+          }));
+
+        case 16:
+          _context7.t2 = _context7.sent;
+          stats = {
+            total: _context7.t0,
+            enabled: _context7.t1,
+            disabled: _context7.t2
+          };
+          console.log("[NOTIFICATION HISTORY] Found ".concat(notifications.length, " notifications with filter '").concat(filter, "'"));
+          console.log("[NOTIFICATION HISTORY] Stats:", stats);
           return _context7.abrupt("return", res.render("notificationHistory", {
             notifications: notifications,
+            currentFilter: filter,
+            stats: stats,
             moment: require('moment') // For date formatting
 
           }));
 
-        case 7:
-          _context7.prev = 7;
-          _context7.t0 = _context7["catch"](0);
-          console.log(_context7.t0.message);
+        case 23:
+          _context7.prev = 23;
+          _context7.t3 = _context7["catch"](0);
+          console.log('[NOTIFICATION HISTORY ERROR]:', _context7.t3.message);
           req.flash('error', 'An error occurred while loading notification history.');
           return _context7.abrupt("return", res.redirect('/dashboard'));
 
-        case 12:
+        case 28:
         case "end":
           return _context7.stop();
       }
     }
-  }, null, null, [[0, 7]]);
+  }, null, null, [[0, 23]]);
 }; // Update notification
 
 

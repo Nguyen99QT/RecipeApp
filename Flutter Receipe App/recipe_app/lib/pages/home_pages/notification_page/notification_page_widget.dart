@@ -165,7 +165,13 @@ class _NotificationPageWidgetState extends State<NotificationPageWidget> {
                                 return RefreshIndicator(
                                   key: const Key('RefreshIndicator_u6xvpywm'),
                                   color: FlutterFlowTheme.of(context).tertiary,
-                                  onRefresh: () async {},
+                                  onRefresh: () async {
+                                    print('[DEBUG] Pull-to-refresh triggered, clearing cache and refreshing...');
+                                    // Clear the cache to force fresh data fetch
+                                    FFAppState().clearGetAllNotificationCacheCache();
+                                    // Trigger rebuild to reload data
+                                    safeSetState(() {});
+                                  },
                                   child: ListView.separated(
                                     padding: const EdgeInsets.fromLTRB(
                                       0,

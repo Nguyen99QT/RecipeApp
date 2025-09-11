@@ -35,7 +35,8 @@ routes.post("/UploadImage", checkAuthorization, uploadAvatar, apiController.Uplo
 routes.post("/ChangePassword", checkAuthorization, apiController.ChangePassword);
 routes.post("/DeleteAccountUser", checkAuthorization, apiController.DeleteAccountUser); // Routes For Intro
 
-routes.post("/getAllIntro", apiController.getAllIntro); //Routes For Category
+routes.post("/getAllIntro", apiController.getAllIntro);
+routes.get("/getAllIntro", apiController.getAllIntro); //Routes For Category
 
 routes.post("/GetAllCategory", apiController.GetAllCategory); //Routes For Cuisines
 

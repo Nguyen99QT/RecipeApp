@@ -114,18 +114,34 @@
                   <!--begin::Card toolbar-->
                   <div class="card-toolbar">
                     <!--begin::Toolbar-->
-                    <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
-                      <!--begin::Filter-->
+                    <div class="d-flex justify-content-end align-items-center gap-3" data-kt-customer-table-toolbar="base">
+                      <!--begin::Stats Display-->
+                      <div class="d-flex align-items-center gap-2 me-3">
+                        <span class="badge badge-light-primary fs-7">Total: <%= stats.total %></span>
+                        <span class="badge badge-light-success fs-7">Enabled: <%= stats.enabled %></span>
+                        <span class="badge badge-light-danger fs-7">Disabled: <%= stats.disabled %></span>
+                      </div>
+                      <!--end::Stats Display-->
+                      
+                      <!--begin::Status Filter-->
                       <div class="w-150px">
-                        <!--begin::Select2-->
+                        <select class="form-select form-select-solid" id="notification-status-filter" onchange="filterByStatus()">
+                          <option value="all" <%= currentFilter === 'all' ? 'selected' : '' %>>All Status</option>
+                          <option value="enabled" <%= currentFilter === 'enabled' ? 'selected' : '' %>>Enabled Only</option>
+                          <option value="disabled" <%= currentFilter === 'disabled' ? 'selected' : '' %>>Disabled Only</option>
+                        </select>
+                      </div>
+                      <!--end::Status Filter-->
+                      
+                      <!--begin::Type Filter-->
+                      <div class="w-150px">
                         <select class="form-select form-select-solid" id="notification-type-filter" data-placeholder="Filter by type">
                           <option value="">All Types</option>
                           <option value="general">General</option>
                           <option value="new_recipe">Recipe</option>
                         </select>
-                        <!--end::Select2-->
                       </div>
-                      <!--end::Filter-->
+                      <!--end::Type Filter-->
                     </div>
                     <!--end::Toolbar-->
                   </div>
@@ -168,7 +184,14 @@
                             </td>
                             <td>
                               <div class="d-flex flex-column">
-                                <a href="#" class="text-gray-800 text-hover-primary mb-1 fw-bold"><%= notification.title || 'No Title' %></a>
+                                <div class="d-flex align-items-center">
+                                  <a href="#" class="text-gray-800 text-hover-primary mb-1 fw-bold me-2"><%= notification.title || 'No Title' %></a>
+                                  <% if (notification.isEnabled) { %>
+                                    <span class="badge badge-sm badge-success">Enabled</span>
+                                  <% } else { %>
+                                    <span class="badge badge-sm badge-danger">Disabled</span>
+                                  <% } %>
+                                </div>
                               </div>
                             </td>
                             <td>
@@ -660,6 +683,73 @@ function updateStatistics() {
     margin: 0 0.5rem !important;
 }
 </style>
+
+<script>
+// Filter by status function
+function filterByStatus() {
+    const filter = document.getElementById('notification-status-filter').value;
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set('filter', filter);
+    
+    // Add loading state
+    document.getElementById('notification-status-filter').disabled = true;
+    
+    // Navigate to filtered results
+    window.location.href = currentUrl.toString();
+}
+
+// Search functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('notification-search');
+    const table = document.querySelector('[data-kt-table-widget-4="datatable_wrapper"]');
+    
+    if (searchInput && table) {
+        searchInput.addEventListener('input', function() {
+            const filter = this.value.toLowerCase();
+            const rows = table.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const titleCell = row.cells[2]; // Title column
+                const messageCell = row.cells[3]; // Message column
+                
+                if (titleCell && messageCell) {
+                    const titleText = titleCell.textContent.toLowerCase();
+                    const messageText = messageCell.textContent.toLowerCase();
+                    
+                    if (titleText.includes(filter) || messageText.includes(filter)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        });
+    }
+    
+    // Type filter functionality
+    const typeFilter = document.getElementById('notification-type-filter');
+    if (typeFilter) {
+        typeFilter.addEventListener('change', function() {
+            const filter = this.value.toLowerCase();
+            const rows = table.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const typeCell = row.cells[1]; // Type column
+                
+                if (typeCell) {
+                    const typeText = typeCell.textContent.toLowerCase();
+                    
+                    if (filter === '' || typeText.includes(filter)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        });
+    }
+});
+</script>
 
 <!--partial:partials/footer -->
 <%- include('../layouts/footer.ejs') %>
