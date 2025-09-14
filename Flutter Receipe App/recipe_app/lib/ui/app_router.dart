@@ -99,7 +99,7 @@ class OnboardingPage extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF2E7D32),
+                    foregroundColor: const Color(0xFFE65100),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -193,7 +193,7 @@ class SimpleMealCreationPage extends StatelessWidget {
             Icon(
               Icons.restaurant_menu,
               size: 64,
-              color: Color(0xFF2E7D32),
+              color: Color(0xFFE65100),
             ),
             SizedBox(height: 16),
             Text(

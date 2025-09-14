@@ -18,7 +18,7 @@ class AIRecipeDebugPage extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        backgroundColor: const Color(0xFF4CAF50),
+        backgroundColor: const Color(0xFFFF8C00),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
@@ -36,7 +36,7 @@ class AIRecipeDebugPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF4CAF50), Color(0xFF66BB6A)],
+                    colors: [Color(0xFFFF8C00), Color(0xFFFFB347)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -60,7 +60,7 @@ class AIRecipeDebugPage extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      'Tạo công thức nấu ăn từ hình ảnh với AI',
+                      'Create cooking recipes from images with AI',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.white,
@@ -78,31 +78,31 @@ class AIRecipeDebugPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: _getApiKeyStatus() == 'Đã cấu hình'
-                    ? Colors.green.withOpacity(0.1)
+                color: _getApiKeyStatus() == 'Configured'
+                    ? Colors.orange.withOpacity(0.1)
                     : Colors.orange.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                    color: _getApiKeyStatus() == 'Đã cấu hình'
-                        ? Colors.green
+                    color: _getApiKeyStatus() == 'Configured'
+                        ? Colors.orange
                         : Colors.orange),
               ),
               child: Row(
                 children: [
                   Icon(
-                    _getApiKeyStatus() == 'Đã cấu hình'
+                    _getApiKeyStatus() == 'Configured'
                         ? Icons.check_circle
                         : Icons.info,
-                    color: _getApiKeyStatus() == 'Đã cấu hình'
-                        ? Colors.green
+                    color: _getApiKeyStatus() == 'Configured'
+                        ? Colors.orange
                         : Colors.orange,
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      _getApiKeyStatus() == 'Đã cấu hình'
-                          ? 'Gemini API Key đã được cấu hình. Sẵn sàng sử dụng AI!'
-                          : 'Cần Gemini API Key để sử dụng tính năng AI. Hãy cấu hình trong file .env',
+                      _getApiKeyStatus() == 'Configured'
+                          ? 'Gemini API Key is configured. Ready to use AI!'
+                          : 'Need Gemini API Key to use AI features. Please configure in .env file',
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -122,14 +122,14 @@ class AIRecipeDebugPage extends StatelessWidget {
                 onPressed: () => _openAIRecipeGenerator(context),
                 icon: const Icon(Icons.auto_awesome),
                 label: const Text(
-                  'Tạo Công Thức AI',
+                  'Create AI Recipe',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4CAF50),
+                  backgroundColor: const Color(0xFFFF8C00),
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -146,15 +146,15 @@ class AIRecipeDebugPage extends StatelessWidget {
                 onPressed: () => _openSavedRecipes(context),
                 icon: const Icon(Icons.bookmark),
                 label: const Text(
-                  'Xem Công Thức Đã Lưu',
+                  'View Saved Recipes',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF4CAF50),
-                  side: const BorderSide(color: Color(0xFF4CAF50), width: 2),
+                  foregroundColor: const Color(0xFFFF8C00),
+                  side: const BorderSide(color: Color(0xFFFF8C00), width: 2),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -196,7 +196,7 @@ class AIRecipeDebugPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Tính năng có sẵn:',
+                      'Available Features:',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -204,14 +204,14 @@ class AIRecipeDebugPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     ...[
-                      '✅ Tạo công thức từ nhiều hình ảnh',
-                      '✅ Tùy chọn sở thích ăn uống',
-                      '✅ Lưu trữ công thức cục bộ',
-                      '✅ Tìm kiếm và lọc công thức',
-                      '✅ Chia sẻ công thức',
-                      '✅ Giao diện tiếng Việt',
-                      '✅ Clean Architecture với BLoC',
-                      '⚠️ Gemini AI (cần API Key)',
+                      '✅ Create recipes from multiple images',
+                      '✅ Customizable food preferences',
+                      '✅ Local recipe storage',
+                      '✅ Search and filter recipes',
+                      '✅ Share recipes',
+                      '✅ Vietnamese interface',
+                      '✅ Clean Architecture with BLoC',
+                      '⚠️ Gemini AI (requires API Key)',
                     ].map((feature) => Padding(
                           padding: const EdgeInsets.only(bottom: 4),
                           child: Text(
@@ -239,9 +239,9 @@ class AIRecipeDebugPage extends StatelessWidget {
     if (apiKey != null &&
         apiKey.isNotEmpty &&
         apiKey != 'your_actual_gemini_api_key_here') {
-      return 'Đã cấu hình';
+      return 'Configured';
     }
-    return 'Chưa cấu hình';
+    return 'Not configured';
   }
 
   void _openAIRecipeGenerator(BuildContext context) {

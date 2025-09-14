@@ -67,7 +67,7 @@ class AIRecipeRemoteDataSourceImpl implements AIRecipeRemoteDataSource {
             } catch (e) {
               print(
                   '[AI_REMOTE_DATASOURCE] ❌ CRITICAL ERROR: Base64 decode validation failed: $e');
-              throw Exception('Dữ liệu hình ảnh không hợp lệ: $e');
+              throw Exception('Invalid image data: $e');
             }
 
             imageParts.add({
@@ -85,7 +85,7 @@ class AIRecipeRemoteDataSourceImpl implements AIRecipeRemoteDataSource {
         } catch (e) {
           print(
               '[AI_REMOTE_DATASOURCE] ❌ Failed to process image ${i + 1}: $e');
-          throw Exception('Lỗi xử lý hình ảnh ${i + 1}: $e');
+          throw Exception('Error processing image ${i + 1}: $e');
         }
       }
 
@@ -93,7 +93,7 @@ class AIRecipeRemoteDataSourceImpl implements AIRecipeRemoteDataSource {
         print(
             '[AI_REMOTE_DATASOURCE] ❌ CRITICAL ERROR: No valid images processed');
         throw Exception(
-            'Không có hình ảnh hợp lệ để xử lý. Vui lòng kiểm tra lại hình ảnh.');
+            'No valid images to process. Please check your images.');
       }
 
       print(
@@ -160,14 +160,14 @@ class AIRecipeRemoteDataSourceImpl implements AIRecipeRemoteDataSource {
         } else {
           print(
               '[AI_REMOTE_DATASOURCE] ❌ CRITICAL ERROR: No candidates in response');
-          throw Exception('API trả về dữ liệu không hợp lệ');
+          throw Exception('API returned invalid data');
         }
       } else {
         print('[AI_REMOTE_DATASOURCE] ❌ API ERROR ${response.statusCode}');
         print('[AI_REMOTE_DATASOURCE] Error body: ${response.body}');
         print(
             '[AI_REMOTE_DATASOURCE] =================== END API REQUEST FAILED ===================');
-        throw Exception('Lỗi API: ${response.statusCode} - ${response.body}');
+        throw Exception('API error: ${response.statusCode} - ${response.body}');
       }
     } catch (e, stackTrace) {
       print(
@@ -175,7 +175,7 @@ class AIRecipeRemoteDataSourceImpl implements AIRecipeRemoteDataSource {
       print('[AI_REMOTE_DATASOURCE] Stack trace: $stackTrace');
       print(
           '[AI_REMOTE_DATASOURCE] =================== END API REQUEST FAILED ===================');
-      throw Exception('Không thể tạo công thức: ${e.toString()}');
+      throw Exception('Unable to generate recipe: ${e.toString()}');
     }
   }
 
@@ -183,20 +183,20 @@ class AIRecipeRemoteDataSourceImpl implements AIRecipeRemoteDataSource {
   Future<AIMeal> improveRecipe(AIMeal meal, String feedback) async {
     try {
       final prompt = '''
-Cải thiện công thức nấu ăn sau dựa trên phản hồi của người dùng:
+Improve the following recipe based on user feedback:
 
-CÔNG THỨC HIỆN TẠI:
+CURRENT RECIPE:
 Tên: ${meal.title}
 Mô tả: ${meal.description}
 Nguyên liệu: ${meal.ingredients.join(', ')}
 Hướng dẫn: ${meal.instructions.join(' ')}
-Thời gian chuẩn bị: ${meal.preparationTime} phút
-Thời gian nấu: ${meal.cookingTime} phút
+Preparation time: ${meal.preparationTime} min
+Cooking time: ${meal.cookingTime} min
 
 PHẢN HỒI CỦA NGƯỜI DÙNG:
 $feedback
 
-Hãy cải thiện công thức dựa trên phản hồi và trả về kết quả theo định dạng JSON như mẫu:
+Please improve the recipe based on the feedback and return the result in JSON format as shown:
 {
   "title": "Tên công thức đã cải thiện",
   "description": "Mô tả chi tiết",
@@ -243,19 +243,26 @@ Hãy cải thiện công thức dựa trên phản hồi và trả về kết qu
         return _parseAIResponse(content, null);
       } else {
         throw Exception(
-            'Lỗi API khi cải thiện công thức: ${response.statusCode}');
+            'API error when improving recipe: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Không thể cải thiện công thức: ${e.toString()}');
+      throw Exception('Unable to improve recipe: ${e.toString()}');
     }
   }
 
   String _buildPrompt(AIRecipeRequest request) {
-    final basePrompt = '''
-Bạn là một đầu bếp chuyên nghiệp và chuyên gia AI phân tích hình ảnh. Hãy phân tích những hình ảnh tôi gửi và tạo ra một công thức nấu ăn chi tiết bằng tiếng Việt.
+    // Detect language: Vietnamese if userPrompt contains Vietnamese chars, else English
+    final promptText = request.userPrompt?.trim() ?? '';
+    final isVietnamese = RegExp(
+            r'[àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]')
+        .hasMatch(promptText);
+    final useVietnamese = isVietnamese && promptText.isNotEmpty;
+
+    if (useVietnamese) {
+      return '''Bạn là một đầu bếp chuyên nghiệp và chuyên gia AI phân tích hình ảnh. Hãy phân tích những hình ảnh tôi gửi và tạo ra một công thức nấu ăn chi tiết bằng tiếng Việt.
 
 Yêu cầu cụ thể:
-${request.userPrompt ?? 'Tạo công thức dựa trên nguyên liệu trong hình'}
+${promptText.isNotEmpty ? promptText : 'Tạo công thức dựa trên nguyên liệu trong hình'}
 ${request.dietaryRestrictions != null ? 'Hạn chế ăn kiêng: ${request.dietaryRestrictions}' : ''}
 ${request.preferredCuisine != null ? 'Ẩm thực ưa thích: ${request.preferredCuisine}' : ''}
 ${request.targetServings != null ? 'Số người ăn: ${request.targetServings}' : ''}
@@ -281,8 +288,37 @@ Hãy trả về kết quả theo định dạng JSON chính xác như sau:
 
 CHÚ Ý: Chỉ trả về JSON, không thêm bất kỳ text nào khác.
 ''';
+    } else {
+      return '''You are a professional chef and AI image analysis expert. Analyze the images I send and create a detailed recipe in English.
 
-    return basePrompt;
+Specific requirements:
+${promptText.isNotEmpty ? promptText : 'Create a recipe based on the ingredients in the image'}
+${request.dietaryRestrictions != null ? 'Dietary restrictions: ${request.dietaryRestrictions}' : ''}
+${request.preferredCuisine != null ? 'Preferred cuisine: ${request.preferredCuisine}' : ''}
+${request.targetServings != null ? 'Servings: ${request.targetServings}' : ''}
+${request.difficultyLevel != null ? 'Difficulty level: ${request.difficultyLevel}' : ''}
+${request.maxPrepTime != null ? 'Maximum preparation time: ${request.maxPrepTime} minutes' : ''}
+${request.availableIngredients != null ? 'Available ingredients: ${request.availableIngredients!.join(', ')}' : ''}
+${request.allergies != null ? 'Allergies: ${request.allergies!.join(', ')}' : ''}
+
+Return result in JSON format exactly as follows:
+{
+  "title": "Recipe name in English",
+  "description": "Brief description of the dish",
+  "ingredients": ["ingredient 1 with unit", "ingredient 2 with unit"],
+  "instructions": ["Step 1: detailed", "Step 2: detailed"],
+  "cuisine": "Cuisine name (e.g., International, Asian)",
+  "preparationTime": 15,
+  "cookingTime": 30,
+  "servings": 4,
+  "difficulty": "Easy/Medium/Hard",
+  "tags": ["tag1", "tag2"],
+  "estimatedCalories": 300
+}
+
+NOTE: Return only JSON, do not add any other text.
+''';
+    }
   }
 
   Future<String> _getBase64FromImagePath(String imagePath) async {
@@ -486,16 +522,16 @@ CHÚ Ý: Chỉ trả về JSON, không thêm bất kỳ text nào khác.
       if (e.toString().contains('Permission denied') ||
           e.toString().contains('Access denied')) {
         throw Exception(
-            'Không có quyền truy cập file hình ảnh. Vui lòng kiểm tra quyền ứng dụng.');
+            'No permission to access image file. Please check app permissions.');
       } else if (e.toString().contains('No such file') ||
           e.toString().contains('does not exist')) {
         throw Exception(
-            'File hình ảnh không tồn tại. Vui lòng chọn hình ảnh khác.');
+            'Image file does not exist. Please select another image.');
       } else if (e.toString().contains('Invalid image format')) {
         throw Exception(
-            'Định dạng hình ảnh không được hỗ trợ. Vui lòng chọn file JPG hoặc PNG.');
+            'Unsupported image format. Please select a JPG or PNG file.');
       } else {
-        throw Exception('Lỗi xử lý hình ảnh: ${e.toString()}');
+        throw Exception('Image processing error: ${e.toString()}');
       }
     }
   }
@@ -507,7 +543,7 @@ CHÚ Ý: Chỉ trả về JSON, không thêm bất kỳ text nào khác.
       final jsonEnd = content.lastIndexOf('}') + 1;
 
       if (jsonStart == -1 || jsonEnd <= jsonStart) {
-        throw Exception('Không tìm thấy JSON trong response');
+        throw Exception('JSON not found in response');
       }
 
       final jsonString = content.substring(jsonStart, jsonEnd);
@@ -515,7 +551,7 @@ CHÚ Ý: Chỉ trả về JSON, không thêm bất kỳ text nào khác.
 
       return AIMeal(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
-        title: recipeData['title'] ?? 'Món ăn AI',
+        title: recipeData['title'] ?? 'AI Recipe',
         description: recipeData['description'] ?? '',
         ingredients: List<String>.from(recipeData['ingredients'] ?? []),
         instructions: List<String>.from(recipeData['instructions'] ?? []),

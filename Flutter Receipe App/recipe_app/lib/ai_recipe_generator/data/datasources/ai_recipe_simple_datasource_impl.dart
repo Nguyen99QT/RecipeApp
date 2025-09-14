@@ -49,12 +49,12 @@ class AIRecipeSimpleDataSourceImpl implements AIRecipeRemoteDataSource {
           }
         } catch (e) {
           print('[SIMPLE_AI] ❌ Failed to process image ${i + 1}: $e');
-          throw Exception('Lỗi xử lý hình ảnh ${i + 1}: $e');
+          throw Exception('Error processing image ${i + 1}: $e');
         }
       }
 
       if (imageParts.isEmpty) {
-        throw Exception('Không có hình ảnh hợp lệ để xử lý.');
+        throw Exception('No valid images to process.');
       }
 
       // Call API
@@ -105,26 +105,26 @@ class AIRecipeSimpleDataSourceImpl implements AIRecipeRemoteDataSource {
           return result;
         } else {
           print('[SIMPLE_AI] ❌ API response: ${response.body}');
-          throw Exception('API trả về dữ liệu không hợp lệ');
+          throw Exception('API returned invalid data');
         }
       } else if (response.statusCode == 400) {
         final errorData = json.decode(response.body);
         final errorMessage = errorData['error']['message'] ?? 'Unknown error';
         print('[SIMPLE_AI] ❌ API 400 Error: $errorMessage');
-        throw Exception('Lỗi yêu cầu API (400): $errorMessage');
+        throw Exception('API request error (400): $errorMessage');
       } else if (response.statusCode == 401) {
-        throw Exception('API key không hợp lệ (401)');
+        throw Exception('Invalid API key (401)');
       } else if (response.statusCode == 403) {
-        throw Exception('Không có quyền truy cập API (403)');
+        throw Exception('No permission to access API (403)');
       } else if (response.statusCode == 429) {
-        throw Exception('Quá giới hạn số lần gọi API (429)');
+        throw Exception('API call limit exceeded (429)');
       } else {
-        throw Exception('Lỗi API: ${response.statusCode} - ${response.body}');
+        throw Exception('API error: ${response.statusCode} - ${response.body}');
       }
     } catch (e, stackTrace) {
       print('[SIMPLE_AI] ❌ FATAL ERROR: $e');
       print('[SIMPLE_AI] Stack trace: $stackTrace');
-      throw Exception('Không thể tạo công thức: ${e.toString()}');
+      throw Exception('Unable to generate recipe: ${e.toString()}');
     }
   }
 
@@ -141,7 +141,7 @@ class AIRecipeSimpleDataSourceImpl implements AIRecipeRemoteDataSource {
       // Just try to read file and convert
       final file = File(imagePath);
       if (!await file.exists()) {
-        throw Exception('File không tồn tại: $imagePath');
+        throw Exception('File does not exist: $imagePath');
       }
 
       final bytes = await file.readAsBytes();
@@ -149,7 +149,7 @@ class AIRecipeSimpleDataSourceImpl implements AIRecipeRemoteDataSource {
 
       // Validate base64 data
       if (base64Data.isEmpty) {
-        throw Exception('Base64 data rỗng');
+        throw Exception('Base64 data is empty');
       }
 
       // Remove any whitespace or newlines
@@ -157,7 +157,7 @@ class AIRecipeSimpleDataSourceImpl implements AIRecipeRemoteDataSource {
 
       // Validate base64 format (basic check)
       if (!RegExp(r'^[A-Za-z0-9+/]*={0,2}$').hasMatch(cleanBase64)) {
-        throw Exception('Base64 format không hợp lệ');
+        throw Exception('Base64 format is invalid');
       }
 
       print(
@@ -165,16 +165,35 @@ class AIRecipeSimpleDataSourceImpl implements AIRecipeRemoteDataSource {
       return cleanBase64;
     } catch (e) {
       print('[SIMPLE_AI] ❌ Conversion failed: $e');
-      throw Exception('Không thể đọc file hình ảnh: $e');
+      throw Exception('Unable to read image file: $e');
     }
   }
 
   String _buildPrompt(AIRecipeRequest request) {
-    return '''
-Bạn là một đầu bếp chuyên nghiệp. Hãy phân tích hình ảnh và tạo công thức nấu ăn chi tiết bằng tiếng Việt.
+    // Language detection logic:
+    // 1. If user provides text prompt and it contains Vietnamese chars -> Vietnamese
+    // 2. If user provides text prompt without Vietnamese chars -> English
+    // 3. If no text prompt (image only) -> Default English
+    final promptText = request.userPrompt?.trim() ?? '';
+    final hasUserPrompt = promptText.isNotEmpty;
+    final isVietnamese = hasUserPrompt &&
+        RegExp(r'[àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]')
+            .hasMatch(promptText);
+    final useVietnamese = isVietnamese;
+
+    print('[SIMPLE_AI] 🌐 Language detection:');
+    print('[SIMPLE_AI]   - HasUserPrompt: $hasUserPrompt');
+    print('[SIMPLE_AI]   - PromptText: "$promptText"');
+    print('[SIMPLE_AI]   - IsVietnamese: $isVietnamese');
+    print('[SIMPLE_AI]   - UseVietnamese: $useVietnamese');
+
+    if (useVietnamese) {
+      // Build Vietnamese prompt
+      final vietnamesePrompt =
+          '''Bạn là một đầu bếp chuyên nghiệp. Hãy phân tích hình ảnh và tạo công thức nấu ăn chi tiết bằng tiếng Việt.
 
 Yêu cầu:
-${request.userPrompt ?? 'Tạo công thức dựa trên nguyên liệu trong hình'}
+${promptText.isNotEmpty ? promptText : 'Tạo công thức dựa trên nguyên liệu trong hình'}
 ${request.dietaryRestrictions != null ? 'Hạn chế ăn kiêng: ${request.dietaryRestrictions}' : ''}
 ${request.preferredCuisine != null ? 'Ẩm thực ưa thích: ${request.preferredCuisine}' : ''}
 ${request.targetServings != null ? 'Số người ăn: ${request.targetServings}' : ''}
@@ -196,39 +215,81 @@ Trả về kết quả theo định dạng JSON như sau:
   "estimatedCalories": 300
 }
 
-CHÚ Ý: Chỉ trả về JSON, không thêm text khác.
-''';
+CHÚ Ý: Chỉ trả về JSON, không thêm text khác.''';
+
+      return vietnamesePrompt;
+    } else {
+      // Build English prompt
+      final englishPrompt =
+          '''You are a professional chef. Analyze the images and create a detailed recipe in English.
+
+Requirements:
+${promptText.isNotEmpty ? promptText : 'Create a recipe based on the ingredients in the image'}
+${request.dietaryRestrictions != null ? 'Dietary restrictions: ${request.dietaryRestrictions}' : ''}
+${request.preferredCuisine != null ? 'Preferred cuisine: ${request.preferredCuisine}' : ''}
+${request.targetServings != null ? 'Servings: ${request.targetServings}' : ''}
+${request.difficultyLevel != null ? 'Difficulty level: ${request.difficultyLevel}' : ''}
+${request.maxPrepTime != null ? 'Maximum preparation time: ${request.maxPrepTime} minutes' : ''}
+
+Return result in JSON format as follows:
+{
+  "title": "Recipe name in English",
+  "description": "Brief description of the dish",
+  "ingredients": ["ingredient 1", "ingredient 2"],
+  "instructions": ["Step 1", "Step 2"],
+  "cuisine": "International",
+  "preparationTime": 15,
+  "cookingTime": 30,
+  "servings": 4,
+  "difficulty": "Easy",
+  "tags": ["tag1", "tag2"],
+  "estimatedCalories": 300
+}
+
+NOTE: Return only JSON, no additional text.''';
+
+      return englishPrompt;
+    }
   }
 
   AIMeal _parseAIResponse(String content, AIRecipeRequest? request) {
-    try {
-      final jsonStart = content.indexOf('{');
-      final jsonEnd = content.lastIndexOf('}') + 1;
+    print('[SIMPLE_AI] 🔍 Parsing AI response...');
+    print('[SIMPLE_AI] Raw content length: ${content.length}');
 
-      if (jsonStart == -1 || jsonEnd <= jsonStart) {
-        throw Exception('Không tìm thấy JSON trong response');
+    try {
+      // Clean up the response - remove any markdown formatting
+      String cleanContent = content.trim();
+      if (cleanContent.startsWith('```json')) {
+        cleanContent = cleanContent.replaceFirst('```json', '').trim();
+      }
+      if (cleanContent.endsWith('```')) {
+        cleanContent =
+            cleanContent.substring(0, cleanContent.length - 3).trim();
       }
 
-      final jsonString = content.substring(jsonStart, jsonEnd);
-      final Map<String, dynamic> recipeData = json.decode(jsonString);
+      print(
+          '[SIMPLE_AI] Cleaned content: ${cleanContent.substring(0, cleanContent.length > 200 ? 200 : cleanContent.length)}...');
+
+      final Map<String, dynamic> recipeData = json.decode(cleanContent);
 
       return AIMeal(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
-        title: recipeData['title'] ?? 'Món ăn AI',
+        title: recipeData['title'] ?? 'AI Recipe',
         description: recipeData['description'] ?? '',
         ingredients: List<String>.from(recipeData['ingredients'] ?? []),
         instructions: List<String>.from(recipeData['instructions'] ?? []),
-        cuisine: recipeData['cuisine'] ?? 'Việt Nam',
+        cuisine: recipeData['cuisine'] ?? 'International',
         preparationTime: recipeData['preparationTime'] ?? 15,
         cookingTime: recipeData['cookingTime'] ?? 30,
         servings: recipeData['servings'] ?? 4,
-        difficulty: recipeData['difficulty'] ?? 'Dễ',
+        difficulty: recipeData['difficulty'] ?? 'Easy',
         tags: List<String>.from(recipeData['tags'] ?? []),
         estimatedCalories: recipeData['estimatedCalories']?.toDouble(),
         createdAt: DateTime.now(),
       );
     } catch (e) {
-      throw Exception('Không thể phân tích response từ AI: ${e.toString()}');
+      print('[SIMPLE_AI] ❌ Parse error: $e');
+      throw Exception('Unable to parse AI response: ${e.toString()}');
     }
   }
 }

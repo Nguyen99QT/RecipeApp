@@ -84,13 +84,13 @@ class _SavedAIRecipesPageContentState
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Công Thức AI Đã Lưu',
+          'Saved AI Recipes',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
-        backgroundColor: const Color(0xFF4CAF50),
+        backgroundColor: const Color(0xFFFF8C00),
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
@@ -141,8 +141,8 @@ class _SavedAIRecipesPageContentState
         textCapitalization: TextCapitalization.sentences,
         keyboardType: TextInputType.text,
         decoration: InputDecoration(
-          hintText: 'Tìm kiếm công thức...',
-          prefixIcon: const Icon(Icons.search, color: Color(0xFF4CAF50)),
+          hintText: 'Search recipes...',
+          prefixIcon: const Icon(Icons.search, color: Color(0xFFFF8C00)),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
@@ -160,7 +160,7 @@ class _SavedAIRecipesPageContentState
     if (state is AIRecipeLoading) {
       return const Center(
         child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF8C00)),
         ),
       );
     }
@@ -173,7 +173,7 @@ class _SavedAIRecipesPageContentState
       onRefresh: () async {
         _loadRecipes();
       },
-      color: const Color(0xFF4CAF50),
+      color: const Color(0xFFFF8C00),
       child: ListView.builder(
         padding: const EdgeInsets.all(16.0),
         itemCount: _filteredRecipes.length,
@@ -200,8 +200,8 @@ class _SavedAIRecipesPageContentState
           const SizedBox(height: 16),
           Text(
             hasSearchQuery
-                ? 'Không tìm thấy công thức nào'
-                : 'Chưa có công thức nào được lưu',
+                ? 'No recipes found'
+                : 'No recipes have been saved yet',
             style: TextStyle(
               fontSize: 18,
               color: Colors.grey[600],
@@ -211,8 +211,8 @@ class _SavedAIRecipesPageContentState
           const SizedBox(height: 8),
           Text(
             hasSearchQuery
-                ? 'Thử tìm kiếm với từ khóa khác'
-                : 'Hãy tạo công thức AI đầu tiên của bạn!',
+                ? 'Try searching with a different keyword'
+                : 'Create your first AI recipe!',
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey[500],
@@ -224,9 +224,9 @@ class _SavedAIRecipesPageContentState
             ElevatedButton.icon(
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(Icons.add),
-              label: const Text('Tạo công thức mới'),
+              label: const Text('Create new recipe'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4CAF50),
+                backgroundColor: const Color(0xFFFF8C00),
                 foregroundColor: Colors.white,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -266,7 +266,7 @@ class _SavedAIRecipesPageContentState
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF2E7D32),
+                            color: Color(0xFFE65100),
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -288,14 +288,14 @@ class _SavedAIRecipesPageContentState
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF1F8E9),
+                      color: const Color(0xFFFFF3E0),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       recipe.cuisine,
                       style: const TextStyle(
                         fontSize: 12,
-                        color: Color(0xFF2E7D32),
+                        color: Color(0xFFE65100),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -350,7 +350,7 @@ class _SavedAIRecipesPageContentState
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Tạo ${_formatDate(recipe.createdAt)}',
+                    'Created ${_formatDate(recipe.createdAt)}',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey[500],
@@ -359,7 +359,7 @@ class _SavedAIRecipesPageContentState
                   const Icon(
                     Icons.arrow_forward_ios,
                     size: 14,
-                    color: Color(0xFF4CAF50),
+                    color: Color(0xFFFF8C00),
                   ),
                 ],
               ),

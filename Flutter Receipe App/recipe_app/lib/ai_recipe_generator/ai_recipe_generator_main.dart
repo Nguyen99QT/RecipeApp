@@ -118,7 +118,7 @@ class AIRecipeGeneratorProvider extends StatelessWidget {
           return const Scaffold(
             body: Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF8C00)),
               ),
             ),
           );
@@ -236,9 +236,9 @@ class AIRecipeGeneratorNavigation {
     return ElevatedButton.icon(
       onPressed: () => openGenerator(context, geminiApiKey: geminiApiKey),
       icon: const Icon(Icons.auto_awesome),
-      label: const Text('Tạo Công Thức AI'),
+      label: const Text('Generate AI Recipe'),
       style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF4CAF50),
+        backgroundColor: const Color(0xFFFF8C00),
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
@@ -255,8 +255,8 @@ class AIRecipeGeneratorNavigation {
       icon: const Icon(Icons.bookmark),
       label: const Text('Công Thức AI Đã Lưu'),
       style: OutlinedButton.styleFrom(
-        foregroundColor: const Color(0xFF4CAF50),
-        side: const BorderSide(color: Color(0xFF4CAF50)),
+        foregroundColor: const Color(0xFFFF8C00),
+        side: const BorderSide(color: Color(0xFFFF8C00)),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),

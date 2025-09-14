@@ -8,7 +8,19 @@ import '../../ai_recipe_generator_main.dart';
 class AIRecipeResultPage extends StatelessWidget {
   final AIMeal meal;
 
-  const AIRecipeResultPage({super.key, required this.meal});
+  cons            const Row(
+              children: [
+                Icon(Icons.list_alt, color: Color(0xFFFF8C00)),
+                SizedBox(width: 8),
+                Text(
+                  'Cooking Instructions',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),ultPage({super.key, required this.meal});
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +49,13 @@ class _AIRecipeResultPageContent extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Công Thức AI',
+          'AI RECIPE',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
-        backgroundColor: const Color(0xFF4CAF50),
+        backgroundColor: const Color(0xFFFF8C00),
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
@@ -57,9 +69,9 @@ class _AIRecipeResultPageContent extends StatelessWidget {
                 value: 'save',
                 child: Row(
                   children: [
-                    Icon(Icons.bookmark, color: Color(0xFF4CAF50)),
+                    Icon(Icons.bookmark, color: Color(0xFFFF8C00)),
                     SizedBox(width: 8),
-                    Text('Lưu công thức'),
+                    Text('Save recipe'),
                   ],
                 ),
               ),
@@ -67,9 +79,9 @@ class _AIRecipeResultPageContent extends StatelessWidget {
                 value: 'export',
                 child: Row(
                   children: [
-                    Icon(Icons.download, color: Color(0xFF4CAF50)),
+                    Icon(Icons.download, color: Color(0xFFFF8C00)),
                     SizedBox(width: 8),
-                    Text('Xuất file'),
+                    Text('Export file'),
                   ],
                 ),
               ),
@@ -82,8 +94,8 @@ class _AIRecipeResultPageContent extends StatelessWidget {
           if (state is AIRecipeSaved) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('Đã lưu công thức thành công!'),
-                backgroundColor: Color(0xFF4CAF50),
+                content: Text('Recipe saved successfully!'),
+                backgroundColor: Color(0xFFFF8C00),
                 duration: Duration(seconds: 2),
               ),
             );
@@ -128,7 +140,7 @@ class _AIRecipeResultPageContent extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           gradient: const LinearGradient(
-            colors: [Color(0xFF4CAF50), Color(0xFF66BB6A)],
+            colors: [Color(0xFFFF8C00), Color(0xFFFFB74D)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -183,10 +195,10 @@ class _AIRecipeResultPageContent extends StatelessWidget {
           children: [
             const Row(
               children: [
-                Icon(Icons.info_outline, color: Color(0xFF4CAF50)),
+                Icon(Icons.info_outline, color: Color(0xFFFF8C00)),
                 SizedBox(width: 8),
                 Text(
-                  'Thông Tin Chi Tiết',
+                  'Detailed Information',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -200,15 +212,15 @@ class _AIRecipeResultPageContent extends StatelessWidget {
                 Expanded(
                   child: _buildInfoItem(
                     Icons.restaurant,
-                    'Ẩm thực',
+                    'Cuisine',
                     meal.cuisine,
                   ),
                 ),
                 Expanded(
                   child: _buildInfoItem(
                     Icons.people,
-                    'Khẩu phần',
-                    '${meal.servings} người',
+                    'Servings',
+                    '${meal.servings} people',
                   ),
                 ),
               ],
@@ -219,15 +231,15 @@ class _AIRecipeResultPageContent extends StatelessWidget {
                 Expanded(
                   child: _buildInfoItem(
                     Icons.schedule,
-                    'Chuẩn bị',
-                    '${meal.preparationTime} phút',
+                    'Prep time',
+                    '${meal.preparationTime} min',
                   ),
                 ),
                 Expanded(
                   child: _buildInfoItem(
                     Icons.timer,
-                    'Nấu',
-                    '${meal.cookingTime} phút',
+                    'Cook time',
+                    '${meal.cookingTime} min',
                   ),
                 ),
               ],
@@ -238,7 +250,7 @@ class _AIRecipeResultPageContent extends StatelessWidget {
                 Expanded(
                   child: _buildInfoItem(
                     Icons.trending_up,
-                    'Độ khó',
+                    'Difficulty',
                     meal.difficulty,
                   ),
                 ),
@@ -297,10 +309,10 @@ class _AIRecipeResultPageContent extends StatelessWidget {
           children: [
             const Row(
               children: [
-                Icon(Icons.shopping_cart, color: Color(0xFF4CAF50)),
+                Icon(Icons.shopping_cart, color: Color(0xFFFF8C00)),
                 SizedBox(width: 8),
                 Text(
-                  'Nguyên Liệu',
+                  'Ingredients',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -320,7 +332,7 @@ class _AIRecipeResultPageContent extends StatelessWidget {
                       height: 6,
                       margin: const EdgeInsets.only(top: 8, right: 12),
                       decoration: const BoxDecoration(
-                        color: Color(0xFF4CAF50),
+                        color: Color(0xFFFF8C00),
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -354,7 +366,7 @@ class _AIRecipeResultPageContent extends StatelessWidget {
           children: [
             const Row(
               children: [
-                Icon(Icons.list_alt, color: Color(0xFF4CAF50)),
+                Icon(Icons.list_alt, color: Color(0xFFFF8C00)),
                 SizedBox(width: 8),
                 Text(
                   'Hướng Dẫn Nấu',
@@ -376,7 +388,7 @@ class _AIRecipeResultPageContent extends StatelessWidget {
                       width: 24,
                       height: 24,
                       decoration: const BoxDecoration(
-                        color: Color(0xFF4CAF50),
+                        color: Color(0xFFFF8C00),
                         shape: BoxShape.circle,
                       ),
                       child: Center(
@@ -423,7 +435,7 @@ class _AIRecipeResultPageContent extends StatelessWidget {
           children: [
             const Row(
               children: [
-                Icon(Icons.label, color: Color(0xFF4CAF50)),
+                Icon(Icons.label, color: Color(0xFFFF8C00)),
                 SizedBox(width: 8),
                 Text(
                   'Tags',
@@ -443,16 +455,16 @@ class _AIRecipeResultPageContent extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF1F8E9),
+                    color: const Color(0xFFFFF3E0),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                        color: const Color(0xFF4CAF50).withOpacity(0.3)),
+                        color: const Color(0xFFFF8C00).withOpacity(0.3)),
                   ),
                   child: Text(
                     tag,
                     style: const TextStyle(
                       fontSize: 12,
-                      color: Color(0xFF2E7D32),
+                      color: Color(0xFFE65100),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -477,14 +489,14 @@ class _AIRecipeResultPageContent extends StatelessWidget {
             },
             icon: const Icon(Icons.bookmark),
             label: const Text(
-              'Lưu Công Thức',
+              'Save Recipe',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF4CAF50),
+              backgroundColor: const Color(0xFFFF8C00),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -499,10 +511,10 @@ class _AIRecipeResultPageContent extends StatelessWidget {
               child: OutlinedButton.icon(
                 onPressed: () => _shareRecipe(context),
                 icon: const Icon(Icons.share),
-                label: const Text('Chia sẻ'),
+                label: const Text('Share'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF4CAF50),
-                  side: const BorderSide(color: Color(0xFF4CAF50)),
+                  foregroundColor: const Color(0xFFFF8C00),
+                  side: const BorderSide(color: Color(0xFFFF8C00)),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -515,10 +527,10 @@ class _AIRecipeResultPageContent extends StatelessWidget {
               child: OutlinedButton.icon(
                 onPressed: () => Navigator.of(context).pop(),
                 icon: const Icon(Icons.refresh),
-                label: const Text('Tạo lại'),
+                label: const Text('Generate Again'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF4CAF50),
-                  side: const BorderSide(color: Color(0xFF4CAF50)),
+                  foregroundColor: const Color(0xFFFF8C00),
+                  side: const BorderSide(color: Color(0xFFFF8C00)),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -536,24 +548,24 @@ class _AIRecipeResultPageContent extends StatelessWidget {
     final recipeText = '''
 🍽️ ${meal.title}
 
-📝 Mô tả: ${meal.description}
+📝 Description: ${meal.description}
 
-👥 Khẩu phần: ${meal.servings} người
-⏱️ Thời gian: ${meal.preparationTime + meal.cookingTime} phút
-🔥 Độ khó: ${meal.difficulty}
+👥 Servings: ${meal.servings} people
+⏱️ Time: ${meal.preparationTime + meal.cookingTime} minutes
+🔥 Difficulty: ${meal.difficulty}
 
-🛒 Nguyên liệu:
+🛒 Ingredients:
 ${meal.ingredients.map((ingredient) => '• $ingredient').join('\n')}
 
-👩‍🍳 Hướng dẫn:
+👩‍🍳 Instructions:
 ${meal.instructions.asMap().entries.map((entry) => '${entry.key + 1}. ${entry.value}').join('\n')}
 
 🏷️ Tags: ${meal.tags.join(', ')}
 
-Được tạo bởi AI Recipe Generator 🤖
+Generated by AI RECIPE 🤖
     ''';
 
-    Share.share(recipeText, subject: 'Công thức: ${meal.title}');
+    Share.share(recipeText, subject: 'Recipe: ${meal.title}');
   }
 
   void _handleMenuAction(BuildContext context, String action) {

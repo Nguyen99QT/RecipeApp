@@ -19,7 +19,7 @@ class _AIRecipeTestDebugPageState extends State<AIRecipeTestDebugPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('AI Recipe Debug Test'),
-        backgroundColor: const Color(0xFF4CAF50),
+        backgroundColor: const Color(0xFFFF8C00),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

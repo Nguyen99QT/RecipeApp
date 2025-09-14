@@ -53,7 +53,7 @@ class _AIRecipeGeneratorPageContentState
   final TextEditingController _allergiesController = TextEditingController();
 
   int _targetServings = 4;
-  String _difficulty = 'Dễ';
+  String _difficulty = 'Easy';
   int _maxPrepTime = 60;
 
   @override
@@ -70,13 +70,13 @@ class _AIRecipeGeneratorPageContentState
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Tạo Công Thức AI',
+          'AI RECIPE',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
-        backgroundColor: const Color(0xFF4CAF50),
+        backgroundColor: const Color(0xFFFF8C00),
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 2,
       ),
@@ -89,7 +89,7 @@ class _AIRecipeGeneratorPageContentState
               ),
             );
           } else if (state is AIRecipeError) {
-            // Hiển thị dialog lỗi chi tiết thay vì chỉ SnackBar
+            // Show detailed error dialog instead of just SnackBar
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
@@ -97,7 +97,7 @@ class _AIRecipeGeneratorPageContentState
                   children: [
                     Icon(Icons.error, color: Colors.red),
                     SizedBox(width: 8),
-                    Text('Lỗi AI Generator'),
+                    Text('AI Generator Error'),
                   ],
                 ),
                 content: SingleChildScrollView(
@@ -105,29 +105,29 @@ class _AIRecipeGeneratorPageContentState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(
-                        'Chi tiết lỗi:',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      const Row(
+                        children: [
+                          Icon(Icons.photo_camera, color: Color(0xFFFF8C00)),
+                          SizedBox(width: 8),
+                          Text(
+                            'Ingredient Images',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 8),
-                      Text(state.message),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'Vui lòng kiểm tra:',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      const Text('• Kết nối internet'),
-                      const Text('• API key đã được cấu hình'),
-                      const Text('• Hình ảnh được chọn hợp lệ'),
-                      const Text('• Thử lại sau vài phút'),
+                      const Text('• API key has been configured'),
+                      const Text('• Images are selected and valid'),
+                      const Text('• Please try again in a few minutes'),
                     ],
                   ),
                 ),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Đóng'),
+                    child: const Text('Close'),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -136,9 +136,9 @@ class _AIRecipeGeneratorPageContentState
                       Navigator.of(context).pushNamed('/ai_recipe_debug');
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF4CAF50),
+                      backgroundColor: const Color(0xFFFF8C00),
                     ),
-                    child: const Text('Kiểm tra API',
+                    child: const Text('Test API',
                         style: TextStyle(color: Colors.white)),
                   ),
                 ],
@@ -159,25 +159,7 @@ class _AIRecipeGeneratorPageContentState
                   const SizedBox(height: 20),
                   // Debug button for testing without images
                   if (_selectedImages.isEmpty) ...[
-                    SizedBox(
-                      height: 40,
-                      child: OutlinedButton.icon(
-                        onPressed: () {
-                          print('🧪 Debug: Testing with mock image');
-                          setState(() {
-                            // Add a mock image file for testing
-                            _selectedImages.add(File('/mock/image.jpg'));
-                          });
-                        },
-                        icon: const Icon(Icons.bug_report),
-                        label: const Text('Debug: Add Mock Image'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.grey[600],
-                          side: BorderSide(color: Colors.grey[400]!),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
+                    // ...removed debug/test feature...
                   ],
                   _buildPreferencesSection(),
                   const SizedBox(height: 30),
@@ -199,7 +181,7 @@ class _AIRecipeGeneratorPageContentState
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      color: const Color(0xFFF1F8E9),
+      color: const Color(0xFFFFF3E0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -207,20 +189,20 @@ class _AIRecipeGeneratorPageContentState
             const Icon(
               Icons.auto_awesome,
               size: 48,
-              color: Color(0xFF4CAF50),
+              color: Color(0xFFFF8C00),
             ),
             const SizedBox(height: 12),
             const Text(
-              'Tạo Công Thức Với AI',
+              'AI Recipe Generator',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF2E7D32),
+                color: Color(0xFFE65100),
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              'Chụp ảnh nguyên liệu và để AI tạo công thức nấu ăn phù hợp cho bạn!',
+              'Take photos of ingredients and let AI create the perfect recipe for you!',
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.grey[700],
@@ -244,10 +226,10 @@ class _AIRecipeGeneratorPageContentState
           children: [
             const Row(
               children: [
-                Icon(Icons.photo_camera, color: Color(0xFF4CAF50)),
+                Icon(Icons.photo_camera, color: Color(0xFFFF8C00)),
                 SizedBox(width: 8),
                 Text(
-                  'Hình Ảnh Nguyên Liệu',
+                  'Ingredient Images',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -289,10 +271,10 @@ class _AIRecipeGeneratorPageContentState
           children: [
             const Row(
               children: [
-                Icon(Icons.tune, color: Color(0xFF4CAF50)),
+                Icon(Icons.tune, color: Color(0xFFFF8C00)),
                 SizedBox(width: 8),
                 Text(
-                  'Tùy Chọn Chi Tiết',
+                  'Cooking Preferences',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -343,14 +325,14 @@ class _AIRecipeGeneratorPageContentState
                 if (_selectedImages.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Vui lòng chọn ít nhất một hình ảnh trước'),
+                      content: Text('Please select at least one image first'),
                       backgroundColor: Colors.orange,
                     ),
                   );
                 }
               },
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF4CAF50),
+          backgroundColor: const Color(0xFFFF8C00),
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -371,7 +353,7 @@ class _AIRecipeGeneratorPageContentState
                     ),
                   ),
                   SizedBox(width: 12),
-                  Text('Đang Tạo Công Thức...'),
+                  Text('Creating Recipe...'),
                 ],
               )
             : const Row(
@@ -380,7 +362,7 @@ class _AIRecipeGeneratorPageContentState
                   Icon(Icons.auto_awesome),
                   SizedBox(width: 8),
                   Text(
-                    'Tạo Công Thức AI',
+                    'Generate AI Recipe',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -402,11 +384,11 @@ class _AIRecipeGeneratorPageContentState
           children: [
             const LinearProgressIndicator(
               backgroundColor: Colors.grey,
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF8C00)),
             ),
             const SizedBox(height: 16),
             Text(
-              'AI đang phân tích hình ảnh và tạo công thức...',
+              'AI is analyzing the image and generating the recipe...',
               style: TextStyle(
                 color: Colors.grey[600],
                 fontSize: 14,
@@ -427,7 +409,7 @@ class _AIRecipeGeneratorPageContentState
       print('❌ No images selected');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Vui lòng chọn ít nhất một hình ảnh'),
+          content: Text('Please select at least one image'),
           backgroundColor: Colors.orange,
         ),
       );
@@ -478,19 +460,19 @@ class _AIRecipeGeneratorPageContentState
             children: [
               Icon(Icons.warning, color: Colors.orange),
               SizedBox(width: 8),
-              Text('Lỗi Hình Ảnh'),
+              Text('Image Error'),
             ],
           ),
-          content: const Text('Không có hình ảnh hợp lệ để xử lý.\n\n'
-              'Vui lòng kiểm tra:\n'
-              '• File tồn tại và không bị hỏng\n'
-              '• Định dạng: JPG, JPEG, PNG\n'
-              '• Kích thước < 10MB\n'
-              '• Chọn lại hình ảnh khác'),
+          content: const Text('No valid images to process.\n\n'
+              'Please check:\n'
+              '• File exists and is not corrupted\n'
+              '• Format: JPG, JPEG, PNG\n'
+              '• Size < 10MB\n'
+              '• Select different images'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Đóng'),
+              child: const Text('Close'),
             ),
           ],
         ),
@@ -501,8 +483,8 @@ class _AIRecipeGeneratorPageContentState
     if (hasInvalidImages) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Một số hình ảnh không hợp lệ đã bị bỏ qua. '
-              'Sử dụng ${validImagePaths.length} hình ảnh hợp lệ.'),
+          content: Text('Some invalid images were skipped. '
+              'Using ${validImagePaths.length} valid images.'),
           backgroundColor: Colors.orange,
         ),
       );
@@ -562,25 +544,26 @@ class _AIRecipeGeneratorPageContentState
                     );
                   } else if (state is AIRecipeError) {
                     print('❌ Recipe generation error: ${state.message}');
-                    _showErrorMessage('Lỗi tạo công thức: ${state.message}');
+                    _showErrorMessage(
+                        'Recipe generation error: ${state.message}');
                   }
                 }
               });
             } else {
               print('❌ New BLoC is also closed');
               _showErrorMessage(
-                  'Lỗi: Không thể kết nối đến AI service. Vui lòng thử lại.');
+                  'Error: Cannot connect to AI service. Please try again.');
             }
           } catch (e) {
             print('❌ Error getting new BLoC: $e');
             _showErrorMessage(
-                'Lỗi: Không thể khởi tạo AI service. Vui lòng restart app.');
+                'Error: Cannot initialize AI service. Please restart the app.');
           }
         }
       } catch (e) {
         print('❌ Error accessing BLoC: $e');
         _showErrorMessage(
-            'Lỗi: Không tìm thấy AI service. Vui lòng restart app.');
+            'Error: AI service not found. Please restart the app.');
       }
     } else {
       print('⚠️ Widget not mounted, skipping event');

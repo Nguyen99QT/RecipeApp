@@ -26,7 +26,7 @@ class Pic2PlateApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Pic2Plate AI',
         theme: ThemeData(
-          primarySwatch: Colors.green,
+          primarySwatch: Colors.orange,
           fontFamily: 'Poppins',
           useMaterial3: true,
         ),
@@ -158,7 +158,7 @@ class _Pic2PlateHomePageState extends State<Pic2PlateHomePage> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                foregroundColor: const Color(0xFF2E7D32),
+                foregroundColor: const Color(0xFFE65100),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(28),
                 ),
@@ -361,7 +361,7 @@ class _InputOptionCard extends StatelessWidget {
                 child: Icon(
                   icon,
                   size: 30,
-                  color: const Color(0xFF2E7D32),
+                  color: const Color(0xFFE65100),
                 ),
               ),
               const SizedBox(width: 16),

@@ -150,7 +150,7 @@ class _SearchScreenWidgetState extends State<SearchScreenWidget> {
                           keyboardType: TextInputType.text,
                           obscureText: false,
                           decoration: InputDecoration(
-                            hintText: 'Tìm kiếm công thức...',
+                            hintText: 'Search recipes...',
                             hintStyle: FlutterFlowTheme.of(context)
                                 .labelMedium
                                 .override(

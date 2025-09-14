@@ -81,10 +81,10 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                     ? () => _pickImage(ImageSource.camera)
                     : null,
                 icon: const Icon(Icons.camera_alt),
-                label: const Text('Chụp ảnh'),
+                label: const Text('Take Photo'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF4CAF50),
-                  side: const BorderSide(color: Color(0xFF4CAF50)),
+                  foregroundColor: const Color(0xFFFF8C00),
+                  side: const BorderSide(color: Color(0xFFFF8C00)),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -98,10 +98,10 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                     ? () => _pickImage(ImageSource.gallery)
                     : null,
                 icon: const Icon(Icons.photo_library),
-                label: const Text('Thư viện'),
+                label: const Text('Gallery'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF4CAF50),
-                  side: const BorderSide(color: Color(0xFF4CAF50)),
+                  foregroundColor: const Color(0xFFFF8C00),
+                  side: const BorderSide(color: Color(0xFFFF8C00)),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -140,7 +140,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Chọn hình ảnh nguyên liệu\nđể tạo công thức',
+                    'Choose ingredient images\nto create recipe',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.grey[600],

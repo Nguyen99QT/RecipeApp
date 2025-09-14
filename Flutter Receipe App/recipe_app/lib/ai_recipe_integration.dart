@@ -1,35 +1,35 @@
 import 'package:flutter/material.dart';
 import 'ai_recipe_generator/ai_recipe_generator_main.dart';
 
-/// Integration point cho AI Recipe Generator vào main RecipeApp
+/// Integration point for AI Recipe Generator into main RecipeApp
 class AIRecipeIntegration {
-  /// Thêm menu items cho AI Recipe Generator
+  /// Add menu items for AI Recipe Generator
   static List<Widget> buildMenuItems(BuildContext context,
       {String? geminiApiKey}) {
     return [
-      // Menu item để tạo công thức AI
+      // Menu item to create AI recipe
       ListTile(
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: const Color(0xFF4CAF50).withOpacity(0.1),
+            color: const Color(0xFFFF8C00).withOpacity(0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: const Icon(
             Icons.auto_awesome,
-            color: Color(0xFF4CAF50),
+            color: Color(0xFFFF8C00),
             size: 20,
           ),
         ),
         title: const Text(
-          'Tạo Công Thức AI',
+          'Generate AI Recipe',
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 16,
           ),
         ),
         subtitle: const Text(
-          'Tạo công thức từ hình ảnh với AI',
+          'Create recipes from images with AI',
           style: TextStyle(fontSize: 12),
         ),
         trailing: Container(
@@ -53,29 +53,29 @@ class AIRecipeIntegration {
         ),
       ),
 
-      // Menu item để xem công thức AI đã lưu
+      // Menu item to view saved AI recipes
       ListTile(
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: const Color(0xFF4CAF50).withOpacity(0.1),
+            color: const Color(0xFFFF8C00).withOpacity(0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: const Icon(
             Icons.bookmark,
-            color: Color(0xFF4CAF50),
+            color: Color(0xFFFF8C00),
             size: 20,
           ),
         ),
         title: const Text(
-          'Công Thức AI Đã Lưu',
+          'Saved AI Recipes',
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 16,
           ),
         ),
         subtitle: const Text(
-          'Xem danh sách công thức AI đã tạo',
+          'View list of created AI recipes',
           style: TextStyle(fontSize: 12),
         ),
         onTap: () => AIRecipeGeneratorNavigation.openSavedRecipes(
@@ -86,7 +86,7 @@ class AIRecipeIntegration {
     ];
   }
 
-  /// Build floating action button cho AI Recipe Generator
+  /// Build floating action button for AI Recipe Generator
   static Widget? buildFloatingActionButton(BuildContext context,
       {String? geminiApiKey}) {
     return FloatingActionButton.extended(
@@ -94,14 +94,14 @@ class AIRecipeIntegration {
         context,
         geminiApiKey: geminiApiKey,
       ),
-      backgroundColor: const Color(0xFF4CAF50),
+      backgroundColor: const Color(0xFFFF8C00),
       foregroundColor: Colors.white,
       icon: const Icon(Icons.auto_awesome),
       label: const Text('AI Recipe'),
     );
   }
 
-  /// Build card cho home page
+  /// Build card for home page
   static Widget buildHomeCard(BuildContext context, {String? geminiApiKey}) {
     return Card(
       elevation: 4,
@@ -113,7 +113,7 @@ class AIRecipeIntegration {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           gradient: const LinearGradient(
-            colors: [Color(0xFF4CAF50), Color(0xFF66BB6A)],
+            colors: [Color(0xFFFF8C00), Color(0xFFFFB74D)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -142,7 +142,7 @@ class AIRecipeIntegration {
             ),
             const SizedBox(height: 12),
             const Text(
-              'Chụp ảnh nguyên liệu và để AI tạo công thức nấu ăn độc đáo cho bạn!',
+              'Take photos of ingredients and let AI create unique recipes for you!',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
@@ -159,10 +159,10 @@ class AIRecipeIntegration {
                       geminiApiKey: geminiApiKey,
                     ),
                     icon: const Icon(Icons.photo_camera),
-                    label: const Text('Tạo Ngay'),
+                    label: const Text('Create Now'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF4CAF50),
+                      foregroundColor: const Color(0xFFFF8C00),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -208,12 +208,12 @@ class AIRecipeIntegration {
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: const Color(0xFF4CAF50).withOpacity(0.1),
+          color: const Color(0xFFFF8C00).withOpacity(0.1),
           borderRadius: BorderRadius.circular(8),
         ),
         child: const Icon(
           Icons.auto_awesome,
-          color: Color(0xFF4CAF50),
+          color: Color(0xFFFF8C00),
           size: 20,
         ),
       ),
@@ -251,7 +251,7 @@ class AIRecipeIntegration {
             children: [
               ListTile(
                 leading: const Icon(Icons.photo_camera, size: 20),
-                title: const Text('Tạo Công Thức'),
+                title: const Text('Generate Recipe'),
                 onTap: () {
                   Navigator.pop(context); // Close drawer
                   AIRecipeGeneratorNavigation.openGenerator(
@@ -306,7 +306,7 @@ class AIRecipeIntegration {
             children: [
               Icon(Icons.photo_camera, size: 18),
               SizedBox(width: 8),
-              Text('Tạo Công Thức AI'),
+              Text('Generate AI Recipe'),
             ],
           ),
         ),
@@ -316,7 +316,7 @@ class AIRecipeIntegration {
             children: [
               Icon(Icons.bookmark, size: 18),
               SizedBox(width: 8),
-              Text('Công Thức Đã Lưu'),
+              Text('Saved Recipes'),
             ],
           ),
         ),

@@ -15,7 +15,7 @@ class VietnameseInputHelper {
     required String hintText,
     Widget? prefixIcon,
     Widget? suffixIcon,
-    Color focusColor = const Color(0xFF4CAF50),
+    Color focusColor = const Color(0xFFFF8C00),
   }) {
     return InputDecoration(
       labelText: labelText,

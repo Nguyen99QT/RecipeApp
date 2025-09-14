@@ -21,7 +21,7 @@ class TestAIRecipeGeneratorPage extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        backgroundColor: const Color(0xFF4CAF50),
+        backgroundColor: const Color(0xFFFF8C00),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
@@ -39,7 +39,7 @@ class TestAIRecipeGeneratorPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF4CAF50), Color(0xFF66BB6A)],
+                    colors: [Color(0xFFFF8C00), Color(0xFFFFB74D)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -86,7 +86,7 @@ class TestAIRecipeGeneratorPage extends StatelessWidget {
                   children: [
                     const Row(
                       children: [
-                        Icon(Icons.key, color: Color(0xFF4CAF50)),
+                        Icon(Icons.key, color: Color(0xFFFF8C00)),
                         SizedBox(width: 8),
                         Text(
                           'Gemini API Key Status',
@@ -102,13 +102,13 @@ class TestAIRecipeGeneratorPage extends StatelessWidget {
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: geminiApiKey != null && geminiApiKey!.isNotEmpty
-                            ? Colors.green.withOpacity(0.1)
+                            ? Colors.orange.withOpacity(0.1)
                             : Colors.orange.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
                           color:
                               geminiApiKey != null && geminiApiKey!.isNotEmpty
-                                  ? Colors.green
+                                  ? Colors.orange
                                   : Colors.orange,
                         ),
                       ),
@@ -120,7 +120,7 @@ class TestAIRecipeGeneratorPage extends StatelessWidget {
                                 : Icons.warning,
                             color:
                                 geminiApiKey != null && geminiApiKey!.isNotEmpty
-                                    ? Colors.green
+                                    ? Colors.orange
                                     : Colors.orange,
                           ),
                           const SizedBox(width: 12),
@@ -128,11 +128,11 @@ class TestAIRecipeGeneratorPage extends StatelessWidget {
                             child: Text(
                               geminiApiKey != null && geminiApiKey!.isNotEmpty
                                   ? 'API Key được cung cấp'
-                                  : 'Chưa có API Key - Tính năng AI sẽ bị hạn chế',
+                                  : 'No API Key - AI features will be limited',
                               style: TextStyle(
                                 color: geminiApiKey != null &&
                                         geminiApiKey!.isNotEmpty
-                                    ? Colors.green[700]
+                                    ? Colors.orange[700]
                                     : Colors.orange[700],
                                 fontWeight: FontWeight.w500,
                               ),
@@ -157,7 +157,7 @@ class TestAIRecipeGeneratorPage extends StatelessWidget {
                   children: [
                     const Row(
                       children: [
-                        Icon(Icons.play_arrow, color: Color(0xFF4CAF50)),
+                        Icon(Icons.play_arrow, color: Color(0xFFFF8C00)),
                         SizedBox(width: 8),
                         Text(
                           'Test Actions',
@@ -176,9 +176,9 @@ class TestAIRecipeGeneratorPage extends StatelessWidget {
                       child: ElevatedButton.icon(
                         onPressed: () => _testGenerateRecipe(context),
                         icon: const Icon(Icons.auto_awesome),
-                        label: const Text('Test Tạo Công Thức AI'),
+                        label: const Text('Test AI Recipe Generator'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF4CAF50),
+                          backgroundColor: const Color(0xFFFF8C00),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
@@ -198,8 +198,8 @@ class TestAIRecipeGeneratorPage extends StatelessWidget {
                         icon: const Icon(Icons.bookmark),
                         label: const Text('Test Danh Sách Đã Lưu'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF4CAF50),
-                          side: const BorderSide(color: Color(0xFF4CAF50)),
+                          foregroundColor: const Color(0xFFFF8C00),
+                          side: const BorderSide(color: Color(0xFFFF8C00)),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -224,7 +224,7 @@ class TestAIRecipeGeneratorPage extends StatelessWidget {
                     const Row(
                       children: [
                         Icon(Icons.integration_instructions,
-                            color: Color(0xFF4CAF50)),
+                            color: Color(0xFFFF8C00)),
                         SizedBox(width: 8),
                         Text(
                           'Integration Examples',
@@ -287,22 +287,22 @@ class TestAIRecipeGeneratorPage extends StatelessWidget {
       {
         'name': 'AI Recipe Generation',
         'status': true,
-        'description': 'Tạo công thức từ hình ảnh'
+        'description': 'Generate recipe from image'
       },
       {
         'name': 'Local Storage',
         'status': true,
-        'description': 'Lưu trữ công thức cục bộ'
+        'description': 'Local recipe storage'
       },
       {
         'name': 'Search & Filter',
         'status': true,
-        'description': 'Tìm kiếm và lọc công thức'
+        'description': 'Search and filter recipes'
       },
       {
         'name': 'Share Recipes',
         'status': true,
-        'description': 'Chia sẻ công thức'
+        'description': 'Share recipes'
       },
       {
         'name': 'Multi-image Support',
@@ -317,7 +317,7 @@ class TestAIRecipeGeneratorPage extends StatelessWidget {
       {
         'name': 'Vietnamese UI',
         'status': true,
-        'description': 'Giao diện tiếng Việt'
+        'description': 'English interface'
       },
       {
         'name': 'Clean Architecture',
@@ -334,7 +334,7 @@ class TestAIRecipeGeneratorPage extends StatelessWidget {
           children: [
             const Row(
               children: [
-                Icon(Icons.checklist, color: Color(0xFF4CAF50)),
+                Icon(Icons.checklist, color: Color(0xFFFF8C00)),
                 SizedBox(width: 8),
                 Text(
                   'Feature Status',
@@ -356,7 +356,7 @@ class TestAIRecipeGeneratorPage extends StatelessWidget {
                                 ? Icons.check_circle
                                 : Icons.cancel,
                             color: feature['status'] as bool
-                                ? Colors.green
+                                ? Colors.orange
                                 : Colors.red,
                             size: 20,
                           ),
@@ -435,7 +435,7 @@ class TestAIRecipeWrapper extends StatelessWidget {
         return MaterialApp(
           title: 'Test AI Recipe Generator',
           theme: ThemeData(
-            primarySwatch: Colors.green,
+            primarySwatch: Colors.orange,
             fontFamily: 'SF Pro Display',
           ),
           home: Scaffold(

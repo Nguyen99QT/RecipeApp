@@ -140,7 +140,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             onPressed: () {
               context.pushNamed('AIRecipeDebug');
             },
-            backgroundColor: const Color(0xFF4CAF50),
+            backgroundColor: const Color(0xFFFF8C00),
             child: const Icon(
               Icons.auto_awesome,
               color: Colors.white,

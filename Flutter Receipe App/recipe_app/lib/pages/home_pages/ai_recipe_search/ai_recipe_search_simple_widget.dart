@@ -487,7 +487,7 @@ Serves: $_peopleCount people | Difficulty: Very Easy'''
                   inputFormatters: VietnameseInputHelper.vietnameseFormatters,
                   textCapitalization: TextCapitalization.sentences,
                   decoration: InputDecoration(
-                    labelText: 'Hạn chế ăn kiêng (Tùy chọn)',
+                    labelText: 'Dietary restrictions (Optional)',
                     hintText: 'VD: chay, không gluten, không có hạt...',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
