@@ -251,12 +251,23 @@ Please improve the recipe based on the feedback and return the result in JSON fo
   }
 
   String _buildPrompt(AIRecipeRequest request) {
-    // Detect language: Vietnamese if userPrompt contains Vietnamese chars, else English
+    // Detect language: English only if userPrompt contains English words and NO Vietnamese chars
+    // Default to English when no text input
     final promptText = request.userPrompt?.trim() ?? '';
-    final isVietnamese = RegExp(
+
+    // Check for Vietnamese characters
+    final hasVietnameseChars = RegExp(
             r'[àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]')
         .hasMatch(promptText);
-    final useVietnamese = isVietnamese && promptText.isNotEmpty;
+
+    // Check for common English words that indicate English intent
+    final hasEnglishWords = promptText.isNotEmpty &&
+        RegExp(r'\b(make|cook|recipe|prepare|ingredients|chicken|beef|pork|fish|vegetable|rice|noodle|soup|salad|pasta|pizza|bread|cake|dessert)\b',
+                caseSensitive: false)
+            .hasMatch(promptText);
+
+    // Use Vietnamese only if Vietnamese characters detected, otherwise default to English
+    final useVietnamese = promptText.isNotEmpty && hasVietnameseChars;
 
     if (useVietnamese) {
       return '''Bạn là một đầu bếp chuyên nghiệp và chuyên gia AI phân tích hình ảnh. Hãy phân tích những hình ảnh tôi gửi và tạo ra một công thức nấu ăn chi tiết bằng tiếng Việt.

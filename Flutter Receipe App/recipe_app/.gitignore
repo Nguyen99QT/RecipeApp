@@ -43,3 +43,15 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Large build artifacts that exceed GitHub limits
+**/app-debug.apk
+**/app-debug.apk.sha1
+**/flutter_assets/kernel_blob.bin
+**/intermediates/
+**/outputs/apk/
+**/outputs/flutter-apk/
+*.dill
+/build/app/
+build/app/outputs/
+build/app/intermediates/

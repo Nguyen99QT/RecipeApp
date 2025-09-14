@@ -170,21 +170,32 @@ class AIRecipeSimpleDataSourceImpl implements AIRecipeRemoteDataSource {
   }
 
   String _buildPrompt(AIRecipeRequest request) {
-    // Language detection logic:
-    // 1. If user provides text prompt and it contains Vietnamese chars -> Vietnamese
-    // 2. If user provides text prompt without Vietnamese chars -> English
-    // 3. If no text prompt (image only) -> Default English
+    // Language detection logic - Default to Vietnamese for Vietnamese users:
+    // 1. Vietnamese if prompt contains Vietnamese chars OR no specific English intent
+    // 2. English only if prompt contains English words AND no Vietnamese chars
+    // 3. If no text prompt (image only) -> Default Vietnamese
     final promptText = request.userPrompt?.trim() ?? '';
     final hasUserPrompt = promptText.isNotEmpty;
-    final isVietnamese = hasUserPrompt &&
-        RegExp(r'[àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]')
+
+    // Check for Vietnamese characters
+    final hasVietnameseChars = RegExp(
+            r'[àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]')
+        .hasMatch(promptText);
+
+    // Check for common English words that indicate English intent
+    final hasEnglishWords = hasUserPrompt &&
+        RegExp(r'\b(make|cook|recipe|prepare|ingredients|chicken|beef|pork|fish|vegetable|rice|noodle|soup|salad|pasta|pizza|bread|cake|dessert)\b',
+                caseSensitive: false)
             .hasMatch(promptText);
-    final useVietnamese = isVietnamese;
+
+    // Use Vietnamese only if Vietnamese characters detected, otherwise default to English
+    final useVietnamese = hasUserPrompt && hasVietnameseChars;
 
     print('[SIMPLE_AI] 🌐 Language detection:');
     print('[SIMPLE_AI]   - HasUserPrompt: $hasUserPrompt');
     print('[SIMPLE_AI]   - PromptText: "$promptText"');
-    print('[SIMPLE_AI]   - IsVietnamese: $isVietnamese');
+    print('[SIMPLE_AI]   - HasVietnameseChars: $hasVietnameseChars');
+    print('[SIMPLE_AI]   - HasEnglishWords: $hasEnglishWords');
     print('[SIMPLE_AI]   - UseVietnamese: $useVietnamese');
 
     if (useVietnamese) {
