@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 import '/flutter_flow/flutter_flow_util.dart';
+import '/utils/network_utils.dart';
 import 'api_manager.dart';
 
 export 'api_manager.dart' show ApiCallResponse;
@@ -14,9 +15,19 @@ class RecipeAppGroup {
   static String getBaseUrl({
     String? token = '',
   }) {
-    // Use computer's IP address instead of localhost for real device testing
-    // Updated IP address to current machine IP
-    return 'http://172.16.2.199:8190/api';
+    // Use cached IP if available, otherwise default to emulator IP
+    final cachedIp = NetworkUtils.getCachedIp();
+    if (cachedIp != null) {
+      return 'http://$cachedIp:8190/api';
+    }
+    
+    // Fallback to emulator IP
+    return 'http://10.0.2.2:8190/api';
+  }
+  
+  // Initialize network detection (call this once at app startup)
+  static Future<void> initializeNetwork() async {
+    await NetworkUtils.getLocalIpAddress();
   }
   static Map<String, String> headers = {
     'Authorization': 'Bearer [token]',
@@ -61,6 +72,10 @@ class RecipeAppGroup {
   static GetAdmobApiCall getAdmobApiCall = GetAdmobApiCall();
   static GetAllNotificationApiCall getAllNotificationApiCall =
       GetAllNotificationApiCall();
+  static GetUnreadNotificationCountApiCall getUnreadNotificationCountApiCall =
+      GetUnreadNotificationCountApiCall();
+  static MarkNotificationAsReadApiCall markNotificationAsReadApiCall =
+      MarkNotificationAsReadApiCall();
   static GetAllIntroApiCall getAllIntroApiCall = GetAllIntroApiCall();
   static FilterRecipeApiCall filterRecipeApiCall = FilterRecipeApiCall();
   static GetRecipeByCategoryIdApiCall getRecipeByCategoryIdApiCall =
@@ -1665,6 +1680,101 @@ class GetAdmobApiCall {
   String? iosappadid(dynamic response) => castToType<String>(getJsonField(
         response,
         r'''$.data.ads.ios_app_ad_id''',
+      ));
+}
+
+class GetUnreadNotificationCountApiCall {
+  Future<ApiCallResponse> call({
+    String? token = '',
+    String? userId = '',
+  }) async {
+    final baseUrl = RecipeAppGroup.getBaseUrl(
+      token: token,
+    );
+
+    // Debug logging
+    print('[DEBUG] GetUnreadNotificationCountApi - baseUrl: $baseUrl');
+    print('[DEBUG] GetUnreadNotificationCountApi - full URL: $baseUrl/GetUnreadNotificationCount?userId=$userId');
+    print('[DEBUG] GetUnreadNotificationCountApi - token: ${token?.isNotEmpty == true ? 'present' : 'empty'}');
+    print('[DEBUG] GetUnreadNotificationCountApi - userId: $userId');
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'GetUnreadNotificationCountApi',
+      apiUrl: '$baseUrl/GetUnreadNotificationCount?userId=$userId',
+      callType: ApiCallType.POST,
+      headers: token?.isNotEmpty == true ? {
+        'Authorization': 'Bearer $token',
+      } : {},
+      params: {},
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.status''',
+      ));
+  String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
+  int? unreadCount(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.data.unreadCount''',
+      ));
+}
+
+class MarkNotificationAsReadApiCall {
+  Future<ApiCallResponse> call({
+    String? token = '',
+    String? userId = '',
+    List<String>? notificationIds,
+  }) async {
+    final baseUrl = RecipeAppGroup.getBaseUrl(
+      token: token,
+    );
+
+    final ffApiRequestBody = '''
+{
+  "userId": "$userId"${notificationIds != null && notificationIds.isNotEmpty ? ',\n  "notificationIds": [${notificationIds.map((id) => '"$id"').join(',')}]' : ''}
+}''';
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'MarkNotificationAsRead',
+      apiUrl: '${baseUrl}/MarkNotificationAsRead',
+      callType: ApiCallType.POST,
+      headers: {
+        'Authorization': 'Bearer ${token}',
+      },
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.status''',
+      ));
+  String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
+  int? modifiedCount(dynamic response) => castToType<int>(getJsonField(
+        response,
+        r'''$.data.modifiedCount''',
       ));
 }
 

@@ -7,6 +7,7 @@ import '/pages/componants/main_container/main_container_widget.dart';
 import '/pages/componants/no_recipe_home_container/no_recipe_home_container_widget.dart';
 import '/pages/componants/row_container_componant/row_container_componant_widget.dart';
 import '/pages/shimmers/shimmer_row_container_component/shimmer_row_container_component_widget.dart';
+import '/utils/network_utils.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'dart:async';
@@ -38,7 +39,7 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
     _model.onUpdate();
   }
 
-  @override
+    @override
   void initState() {
     super.initState();
     _model = createModel(context, () => HomePageComponantModel());
@@ -48,10 +49,10 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
         trigger: AnimationTrigger.onPageLoad,
         effectsBuilder: () => [
           MoveEffect(
-            curve: Curves.linear,
-            delay: 50.0.ms,
-            duration: 400.0.ms,
-            begin: const Offset(0.0, -10.0),
+            curve: Curves.easeInOut,
+            delay: 0.0.ms,
+            duration: 600.0.ms,
+            begin: const Offset(-100.0, 0.0),
             end: const Offset(0.0, 0.0),
           ),
         ],
@@ -59,15 +60,26 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // Load all recipes on widget initialization
-      print('[DEBUG] Loading initial recipes...');
-      _model.allListApi = await RecipeAppGroup.getAllRecipeApiCall.call(
-        userId: FFAppState().userId,
-        token: FFAppState().token,
-      );
-      print('[DEBUG] Initial recipes loaded - statusCode: ${_model.allListApi?.statusCode}');
-      _model.isSelectcategory = true;
       safeSetState(() {});
+      // Auto-detect network instead of manual IP
+      print('[DEBUG] Starting network detection...');
+      final ip = await NetworkUtils.getLocalIpAddress();
+      print('[DEBUG] Detected IP: $ip');
+      await _loadUnreadNotificationCount();
+      
+      // Load recommended recipes on page initialization
+      print('[DEBUG] Loading recommended recipes on init...');
+      try {
+        _model.allListApi = await RecipeAppGroup.getAllRecipeApiCall.call(
+          userId: FFAppState().userId,
+          token: FFAppState().token,
+        );
+        _model.isSelectcategory = true;
+        print('[DEBUG] Recommended recipes loaded successfully');
+        safeSetState(() {});
+      } catch (e) {
+        print('[DEBUG] Error loading recommended recipes: $e');
+      }
     });
   }
 
@@ -76,6 +88,35 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
     _model.maybeDispose();
 
     super.dispose();
+  }
+
+  Future<void> _loadUnreadNotificationCount() async {
+    try {
+      if (FFAppState().token.isEmpty || FFAppState().userId.isEmpty) {
+        print('[DEBUG] Missing token or userId, skipping unread count load');
+        return;
+      }
+      
+      print('[DEBUG] Loading unread notification count...');
+      final response = await RecipeAppGroup.getUnreadNotificationCountApiCall.call(
+        token: FFAppState().token,
+        userId: FFAppState().userId,
+      );
+      
+      if (response.succeeded) {
+        final unreadCount = RecipeAppGroup.getUnreadNotificationCountApiCall.unreadCount(
+          response.jsonBody,
+        ) ?? 0;
+        
+        print('[DEBUG] Unread notification count: $unreadCount');
+        FFAppState().unreadNotificationCount = unreadCount;
+      } else {
+        print('[ERROR] Failed to load unread notification count: ${response.statusCode}');
+        print('[ERROR] Response body: ${response.bodyText}');
+      }
+    } catch (e) {
+      print('[ERROR] Exception loading unread notification count: $e');
+    }
   }
 
   @override
@@ -196,6 +237,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                         hoverColor: Colors.transparent,
                         highlightColor: Colors.transparent,
                         onTap: () async {
+                          // Reset unread count when notification page is opened
+                          FFAppState().unreadNotificationCount = 0;
                           context.pushNamed('NotificationPage');
                         },
                         child: Container(
@@ -206,14 +249,50 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
                             shape: BoxShape.circle,
                           ),
                           alignment: const AlignmentDirectional(0.0, 0.0),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(0.0),
-                            child: SvgPicture.asset(
-                              'assets/images/notification.svg',
-                              width: 24.0,
-                              height: 24.0,
-                              fit: BoxFit.contain,
-                            ),
+                          child: Stack(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(0.0),
+                                child: SvgPicture.asset(
+                                  'assets/images/notification.svg',
+                                  width: 24.0,
+                                  height: 24.0,
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                              // Notification badge
+                              if (FFAppState().unreadNotificationCount > 0)
+                                Positioned(
+                                  top: 4,
+                                  right: 4,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    constraints: const BoxConstraints(
+                                      minWidth: 18,
+                                      minHeight: 18,
+                                    ),
+                                    child: Text(
+                                      FFAppState().unreadNotificationCount > 99 
+                                        ? '99+'
+                                        : FFAppState().unreadNotificationCount.toString(),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
                       ),

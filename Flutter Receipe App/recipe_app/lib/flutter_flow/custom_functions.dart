@@ -54,22 +54,41 @@ bool? checkFavOrNot(
 }
 
 String? dateDifferenceBetween(String? date) {
-  String dateStr = date!;
-  //DateTime givenDate = DateFormat("yyyy-MM-dd").parse(dateStr);
-  DateTime givenDate = DateFormat.yMMMMd('en_US').parse(dateStr);
+  if (date == null || date.isEmpty) return "Unknown";
+  
+  try {
+    String dateStr = date;
+    DateTime givenDate;
+    
+    // Try different date formats
+    if (dateStr.contains('/')) {
+      // Handle formats like "9/14/2025" or "09/14/2025"
+      givenDate = DateFormat("M/d/yyyy").parse(dateStr);
+    } else if (dateStr.contains('-')) {
+      // Handle formats like "2025-09-14"
+      givenDate = DateFormat("yyyy-MM-dd").parse(dateStr);
+    } else {
+      // Fallback to original format
+      givenDate = DateFormat.yMMMMd('en_US').parse(dateStr);
+    }
 
-  DateTime currentDate = DateTime.now();
-  int differenceInDays = currentDate.difference(givenDate).inDays;
-  String newString = "";
+    DateTime currentDate = DateTime.now();
+    int differenceInDays = currentDate.difference(givenDate).inDays;
+    String newString = "";
 
-  if (differenceInDays == 0) {
-    newString = "Today";
-  } else if (differenceInDays == 1) {
-    newString = "Yesterday";
-  } else {
-    newString = "$differenceInDays Day's ago";
+    if (differenceInDays == 0) {
+      newString = "Today";
+    } else if (differenceInDays == 1) {
+      newString = "Yesterday";
+    } else {
+      newString = "$differenceInDays Day's ago";
+    }
+    
+    return newString;
+  } catch (e) {
+    print('[ERROR] Failed to parse date: $date, error: $e');
+    return "Unknown date";
   }
-  return newString;
 }
 
 String? getCategoryName(

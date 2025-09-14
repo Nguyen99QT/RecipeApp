@@ -107,7 +107,7 @@ class _RateUsBottomsheetWidgetState extends State<RateUsBottomsheetWidget> {
                           ),
                         ),
                         Text(
-                          'Rate us',
+                          'Review',
                           style:
                               FlutterFlowTheme.of(context).bodyMedium.override(
                                     fontFamily: 'SF Pro Display',
@@ -317,7 +317,7 @@ class _RateUsBottomsheetWidgetState extends State<RateUsBottomsheetWidget> {
                           hoverColor: Colors.transparent,
                           highlightColor: Colors.transparent,
                           onTap: () async {
-                            print('[DEBUG] Rate Us button tapped');
+                            print('[DEBUG] Review button tapped');
                             print('[DEBUG] Form validation started');
                             
                             if (_model.formKey.currentState == null ||
@@ -384,7 +384,7 @@ class _RateUsBottomsheetWidgetState extends State<RateUsBottomsheetWidget> {
                             model: _model.customAppButtonModel,
                             updateCallback: () => safeSetState(() {}),
                             child: const CustomAppButtonWidget(
-                              tittle: 'Rate us',
+                              tittle: 'Review',
                             ),
                           ),
                         ),

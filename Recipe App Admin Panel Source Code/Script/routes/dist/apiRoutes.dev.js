@@ -69,5 +69,8 @@ routes.get("/getAdmob", apiController.getAdmob); //Routes For Policy and terms
 
 routes.post("/GetPolicyAndTerms", apiController.GetPolicyAndTerms); //Routes For NotiFiaction
 
+routes.post("/GetUnreadNotificationCount", apiController.GetUnreadNotificationCount);
+routes.get("/GetUnreadNotificationCount", apiController.GetUnreadNotificationCount);
+routes.post("/MarkNotificationAsRead", apiController.MarkNotificationAsRead);
 routes.post("/GetAllNotification", apiController.GetAllNotification);
 module.exports = routes;

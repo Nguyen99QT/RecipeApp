@@ -2172,16 +2172,207 @@ var GetPolicyAndTerms = function GetPolicyAndTerms(req, res) {
       }
     }
   }, null, null, [[0, 7]]);
+}; // Get unread notification count
+
+
+var GetUnreadNotificationCount = function GetUnreadNotificationCount(req, res) {
+  var userId, notifications, unreadCount, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, notification, readByUser;
+
+  return regeneratorRuntime.async(function GetUnreadNotificationCount$(_context34) {
+    while (1) {
+      switch (_context34.prev = _context34.next) {
+        case 0:
+          _context34.prev = 0;
+          userId = req.query.userId;
+
+          if (userId) {
+            _context34.next = 4;
+            break;
+          }
+
+          return _context34.abrupt("return", res.status(400).json({
+            status: false,
+            message: "User ID is required"
+          }));
+
+        case 4:
+          console.log("[DEBUG] GetUnreadNotificationCount - userId: ".concat(userId)); // Get all enabled notifications
+
+          _context34.next = 7;
+          return regeneratorRuntime.awrap(notificationModel.find({
+            isEnabled: {
+              $ne: false
+            }
+          }));
+
+        case 7:
+          notifications = _context34.sent;
+          console.log("[DEBUG] Found ".concat(notifications.length, " enabled notifications")); // Count unread notifications (those not in user's readNotifications array)
+
+          unreadCount = 0;
+          _iteratorNormalCompletion = true;
+          _didIteratorError = false;
+          _iteratorError = undefined;
+          _context34.prev = 13;
+
+          for (_iterator = notifications[Symbol.iterator](); !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            notification = _step.value;
+            readByUser = notification.readNotifications && notification.readNotifications.includes(userId);
+
+            if (!readByUser) {
+              unreadCount++;
+            }
+          }
+
+          _context34.next = 21;
+          break;
+
+        case 17:
+          _context34.prev = 17;
+          _context34.t0 = _context34["catch"](13);
+          _didIteratorError = true;
+          _iteratorError = _context34.t0;
+
+        case 21:
+          _context34.prev = 21;
+          _context34.prev = 22;
+
+          if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+            _iterator["return"]();
+          }
+
+        case 24:
+          _context34.prev = 24;
+
+          if (!_didIteratorError) {
+            _context34.next = 27;
+            break;
+          }
+
+          throw _iteratorError;
+
+        case 27:
+          return _context34.finish(24);
+
+        case 28:
+          return _context34.finish(21);
+
+        case 29:
+          console.log("[DEBUG] User ".concat(userId, " has ").concat(unreadCount, " unread notifications"));
+          res.status(200).json({
+            status: true,
+            data: {
+              unreadCount: unreadCount
+            }
+          });
+          _context34.next = 37;
+          break;
+
+        case 33:
+          _context34.prev = 33;
+          _context34.t1 = _context34["catch"](0);
+          console.error('Error getting unread notification count:', _context34.t1);
+          res.status(500).json({
+            status: false,
+            message: "Internal server error"
+          });
+
+        case 37:
+        case "end":
+          return _context34.stop();
+      }
+    }
+  }, null, null, [[0, 33], [13, 17, 21, 29], [22,, 24, 28]]);
+}; // Mark notifications as read
+
+
+var MarkNotificationAsRead = function MarkNotificationAsRead(req, res) {
+  var _req$body14, userId, notificationIds, updateQuery, result;
+
+  return regeneratorRuntime.async(function MarkNotificationAsRead$(_context35) {
+    while (1) {
+      switch (_context35.prev = _context35.next) {
+        case 0:
+          _context35.prev = 0;
+          _req$body14 = req.body, userId = _req$body14.userId, notificationIds = _req$body14.notificationIds;
+
+          if (userId) {
+            _context35.next = 4;
+            break;
+          }
+
+          return _context35.abrupt("return", res.status(400).json({
+            status: false,
+            message: "User ID is required"
+          }));
+
+        case 4:
+          if (notificationIds && Array.isArray(notificationIds) && notificationIds.length > 0) {
+            // Mark specific notifications as read
+            updateQuery = {
+              _id: {
+                $in: notificationIds
+              }
+            };
+          } else {
+            // Mark all notifications as read
+            updateQuery = {
+              isEnabled: {
+                $ne: false
+              }
+            };
+          } // Add userId to readNotifications array if not already present
+
+
+          _context35.next = 7;
+          return regeneratorRuntime.awrap(notificationModel.updateMany(_objectSpread({}, updateQuery, {
+            readNotifications: {
+              $ne: userId
+            }
+          }), {
+            $push: {
+              readNotifications: userId
+            }
+          }));
+
+        case 7:
+          result = _context35.sent;
+          console.log("[DEBUG] Marked ".concat(result.modifiedCount, " notifications as read for user ").concat(userId));
+          res.status(200).json({
+            status: true,
+            message: "Notifications marked as read",
+            data: {
+              modifiedCount: result.modifiedCount
+            }
+          });
+          _context35.next = 16;
+          break;
+
+        case 12:
+          _context35.prev = 12;
+          _context35.t0 = _context35["catch"](0);
+          console.error('Error marking notifications as read:', _context35.t0);
+          res.status(500).json({
+            status: false,
+            message: "Internal server error"
+          });
+
+        case 16:
+        case "end":
+          return _context35.stop();
+      }
+    }
+  }, null, null, [[0, 12]]);
 }; // Get all notifications
 
 
 var GetAllNotification = function GetAllNotification(req, res) {
   var showAll, filter, notifications, mappedNotifications;
-  return regeneratorRuntime.async(function GetAllNotification$(_context34) {
+  return regeneratorRuntime.async(function GetAllNotification$(_context36) {
     while (1) {
-      switch (_context34.prev = _context34.next) {
+      switch (_context36.prev = _context36.next) {
         case 0:
-          _context34.prev = 0;
+          _context36.prev = 0;
           // Allow admin to see all notifications (including disabled) for debugging
           showAll = req.query.showAll === 'true';
           filter = {};
@@ -2196,13 +2387,13 @@ var GetAllNotification = function GetAllNotification(req, res) {
           }
 
           console.log("[DEBUG] GetAllNotification - showAll: ".concat(showAll, ", filter:"), filter);
-          _context34.next = 7;
+          _context36.next = 7;
           return regeneratorRuntime.awrap(notificationModel.find(filter).populate('recipeId', 'name image').sort({
             createdAt: -1
           }));
 
         case 7:
-          notifications = _context34.sent;
+          notifications = _context36.sent;
           console.log("[DEBUG] Found ".concat(notifications.length, " notifications")); // Map fields to match Flutter app expectations
 
           mappedNotifications = notifications.map(function (notification) {
@@ -2222,7 +2413,7 @@ var GetAllNotification = function GetAllNotification(req, res) {
               updatedAt: notification.updatedAt
             };
           });
-          return _context34.abrupt("return", res.status(200).json({
+          return _context36.abrupt("return", res.status(200).json({
             status: true,
             data: {
               notification: mappedNotifications
@@ -2230,17 +2421,17 @@ var GetAllNotification = function GetAllNotification(req, res) {
           }));
 
         case 13:
-          _context34.prev = 13;
-          _context34.t0 = _context34["catch"](0);
-          console.log(_context34.t0.message);
-          return _context34.abrupt("return", res.status(500).json({
+          _context36.prev = 13;
+          _context36.t0 = _context36["catch"](0);
+          console.log(_context36.t0.message);
+          return _context36.abrupt("return", res.status(500).json({
             status: false,
             message: "Internal server error"
           }));
 
         case 17:
         case "end":
-          return _context34.stop();
+          return _context36.stop();
       }
     }
   }, null, null, [[0, 13]]);
@@ -2249,13 +2440,13 @@ var GetAllNotification = function GetAllNotification(req, res) {
 
 var GetAllReviewsForApproval = function GetAllReviewsForApproval(req, res) {
   var reviews;
-  return regeneratorRuntime.async(function GetAllReviewsForApproval$(_context35) {
+  return regeneratorRuntime.async(function GetAllReviewsForApproval$(_context37) {
     while (1) {
-      switch (_context35.prev = _context35.next) {
+      switch (_context37.prev = _context37.next) {
         case 0:
-          _context35.prev = 0;
+          _context37.prev = 0;
           console.log('[DEBUG] GetAllReviewsForApproval called');
-          _context35.next = 4;
+          _context37.next = 4;
           return regeneratorRuntime.awrap(reviewModel.find({
             feedbackType: 'recipe' // Only recipe reviews, not app feedback
 
@@ -2264,25 +2455,25 @@ var GetAllReviewsForApproval = function GetAllReviewsForApproval(req, res) {
           }));
 
         case 4:
-          reviews = _context35.sent;
+          reviews = _context37.sent;
           console.log('[DEBUG] Found total reviews for approval:', reviews.length);
-          return _context35.abrupt("return", res.status(200).json({
+          return _context37.abrupt("return", res.status(200).json({
             status: true,
             data: reviews
           }));
 
         case 9:
-          _context35.prev = 9;
-          _context35.t0 = _context35["catch"](0);
-          console.log('[ERROR] GetAllReviewsForApproval:', _context35.t0.message);
-          return _context35.abrupt("return", res.status(500).json({
+          _context37.prev = 9;
+          _context37.t0 = _context37["catch"](0);
+          console.log('[ERROR] GetAllReviewsForApproval:', _context37.t0.message);
+          return _context37.abrupt("return", res.status(500).json({
             status: false,
             message: "Internal server error"
           }));
 
         case 13:
         case "end":
-          return _context35.stop();
+          return _context37.stop();
       }
     }
   }, null, null, [[0, 9]]);
@@ -2291,14 +2482,14 @@ var GetAllReviewsForApproval = function GetAllReviewsForApproval(req, res) {
 
 var ApproveReview = function ApproveReview(req, res) {
   var reviewId, updatedReview;
-  return regeneratorRuntime.async(function ApproveReview$(_context36) {
+  return regeneratorRuntime.async(function ApproveReview$(_context38) {
     while (1) {
-      switch (_context36.prev = _context36.next) {
+      switch (_context38.prev = _context38.next) {
         case 0:
-          _context36.prev = 0;
+          _context38.prev = 0;
           reviewId = req.body.reviewId;
           console.log('[DEBUG] ApproveReview called for reviewId:', reviewId);
-          _context36.next = 5;
+          _context38.next = 5;
           return regeneratorRuntime.awrap(reviewModel.findByIdAndUpdate(reviewId, {
             isApproved: true
           }, {
@@ -2306,38 +2497,38 @@ var ApproveReview = function ApproveReview(req, res) {
           }));
 
         case 5:
-          updatedReview = _context36.sent;
+          updatedReview = _context38.sent;
 
           if (updatedReview) {
-            _context36.next = 8;
+            _context38.next = 8;
             break;
           }
 
-          return _context36.abrupt("return", res.status(404).json({
+          return _context38.abrupt("return", res.status(404).json({
             status: false,
             message: "Review not found"
           }));
 
         case 8:
           console.log('[DEBUG] Review approved successfully');
-          return _context36.abrupt("return", res.status(200).json({
+          return _context38.abrupt("return", res.status(200).json({
             status: true,
             message: "Review approved successfully",
             data: updatedReview
           }));
 
         case 12:
-          _context36.prev = 12;
-          _context36.t0 = _context36["catch"](0);
-          console.log('[ERROR] ApproveReview:', _context36.t0.message);
-          return _context36.abrupt("return", res.status(500).json({
+          _context38.prev = 12;
+          _context38.t0 = _context38["catch"](0);
+          console.log('[ERROR] ApproveReview:', _context38.t0.message);
+          return _context38.abrupt("return", res.status(500).json({
             status: false,
             message: "Internal server error"
           }));
 
         case 16:
         case "end":
-          return _context36.stop();
+          return _context38.stop();
       }
     }
   }, null, null, [[0, 12]]);
@@ -2346,14 +2537,14 @@ var ApproveReview = function ApproveReview(req, res) {
 
 var RejectReview = function RejectReview(req, res) {
   var reviewId, updatedReview;
-  return regeneratorRuntime.async(function RejectReview$(_context37) {
+  return regeneratorRuntime.async(function RejectReview$(_context39) {
     while (1) {
-      switch (_context37.prev = _context37.next) {
+      switch (_context39.prev = _context39.next) {
         case 0:
-          _context37.prev = 0;
+          _context39.prev = 0;
           reviewId = req.body.reviewId;
           console.log('[DEBUG] RejectReview called for reviewId:', reviewId);
-          _context37.next = 5;
+          _context39.next = 5;
           return regeneratorRuntime.awrap(reviewModel.findByIdAndUpdate(reviewId, {
             isApproved: false
           }, {
@@ -2361,38 +2552,38 @@ var RejectReview = function RejectReview(req, res) {
           }));
 
         case 5:
-          updatedReview = _context37.sent;
+          updatedReview = _context39.sent;
 
           if (updatedReview) {
-            _context37.next = 8;
+            _context39.next = 8;
             break;
           }
 
-          return _context37.abrupt("return", res.status(404).json({
+          return _context39.abrupt("return", res.status(404).json({
             status: false,
             message: "Review not found"
           }));
 
         case 8:
           console.log('[DEBUG] Review rejected successfully');
-          return _context37.abrupt("return", res.status(200).json({
+          return _context39.abrupt("return", res.status(200).json({
             status: true,
             message: "Review rejected successfully",
             data: updatedReview
           }));
 
         case 12:
-          _context37.prev = 12;
-          _context37.t0 = _context37["catch"](0);
-          console.log('[ERROR] RejectReview:', _context37.t0.message);
-          return _context37.abrupt("return", res.status(500).json({
+          _context39.prev = 12;
+          _context39.t0 = _context39["catch"](0);
+          console.log('[ERROR] RejectReview:', _context39.t0.message);
+          return _context39.abrupt("return", res.status(500).json({
             status: false,
             message: "Internal server error"
           }));
 
         case 16:
         case "end":
-          return _context37.stop();
+          return _context39.stop();
       }
     }
   }, null, null, [[0, 12]]);
@@ -2435,5 +2626,7 @@ module.exports = {
   getAllFaq: getAllFaq,
   getAdmob: getAdmob,
   GetPolicyAndTerms: GetPolicyAndTerms,
+  GetUnreadNotificationCount: GetUnreadNotificationCount,
+  MarkNotificationAsRead: MarkNotificationAsRead,
   GetAllNotification: GetAllNotification
 };

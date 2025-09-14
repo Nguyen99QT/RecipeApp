@@ -1297,6 +1297,108 @@ const GetPolicyAndTerms = async (req, res) => {
     }
 };
 
+// Get unread notification count
+const GetUnreadNotificationCount = async (req, res) => {
+    try {
+        const { userId } = req.query;
+        
+        if (!userId) {
+            return res.status(400).json({
+                status: false,
+                message: "User ID is required"
+            });
+        }
+        
+        console.log(`[DEBUG] GetUnreadNotificationCount - userId: ${userId}`);
+        
+        // Get all enabled notifications
+        const notifications = await notificationModel.find({ 
+            isEnabled: { $ne: false } 
+        });
+        
+        console.log(`[DEBUG] Found ${notifications.length} enabled notifications`);
+        
+        // Count unread notifications (those not in user's readNotifications array)
+        let unreadCount = 0;
+        
+        for (const notification of notifications) {
+            const readByUser = notification.readNotifications && 
+                             notification.readNotifications.includes(userId);
+            
+            if (!readByUser) {
+                unreadCount++;
+            }
+        }
+        
+        console.log(`[DEBUG] User ${userId} has ${unreadCount} unread notifications`);
+        
+        res.status(200).json({
+            status: true,
+            data: {
+                unreadCount: unreadCount
+            }
+        });
+        
+    } catch (error) {
+        console.error('Error getting unread notification count:', error);
+        res.status(500).json({
+            status: false,
+            message: "Internal server error"
+        });
+    }
+};
+
+// Mark notifications as read
+const MarkNotificationAsRead = async (req, res) => {
+    try {
+        const { userId, notificationIds } = req.body;
+        
+        if (!userId) {
+            return res.status(400).json({
+                status: false,
+                message: "User ID is required"
+            });
+        }
+        
+        let updateQuery;
+        if (notificationIds && Array.isArray(notificationIds) && notificationIds.length > 0) {
+            // Mark specific notifications as read
+            updateQuery = { _id: { $in: notificationIds } };
+        } else {
+            // Mark all notifications as read
+            updateQuery = { isEnabled: { $ne: false } };
+        }
+        
+        // Add userId to readNotifications array if not already present
+        const result = await notificationModel.updateMany(
+            {
+                ...updateQuery,
+                readNotifications: { $ne: userId }
+            },
+            {
+                $push: { readNotifications: userId }
+            }
+        );
+        
+        console.log(`[DEBUG] Marked ${result.modifiedCount} notifications as read for user ${userId}`);
+        
+        res.status(200).json({
+            status: true,
+            message: "Notifications marked as read",
+            data: {
+                modifiedCount: result.modifiedCount
+            }
+        });
+        
+    } catch (error) {
+        console.error('Error marking notifications as read:', error);
+        res.status(500).json({
+            status: false,
+            message: "Internal server error"
+        });
+    }
+};
+
 // Get all notifications
 const GetAllNotification = async (req, res) => {
     try {
@@ -1487,5 +1589,7 @@ module.exports = {
     getAllFaq,
     getAdmob,
     GetPolicyAndTerms,
+    GetUnreadNotificationCount,
+    MarkNotificationAsRead,
     GetAllNotification
 };

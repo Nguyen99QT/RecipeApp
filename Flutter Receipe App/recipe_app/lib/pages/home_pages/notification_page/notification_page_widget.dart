@@ -29,7 +29,29 @@ class _NotificationPageWidgetState extends State<NotificationPageWidget> {
     super.initState();
     _model = createModel(context, () => NotificationPageModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      safeSetState(() {});
+      _markAllNotificationsAsRead();
+    });
+  }
+
+  Future<void> _markAllNotificationsAsRead() async {
+    try {
+      if (FFAppState().token.isNotEmpty && FFAppState().userId.isNotEmpty) {
+        final response = await RecipeAppGroup.markNotificationAsReadApiCall.call(
+          token: FFAppState().token,
+          userId: FFAppState().userId,
+        );
+        
+        if (response.succeeded) {
+          print('[DEBUG] Marked all notifications as read');
+          // Reset unread count to 0
+          FFAppState().unreadNotificationCount = 0;
+        }
+      }
+    } catch (e) {
+      print('[ERROR] Failed to mark notifications as read: $e');
+    }
   }
 
   @override
@@ -70,7 +92,9 @@ class _NotificationPageWidgetState extends State<NotificationPageWidget> {
                         child: FutureBuilder<ApiCallResponse>(
                           future: FFAppState().getAllNotificationCache(
                             requestFn: () =>
-                                RecipeAppGroup.getAllNotificationApiCall.call(),
+                                RecipeAppGroup.getAllNotificationApiCall.call(
+                                  token: FFAppState().token,
+                                ),
                           ),
                           builder: (context, snapshot) {
                             // Debug logging

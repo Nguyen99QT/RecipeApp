@@ -32,6 +32,11 @@ var notificationSchema = new mongoose.Schema({
   isEnabled: {
     type: Boolean,
     "default": true
+  },
+  readNotifications: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'users',
+    "default": []
   }
 }, {
   timestamps: true
