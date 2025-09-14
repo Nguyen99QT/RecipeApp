@@ -418,7 +418,7 @@ class _AIRecipeGeneratorPageContentState
 
     print('📷 Processing ${_selectedImages.length} selected images');
 
-    // Validation hình ảnh
+    // Image validation
     bool hasInvalidImages = false;
     List<String> validImagePaths = [];
 

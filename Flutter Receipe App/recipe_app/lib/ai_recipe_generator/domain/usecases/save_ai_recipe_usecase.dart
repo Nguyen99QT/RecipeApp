@@ -16,7 +16,7 @@ class SaveAIRecipeUseCase {
     }
 
     if (meal.instructions.isEmpty) {
-      throw ArgumentError('Hướng dẫn nấu ăn không được để trống');
+      throw ArgumentError('Cooking instructions cannot be empty');
     }
 
     try {

@@ -511,7 +511,7 @@ NOTE: Return only JSON, do not add any other text.
       print(
           '[AI_REMOTE_DATASOURCE] =================== FAILED BASE64 CONVERSION ===================');
       throw Exception(
-          'Không thể đọc file hình ảnh. Vui lòng thử chọn hình ảnh khác.');
+          'Cannot read image file. Please try selecting another image.');
     } catch (e, stackTrace) {
       print('[AI_REMOTE_DATASOURCE] ❌ FATAL ERROR in base64 conversion: $e');
       print('[AI_REMOTE_DATASOURCE] Stack trace: $stackTrace');

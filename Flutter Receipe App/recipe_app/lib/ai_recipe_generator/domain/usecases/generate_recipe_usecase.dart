@@ -10,7 +10,7 @@ class GenerateRecipeUseCase {
   Future<AIMeal> call(AIRecipeRequest request) async {
     // Validate input
     if (request.imageUrls.isEmpty) {
-      throw ArgumentError('Cần ít nhất một hình ảnh để tạo công thức');
+      throw ArgumentError('Need at least one image to generate recipe');
     }
 
     // Validate image URLs

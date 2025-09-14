@@ -112,7 +112,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         ),
         const SizedBox(height: 8),
         Text(
-          'Đã chọn ${widget.selectedImages.length}/${widget.maxImages} hình ảnh',
+          'Selected ${widget.selectedImages.length}/${widget.maxImages} images',
           style: TextStyle(
             fontSize: 12,
             color: Colors.grey[600],

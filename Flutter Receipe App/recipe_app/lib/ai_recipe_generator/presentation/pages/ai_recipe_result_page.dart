@@ -8,19 +8,7 @@ import '../../ai_recipe_generator_main.dart';
 class AIRecipeResultPage extends StatelessWidget {
   final AIMeal meal;
 
-  cons            const Row(
-              children: [
-                Icon(Icons.list_alt, color: Color(0xFFFF8C00)),
-                SizedBox(width: 8),
-                Text(
-                  'Cooking Instructions',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),ultPage({super.key, required this.meal});
+  const AIRecipeResultPage({super.key, required this.meal});
 
   @override
   Widget build(BuildContext context) {
@@ -369,7 +357,7 @@ class _AIRecipeResultPageContent extends StatelessWidget {
                 Icon(Icons.list_alt, color: Color(0xFFFF8C00)),
                 SizedBox(width: 8),
                 Text(
-                  'Hướng Dẫn Nấu',
+                  'Cooking Instructions',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

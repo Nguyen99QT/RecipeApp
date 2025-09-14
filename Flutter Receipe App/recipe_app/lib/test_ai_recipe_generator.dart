@@ -299,15 +299,11 @@ class TestAIRecipeGeneratorPage extends StatelessWidget {
         'status': true,
         'description': 'Search and filter recipes'
       },
-      {
-        'name': 'Share Recipes',
-        'status': true,
-        'description': 'Share recipes'
-      },
+      {'name': 'Share Recipes', 'status': true, 'description': 'Share recipes'},
       {
         'name': 'Multi-image Support',
         'status': true,
-        'description': 'Hỗ trợ nhiều hình ảnh'
+        'description': 'Multi-image support'
       },
       {
         'name': 'Recipe Preferences',
@@ -346,46 +342,44 @@ class TestAIRecipeGeneratorPage extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            ...features
-                .map((feature) => Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        children: [
-                          Icon(
-                            feature['status'] as bool
-                                ? Icons.check_circle
-                                : Icons.cancel,
-                            color: feature['status'] as bool
-                                ? Colors.orange
-                                : Colors.red,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  feature['name'] as String,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                Text(
-                                  feature['description'] as String,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+            ...features.map((feature) => Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      Icon(
+                        feature['status'] as bool
+                            ? Icons.check_circle
+                            : Icons.cancel,
+                        color: feature['status'] as bool
+                            ? Colors.orange
+                            : Colors.red,
+                        size: 20,
                       ),
-                    ))
-                ,
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              feature['name'] as String,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                              ),
+                            ),
+                            Text(
+                              feature['description'] as String,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
           ],
         ),
       ),
