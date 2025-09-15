@@ -166,6 +166,13 @@ routes.get("/mail-config", isLogin, mailController.loadMailConfig);
 
 routes.post("/mail-config", mailController.mailConfig);
 
+// Routes For AI Recipes
+const aiRecipeAdminController = require("../controllers/aiRecipeAdminController");
+routes.get("/ai-recipes", isLogin, aiRecipeAdminController.loadAiRecipes);
+routes.get("/ai-recipe-detail", isLogin, aiRecipeAdminController.viewAiRecipe);
+routes.get("/delete-ai-recipe", isLogin, aiRecipeAdminController.deleteAiRecipe);
+routes.get("/ai-recipe-stats", isLogin, aiRecipeAdminController.getAiRecipeStats);
+
 //Routes For Log Out
 routes.get("/logout", isLogin, loginController.logout);
 

@@ -14,7 +14,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../main.dart';
 
-
 export 'lat_lng.dart';
 export 'place.dart';
 export 'uploaded_file.dart';
@@ -52,6 +51,21 @@ Future launchURL(String url) async {
   } catch (e) {
     throw 'Could not launch $uri: $e';
   }
+}
+
+// Helper function to build proper image URL
+String buildImageUrl(String imagePath) {
+  if (imagePath.isEmpty) {
+    return '';
+  }
+
+  // If the image path is already a complete URL (starts with http or https)
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath;
+  }
+
+  // Otherwise, prepend the base image URL
+  return 'http://10.0.2.2:8190/uploads/images/$imagePath';
 }
 
 Color colorFromCssString(String color, {Color? defaultColor}) {

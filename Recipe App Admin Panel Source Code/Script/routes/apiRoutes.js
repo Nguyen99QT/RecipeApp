@@ -108,4 +108,11 @@ routes.post("/MarkNotificationAsRead", apiController.MarkNotificationAsRead);
 
 routes.post("/GetAllNotification", apiController.GetAllNotification);
 
+//Routes For AI Generated Recipes
+const aiRecipeController = require("../controllers/aiRecipeController");
+routes.post("/saveAiRecipe", checkAuthorization, aiRecipeController.saveAiRecipe);
+routes.post("/getUserAiRecipes", checkAuthorization, aiRecipeController.getUserAiRecipes);
+routes.post("/deleteAiRecipe", checkAuthorization, aiRecipeController.deleteAiRecipe);
+routes.post("/updateAiRecipe", checkAuthorization, aiRecipeController.updateAiRecipe);
+
 module.exports = routes;

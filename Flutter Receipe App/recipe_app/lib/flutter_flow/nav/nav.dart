@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/index.dart';
+import '/pages/home_pages/ai_recipe_search/ai_recipe_search_simple_widget.dart';
+import '/pages/ai_recipe_pages/my_ai_recipes/my_ai_recipes_widget.dart';
+import '/ai_recipe_debug_page.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
 export 'package:go_router/go_router.dart';
@@ -40,6 +43,21 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: 'HomePage',
           path: '/homePage',
           builder: (context, params) => const HomePageWidget(),
+        ),
+        FFRoute(
+          name: 'AiRecipeSearch',
+          path: '/aiRecipeSearch',
+          builder: (context, params) => const AiRecipeSearchWidget(),
+        ),
+        FFRoute(
+          name: 'MyAiRecipes',
+          path: '/myAiRecipes',
+          builder: (context, params) => const MyAiRecipesWidget(),
+        ),
+        FFRoute(
+          name: 'AIRecipeDebug',
+          path: '/aiRecipeDebug',
+          builder: (context, params) => const AIRecipeDebugPage(),
         ),
         FFRoute(
           name: 'Splash_screen',
@@ -381,7 +399,8 @@ class TransitionInfo {
   final Duration duration;
   final Alignment? alignment;
 
-  static TransitionInfo appDefault() => const TransitionInfo(hasTransition: false);
+  static TransitionInfo appDefault() =>
+      const TransitionInfo(hasTransition: false);
 }
 
 class RootPageContext {

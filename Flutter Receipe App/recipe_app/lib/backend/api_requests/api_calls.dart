@@ -80,6 +80,11 @@ class RecipeAppGroup {
   static FilterRecipeApiCall filterRecipeApiCall = FilterRecipeApiCall();
   static GetRecipeByCategoryIdApiCall getRecipeByCategoryIdApiCall =
       GetRecipeByCategoryIdApiCall();
+  static SaveAiRecipeApiCall saveAiRecipeApiCall = SaveAiRecipeApiCall();
+  static GetUserAiRecipesApiCall getUserAiRecipesApiCall =
+      GetUserAiRecipesApiCall();
+  static DeleteAiRecipeApiCall deleteAiRecipeApiCall = DeleteAiRecipeApiCall();
+  static UpdateAiRecipeApiCall updateAiRecipeApiCall = UpdateAiRecipeApiCall();
 }
 
 class SignupApiCall {
@@ -1831,7 +1836,7 @@ class GetAllIntroApiCall {
     final baseUrl = RecipeAppGroup.getBaseUrl(
       token: token,
     );
-    
+
     print('[DEBUG] GetAllIntroApiCall - baseUrl: $baseUrl');
     print('[DEBUG] GetAllIntroApiCall - full URL: $baseUrl/getAllIntro');
 
@@ -2040,3 +2045,195 @@ String _serializeJson(dynamic jsonVar, [bool isList = false]) {
   }
 }
 
+/// End Recipe App Group Code
+
+/// Start AI Recipe API Calls
+
+class SaveAiRecipeApiCall {
+  Future<ApiCallResponse> call({
+    String? recipeName = '',
+    String? recipeContent = '',
+    List<String>? ingredients,
+    int? servingSize,
+    int? cookingTime,
+    String? difficultyLevel = 'Easy',
+    String? token = '',
+  }) async {
+    final baseUrl = RecipeAppGroup.getBaseUrl(
+      token: token,
+    );
+
+    final ffApiRequestBody = '''
+{
+  "recipeName": "$recipeName",
+  "recipeContent": "$recipeContent",
+  "ingredients": ${_serializeList(ingredients ?? [])},
+  "servingSize": $servingSize,
+  "cookingTime": $cookingTime,
+  "difficultyLevel": "$difficultyLevel"
+}''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'SaveAiRecipe',
+      apiUrl: '$baseUrl/saveAiRecipe',
+      callType: ApiCallType.POST,
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.status''',
+      ));
+  String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
+}
+
+class GetUserAiRecipesApiCall {
+  Future<ApiCallResponse> call({
+    String? token = '',
+  }) async {
+    final baseUrl = RecipeAppGroup.getBaseUrl(
+      token: token,
+    );
+
+    return ApiManager.instance.makeApiCall(
+      callName: 'GetUserAiRecipes',
+      apiUrl: '$baseUrl/getUserAiRecipes',
+      callType: ApiCallType.POST,
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+      params: {},
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  List? aiRecipesList(dynamic response) => getJsonField(
+        response,
+        r'''$.data''',
+      ) as List?;
+
+  bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.status''',
+      ));
+  String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
+}
+
+class DeleteAiRecipeApiCall {
+  Future<ApiCallResponse> call({
+    String? recipeId = '',
+    String? token = '',
+  }) async {
+    final baseUrl = RecipeAppGroup.getBaseUrl(
+      token: token,
+    );
+
+    final ffApiRequestBody = '''
+{
+  "recipeId": "$recipeId"
+}''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'DeleteAiRecipe',
+      apiUrl: '$baseUrl/deleteAiRecipe',
+      callType: ApiCallType.POST,
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.status''',
+      ));
+  String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
+}
+
+class UpdateAiRecipeApiCall {
+  Future<ApiCallResponse> call({
+    String? recipeId = '',
+    String? recipeName = '',
+    String? recipeContent = '',
+    List<String>? ingredients,
+    int? servingSize,
+    int? cookingTime,
+    String? difficultyLevel = 'Easy',
+    String? token = '',
+  }) async {
+    final baseUrl = RecipeAppGroup.getBaseUrl(
+      token: token,
+    );
+
+    final ffApiRequestBody = '''
+{
+  "recipeId": "$recipeId",
+  "recipeName": "$recipeName",
+  "recipeContent": "$recipeContent",
+  "ingredients": ${_serializeList(ingredients ?? [])},
+  "servingSize": $servingSize,
+  "cookingTime": $cookingTime,
+  "difficultyLevel": "$difficultyLevel"
+}''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'UpdateAiRecipe',
+      apiUrl: '$baseUrl/updateAiRecipe',
+      callType: ApiCallType.POST,
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  bool? success(dynamic response) => castToType<bool>(getJsonField(
+        response,
+        r'''$.status''',
+      ));
+  String? message(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.message''',
+      ));
+}

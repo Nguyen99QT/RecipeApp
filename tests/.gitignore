@@ -1,0 +1,10 @@
+# Test output files
+coverage/
+test-results/
+*.coverage
+*.lcov
+
+# Test temporary files
+*.tmp
+test-data/
+mock-data/

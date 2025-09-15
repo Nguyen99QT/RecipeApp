@@ -1,0 +1,9 @@
+# Script temporary files
+*.tmp
+*.log
+temp/
+output/
+
+# PowerShell specific
+*.ps1xml
+profile.ps1

@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.11.0",
     "body-parser": "^1.20.2",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^5.1.0",
@@ -30,6 +31,7 @@
     "otp-generator": "^4.0.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
+    "querystring": "^0.2.1",
     "sha256": "^0.2.0"
   }
 }
