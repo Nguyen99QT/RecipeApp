@@ -100,12 +100,12 @@ class _AIRecipeGeneratorPageContentState
                     Text('AI Generator Error'),
                   ],
                 ),
-                content: SingleChildScrollView(
+                content: const SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Row(
+                      Row(
                         children: [
                           Icon(Icons.photo_camera, color: Color(0xFFFF8C00)),
                           SizedBox(width: 8),
@@ -118,9 +118,9 @@ class _AIRecipeGeneratorPageContentState
                           ),
                         ],
                       ),
-                      const Text('• API key has been configured'),
-                      const Text('• Images are selected and valid'),
-                      const Text('• Please try again in a few minutes'),
+                      Text('• API key has been configured'),
+                      Text('• Images are selected and valid'),
+                      Text('• Please try again in a few minutes'),
                     ],
                   ),
                 ),

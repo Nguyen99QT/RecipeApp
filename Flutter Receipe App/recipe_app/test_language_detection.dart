@@ -5,24 +5,24 @@ void main() {
   print('=== Testing Vietnamese Language Detection ===');
 
   // Test Vietnamese text
-  final vietnameseText = 'Tôi muốn nấu món phở bò';
+  const vietnameseText = 'Tôi muốn nấu món phở bò';
   final vietnameseRegex = RegExp(
       r'[àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]');
   final isVietnamese1 = vietnameseRegex.hasMatch(vietnameseText);
   print('Vietnamese text: "$vietnameseText" -> $isVietnamese1');
 
   // Test English text
-  final englishText = 'I want to cook beef soup';
+  const englishText = 'I want to cook beef soup';
   final isVietnamese2 = vietnameseRegex.hasMatch(englishText);
   print('English text: "$englishText" -> $isVietnamese2');
 
   // Test mixed text
-  final mixedText = 'I want phở bò';
+  const mixedText = 'I want phở bò';
   final isVietnamese3 = vietnameseRegex.hasMatch(mixedText);
   print('Mixed text: "$mixedText" -> $isVietnamese3');
 
   // Test empty text
-  final emptyText = '';
+  const emptyText = '';
   final isVietnamese4 = vietnameseRegex.hasMatch(emptyText);
   print('Empty text: "$emptyText" -> $isVietnamese4');
 
