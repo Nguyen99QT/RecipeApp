@@ -1,9 +1,0 @@
-# Documentation build files
-*.pdf
-*.html
-*.docx
-
-# Temporary documentation files
-temp/
-draft/
-backup/

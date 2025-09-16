@@ -1,6 +1,0 @@
-com\recipe\admin\RecipeAdminApplication.class
-com\recipe\admin\repository\UserRepository.class
-main\java\com\recipe\admin\config\SecurityConfig.class
-com\recipe\admin\model\Recipe.class
-com\recipe\admin\controller\UserController.class
-com\recipe\admin\model\User.class

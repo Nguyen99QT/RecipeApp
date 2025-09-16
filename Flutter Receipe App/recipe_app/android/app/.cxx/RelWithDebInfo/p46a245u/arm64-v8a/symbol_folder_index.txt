@@ -1,1 +1,0 @@
-C:\Aptech\7. PRJ4\Receipe\Flutter Receipe App\recipe_app\build\app\intermediates\cxx\RelWithDebInfo\p46a245u\obj\arm64-v8a
