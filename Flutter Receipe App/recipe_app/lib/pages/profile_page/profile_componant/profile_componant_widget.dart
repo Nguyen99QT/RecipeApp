@@ -64,7 +64,8 @@ class _ProfileComponantWidgetState extends State<ProfileComponantWidget> {
             builder: (context) {
               if (FFAppState().connected) {
                 return Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                  padding: const EdgeInsetsDirectional.fromSTEB(
+                      16.0, 0.0, 16.0, 0.0),
                   child: FutureBuilder<ApiCallResponse>(
                     future: FFAppState().getUserCache(
                       uniqueQueryKey: FFAppState().userId,
@@ -102,7 +103,8 @@ class _ProfileComponantWidgetState extends State<ProfileComponantWidget> {
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Align(
-                                    alignment: const AlignmentDirectional(0.0, -1.0),
+                                    alignment:
+                                        const AlignmentDirectional(0.0, -1.0),
                                     child: ClipRRect(
                                       borderRadius:
                                           BorderRadius.circular(100.0),
@@ -112,7 +114,7 @@ class _ProfileComponantWidgetState extends State<ProfileComponantWidget> {
                                         fadeOutDuration:
                                             const Duration(milliseconds: 200),
                                         imageUrl:
-                                            'http://recipe.templatevictory.com/uploads/images/${RecipeAppGroup.getUserApiCall.avatar(
+                                            '${FFAppConstants.imageUrl}${RecipeAppGroup.getUserApiCall.avatar(
                                           listViewGetUserApiResponse.jsonBody,
                                         )}',
                                         width: 100.0,
@@ -138,10 +140,11 @@ class _ProfileComponantWidgetState extends State<ProfileComponantWidget> {
                                           ) !=
                                           '')
                                     Align(
-                                      alignment: const AlignmentDirectional(0.0, 0.0),
+                                      alignment:
+                                          const AlignmentDirectional(0.0, 0.0),
                                       child: Padding(
-                                        padding: const EdgeInsetsDirectional.fromSTEB(
-                                            0.0, 14.0, 0.0, 4.0),
+                                        padding: const EdgeInsetsDirectional
+                                            .fromSTEB(0.0, 14.0, 0.0, 4.0),
                                         child: Text(
                                           valueOrDefault<String>(
                                             '${RecipeAppGroup.getUserApiCall.firstname(
@@ -178,7 +181,8 @@ class _ProfileComponantWidgetState extends State<ProfileComponantWidget> {
                                           ) !=
                                           '')
                                     Align(
-                                      alignment: const AlignmentDirectional(0.0, 0.0),
+                                      alignment:
+                                          const AlignmentDirectional(0.0, 0.0),
                                       child: Text(
                                         valueOrDefault<String>(
                                           RecipeAppGroup.getUserApiCall.email(
@@ -202,8 +206,9 @@ class _ProfileComponantWidgetState extends State<ProfileComponantWidget> {
                                       ),
                                     ),
                                   Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 24.0, 0.0, 0.0),
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            0.0, 24.0, 0.0, 0.0),
                                     child: InkWell(
                                       splashColor: Colors.transparent,
                                       focusColor: Colors.transparent,
@@ -221,9 +226,8 @@ class _ProfileComponantWidgetState extends State<ProfileComponantWidget> {
                                               BorderRadius.circular(8.0),
                                         ),
                                         child: Padding(
-                                          padding:
-                                              const EdgeInsetsDirectional.fromSTEB(
-                                                  8.0, 8.0, 16.0, 8.0),
+                                          padding: const EdgeInsetsDirectional
+                                              .fromSTEB(8.0, 8.0, 16.0, 8.0),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: [
@@ -236,8 +240,9 @@ class _ProfileComponantWidgetState extends State<ProfileComponantWidget> {
                                                       .samewhite,
                                                   shape: BoxShape.circle,
                                                 ),
-                                                alignment: const AlignmentDirectional(
-                                                    0.0, 0.0),
+                                                alignment:
+                                                    const AlignmentDirectional(
+                                                        0.0, 0.0),
                                                 child: ClipRRect(
                                                   borderRadius:
                                                       BorderRadius.circular(
@@ -291,7 +296,8 @@ class _ProfileComponantWidgetState extends State<ProfileComponantWidget> {
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
-                                            ].divide(const SizedBox(width: 16.0)),
+                                            ].divide(
+                                                const SizedBox(width: 16.0)),
                                           ),
                                         ),
                                       ),
@@ -331,8 +337,8 @@ class _ProfileComponantWidgetState extends State<ProfileComponantWidget> {
                                               .samewhite,
                                           shape: BoxShape.circle,
                                         ),
-                                        alignment:
-                                            const AlignmentDirectional(0.0, 0.0),
+                                        alignment: const AlignmentDirectional(
+                                            0.0, 0.0),
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(0.0),
@@ -385,92 +391,6 @@ class _ProfileComponantWidgetState extends State<ProfileComponantWidget> {
                               ),
                             ),
                           ),
-                          if (false)
-                            Padding(
-                              padding: const EdgeInsetsDirectional.fromSTEB(
-                                  0.0, 0.0, 0.0, 16.0),
-                              child: Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: FlutterFlowTheme.of(context).lightGrey,
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      8.0, 8.0, 16.0, 8.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Container(
-                                        width: 48.0,
-                                        height: 48.0,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .samewhite,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        alignment:
-                                            const AlignmentDirectional(0.0, 0.0),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(0.0),
-                                          child: SvgPicture.asset(
-                                            Theme.of(context).brightness ==
-                                                    Brightness.dark
-                                                ? 'assets/images/dark_mode_img.svg'
-                                                : 'assets/images/dark_mode_img.svg',
-                                            width: 24.0,
-                                            height: 24.0,
-                                            fit: BoxFit.contain,
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          'Dark theme',
-                                          textAlign: TextAlign.start,
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'SF Pro Display',
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .sameBlack,
-                                                fontSize: 17.0,
-                                                letterSpacing: 0.0,
-                                                fontWeight: FontWeight.normal,
-                                                useGoogleFonts: false,
-                                                lineHeight: 1.5,
-                                              ),
-                                        ),
-                                      ),
-                                      Switch.adaptive(
-                                        value: _model.switchValue ??=
-                                            Theme.of(context).brightness ==
-                                                Brightness.dark,
-                                        onChanged: (newValue) async {
-                                          safeSetState(() =>
-                                              _model.switchValue = newValue);
-                                          if (newValue) {
-                                            setDarkModeSetting(
-                                                context, ThemeMode.dark);
-                                          } else {
-                                            setDarkModeSetting(
-                                                context, ThemeMode.light);
-                                          }
-                                        },
-                                        activeColor:
-                                            FlutterFlowTheme.of(context)
-                                                .primaryTheme,
-                                        activeTrackColor: const Color(0xFFE6E6E7),
-                                        inactiveTrackColor: const Color(0xFFE6E6E7),
-                                        inactiveThumbColor: const Color(0xFFE6E6E7),
-                                      ),
-                                    ].divide(const SizedBox(width: 16.0)),
-                                  ),
-                                ),
-                              ),
-                            ),
                           Builder(
                             builder: (context) => Padding(
                               padding: const EdgeInsetsDirectional.fromSTEB(
@@ -512,8 +432,9 @@ class _ProfileComponantWidgetState extends State<ProfileComponantWidget> {
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        8.0, 8.0, 16.0, 8.0),
+                                    padding:
+                                        const EdgeInsetsDirectional.fromSTEB(
+                                            8.0, 8.0, 16.0, 8.0),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.max,
                                       children: [
@@ -525,8 +446,8 @@ class _ProfileComponantWidgetState extends State<ProfileComponantWidget> {
                                                 .samewhite,
                                             shape: BoxShape.circle,
                                           ),
-                                          alignment:
-                                              const AlignmentDirectional(0.0, 0.0),
+                                          alignment: const AlignmentDirectional(
+                                              0.0, 0.0),
                                           child: ClipRRect(
                                             borderRadius:
                                                 BorderRadius.circular(0.0),

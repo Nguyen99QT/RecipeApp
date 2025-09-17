@@ -1,12 +1,11 @@
-import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/pages/componants/custom_appbar/custom_appbar_widget.dart';
-import '/pages/componants/delete_dialog/delete_dialog_widget.dart';
+import '/pages/componants/rate_us_bottomsheet/rate_us_bottomsheet_widget.dart';
+import '/pages/componants/app_feedback_bottomsheet/app_feedback_bottomsheet_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:webviewx_plus/webviewx_plus.dart';
 import 'settings_screen_model.dart';
 export 'settings_screen_model.dart';
 
@@ -60,596 +59,189 @@ class _SettingsScreenWidgetState extends State<SettingsScreenWidget> {
                 ),
               ),
               Expanded(
-                child: FutureBuilder<ApiCallResponse>(
-                  future: FFAppState().faqsCache(
-                    requestFn: () => RecipeAppGroup.getAllFaqApiCall.call(),
-                  ),
-                  builder: (context, snapshot) {
-                    // Customize what your widget looks like when it's loading.
-                    if (!snapshot.hasData) {
-                      return Center(
-                        child: SizedBox(
-                          width: 50.0,
-                          height: 50.0,
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              FlutterFlowTheme.of(context).primaryTheme,
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-                    final containerGetAllFaqApiResponse = snapshot.data!;
-
-                    return Container(
-                      decoration: const BoxDecoration(),
-                      child: Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
-                            16.0, 0.0, 16.0, 0.0),
-                        child: FutureBuilder<ApiCallResponse>(
-                          future: FFAppState().termsAndConditionsCache(
-                            requestFn: () =>
-                                RecipeAppGroup.getPolicyAndTermsApiCall.call(),
-                          ),
-                          builder: (context, snapshot) {
-                            // Customize what your widget looks like when it's loading.
-                            if (!snapshot.hasData) {
-                              return Center(
-                                child: SizedBox(
-                                  width: 50.0,
-                                  height: 50.0,
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      FlutterFlowTheme.of(context).primaryTheme,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }
-                            final listViewGetPolicyAndTermsApiResponse =
-                                snapshot.data!;
-
-                            return ListView(
-                              padding: const EdgeInsets.fromLTRB(
-                                0,
-                                16.0,
-                                0,
-                                16.0,
-                              ),
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              children: [
-                                if (FFAppState().isLogin == true)
-                                  Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 16.0),
-                                    child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        context
-                                            .pushNamed('changepassword_screen');
-                                      },
-                                      child: Container(
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .lightGrey,
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                        ),
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsetsDirectional.fromSTEB(
-                                                  8.0, 8.0, 16.0, 8.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Container(
-                                                width: 48.0,
-                                                height: 48.0,
-                                                decoration: BoxDecoration(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .samewhite,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                alignment: const AlignmentDirectional(
-                                                    0.0, 0.0),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          0.0),
-                                                  child: SvgPicture.asset(
-                                                    Theme.of(context)
-                                                                .brightness ==
-                                                            Brightness.dark
-                                                        ? 'assets/images/Change_password_img.svg'
-                                                        : 'assets/images/Change_password_img.svg',
-                                                    width: 24.0,
-                                                    height: 24.0,
-                                                    fit: BoxFit.contain,
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Text(
-                                                  'Change password',
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily:
-                                                            'SF Pro Display',
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .sameBlack,
-                                                        fontSize: 17.0,
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.normal,
-                                                        useGoogleFonts: false,
-                                                        lineHeight: 1.5,
-                                                      ),
-                                                ),
-                                              ),
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(0.0),
-                                                child: SvgPicture.asset(
-                                                  Theme.of(context)
-                                                              .brightness ==
-                                                          Brightness.dark
-                                                      ? 'assets/images/arrow_right.svg'
-                                                      : 'assets/images/arrow_right.svg',
-                                                  width: 20.0,
-                                                  height: 20.0,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            ].divide(const SizedBox(width: 16.0)),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                if (RecipeAppGroup.getPolicyAndTermsApiCall
-                                        .success(
-                                      listViewGetPolicyAndTermsApiResponse
-                                          .jsonBody,
-                                    ) ==
-                                    1)
-                                  Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 16.0),
-                                    child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        context.pushNamed(
-                                            'terms_conditions_screen');
-                                      },
-                                      child: Container(
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .lightGrey,
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                        ),
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsetsDirectional.fromSTEB(
-                                                  8.0, 8.0, 16.0, 8.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Container(
-                                                width: 48.0,
-                                                height: 48.0,
-                                                decoration: BoxDecoration(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .samewhite,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                alignment: const AlignmentDirectional(
-                                                    0.0, 0.0),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          0.0),
-                                                  child: SvgPicture.asset(
-                                                    Theme.of(context)
-                                                                .brightness ==
-                                                            Brightness.dark
-                                                        ? 'assets/images/stickynote.svg'
-                                                        : 'assets/images/stickynote.svg',
-                                                    width: 24.0,
-                                                    height: 24.0,
-                                                    fit: BoxFit.contain,
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Text(
-                                                  'Terms & condition',
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily:
-                                                            'SF Pro Display',
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .sameBlack,
-                                                        fontSize: 17.0,
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.normal,
-                                                        useGoogleFonts: false,
-                                                        lineHeight: 1.5,
-                                                      ),
-                                                ),
-                                              ),
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(0.0),
-                                                child: SvgPicture.asset(
-                                                  Theme.of(context)
-                                                              .brightness ==
-                                                          Brightness.dark
-                                                      ? 'assets/images/arrow_right.svg'
-                                                      : 'assets/images/arrow_right.svg',
-                                                  width: 20.0,
-                                                  height: 20.0,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            ].divide(const SizedBox(width: 16.0)),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                if (RecipeAppGroup.getAllFaqApiCall.success(
-                                      containerGetAllFaqApiResponse.jsonBody,
-                                    ) ==
-                                    1)
-                                  Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 16.0),
-                                    child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        context.pushNamed('FAQSPage');
-                                      },
-                                      child: Container(
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .lightGrey,
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                        ),
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsetsDirectional.fromSTEB(
-                                                  8.0, 8.0, 16.0, 8.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Container(
-                                                width: 48.0,
-                                                height: 48.0,
-                                                decoration: BoxDecoration(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .samewhite,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                alignment: const AlignmentDirectional(
-                                                    0.0, 0.0),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          0.0),
-                                                  child: SvgPicture.asset(
-                                                    Theme.of(context)
-                                                                .brightness ==
-                                                            Brightness.dark
-                                                        ? 'assets/images/message-question.svg'
-                                                        : 'assets/images/message-question.svg',
-                                                    width: 24.0,
-                                                    height: 24.0,
-                                                    fit: BoxFit.contain,
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Text(
-                                                  'FAQ\'s',
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily:
-                                                            'SF Pro Display',
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .sameBlack,
-                                                        fontSize: 17.0,
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.normal,
-                                                        useGoogleFonts: false,
-                                                        lineHeight: 1.5,
-                                                      ),
-                                                ),
-                                              ),
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(0.0),
-                                                child: SvgPicture.asset(
-                                                  Theme.of(context)
-                                                              .brightness ==
-                                                          Brightness.dark
-                                                      ? 'assets/images/arrow_right.svg'
-                                                      : 'assets/images/arrow_right.svg',
-                                                  width: 20.0,
-                                                  height: 20.0,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            ].divide(const SizedBox(width: 16.0)),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                if (RecipeAppGroup.getPolicyAndTermsApiCall
-                                        .success(
-                                      listViewGetPolicyAndTermsApiResponse
-                                          .jsonBody,
-                                    ) ==
-                                    1)
-                                  Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 16.0),
-                                    child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        context
-                                            .pushNamed('privacypolicy_screen');
-                                      },
-                                      child: Container(
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .lightGrey,
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                        ),
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsetsDirectional.fromSTEB(
-                                                  8.0, 8.0, 16.0, 8.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Container(
-                                                width: 48.0,
-                                                height: 48.0,
-                                                decoration: BoxDecoration(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .samewhite,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                alignment: const AlignmentDirectional(
-                                                    0.0, 0.0),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          0.0),
-                                                  child: SvgPicture.asset(
-                                                    Theme.of(context)
-                                                                .brightness ==
-                                                            Brightness.dark
-                                                        ? 'assets/images/security.svg'
-                                                        : 'assets/images/security.svg',
-                                                    width: 24.0,
-                                                    height: 24.0,
-                                                    fit: BoxFit.contain,
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Text(
-                                                  'Privacy policy',
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily:
-                                                            'SF Pro Display',
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .sameBlack,
-                                                        fontSize: 17.0,
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.normal,
-                                                        useGoogleFonts: false,
-                                                        lineHeight: 1.5,
-                                                      ),
-                                                ),
-                                              ),
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(0.0),
-                                                child: SvgPicture.asset(
-                                                  Theme.of(context)
-                                                              .brightness ==
-                                                          Brightness.dark
-                                                      ? 'assets/images/arrow_right.svg'
-                                                      : 'assets/images/arrow_right.svg',
-                                                  width: 20.0,
-                                                  height: 20.0,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            ].divide(const SizedBox(width: 16.0)),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                if (FFAppState().isLogin == true)
-                                  Builder(
-                                    builder: (context) => Padding(
-                                      padding: const EdgeInsetsDirectional.fromSTEB(
-                                          0.0, 0.0, 0.0, 16.0),
-                                      child: InkWell(
-                                        splashColor: Colors.transparent,
-                                        focusColor: Colors.transparent,
-                                        hoverColor: Colors.transparent,
-                                        highlightColor: Colors.transparent,
-                                        onTap: () async {
-                                          await showDialog(
-                                            context: context,
-                                            builder: (dialogContext) {
-                                              return Dialog(
-                                                elevation: 0,
-                                                insetPadding: EdgeInsets.zero,
-                                                backgroundColor:
-                                                    Colors.transparent,
-                                                alignment: const AlignmentDirectional(
-                                                        0.0, 0.0)
-                                                    .resolve(Directionality.of(
-                                                        context)),
-                                                child: WebViewAware(
-                                                  child: GestureDetector(
-                                                    onTap: () => FocusScope.of(
-                                                            dialogContext)
-                                                        .unfocus(),
-                                                    child: const DeleteDialogWidget(),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        },
-                                        child: Container(
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                            color: FlutterFlowTheme.of(context)
-                                                .lightGrey,
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                          ),
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsetsDirectional.fromSTEB(
-                                                    8.0, 8.0, 16.0, 8.0),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Container(
-                                                  width: 48.0,
-                                                  height: 48.0,
-                                                  decoration: BoxDecoration(
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .samewhite,
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  alignment:
-                                                      const AlignmentDirectional(
-                                                          0.0, 0.0),
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            0.0),
-                                                    child: SvgPicture.asset(
-                                                      Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.dark
-                                                          ? 'assets/images/delete_img.svg'
-                                                          : 'assets/images/delete_img.svg',
-                                                      width: 24.0,
-                                                      height: 24.0,
-                                                      fit: BoxFit.contain,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Text(
-                                                    'Delete account',
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          fontFamily:
-                                                              'SF Pro Display',
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .sameBlack,
-                                                          fontSize: 17.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                          useGoogleFonts: false,
-                                                          lineHeight: 1.5,
-                                                        ),
-                                                  ),
-                                                ),
-                                                ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          0.0),
-                                                  child: SvgPicture.asset(
-                                                    Theme.of(context)
-                                                                .brightness ==
-                                                            Brightness.dark
-                                                        ? 'assets/images/arrow_right.svg'
-                                                        : 'assets/images/arrow_right.svg',
-                                                    width: 20.0,
-                                                    height: 20.0,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ].divide(const SizedBox(width: 16.0)),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            );
-                          },
-                        ),
+                child: Container(
+                  decoration: const BoxDecoration(),
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        16.0, 0.0, 16.0, 0.0),
+                    child: ListView(
+                      padding: const EdgeInsets.fromLTRB(
+                        0,
+                        16.0,
+                        0,
+                        16.0,
                       ),
-                    );
-                  },
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      children: [
+                        // Change Password - Only show when logged in
+                        if (FFAppState().isLogin == true)
+                          _buildSettingsItem(
+                            context,
+                            'Change password',
+                            'assets/images/Change_password_img.svg',
+                            () => context.pushNamed('changepassword_screen'),
+                          ),
+                        
+                        // Terms & Conditions - Always available  
+                        _buildSettingsItem(
+                          context,
+                          'Terms & condition',
+                          'assets/images/stickynote.svg',
+                          () => context.pushNamed('terms_conditions_screen'),
+                        ),
+                        
+                        // FAQ - Always available
+                        _buildSettingsItem(
+                          context,
+                          'FAQ\'s',
+                          'assets/images/message-question.svg',
+                          () => context.pushNamed('FAQSPage'),
+                        ),
+                        
+                        // Privacy Policy - Always available
+                        _buildSettingsItem(
+                          context,
+                          'Privacy policy',
+                          'assets/images/security.svg',
+                          () => context.pushNamed('privacypolicy_screen'),
+                        ),
+                        
+                        // Feedback - Always available
+                        _buildSettingsItem(
+                          context,
+                          'Feedback',
+                          'assets/images/Review_add_successfully.svg',
+                          () => _showFeedbackBottomSheet(context),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showFeedbackBottomSheet(BuildContext context) {
+    // Check if user is logged in
+    if (!FFAppState().isLogin) {
+      _showLoginDialog(context);
+      return;
+    }
+    
+    showModalBottomSheet(
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      enableDrag: false,
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding: MediaQuery.viewInsetsOf(context),
+          child: const AppFeedbackBottomsheetWidget(),
+        );
+      },
+    );
+  }
+
+  void _showLoginDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Login Required'),
+          content: const Text('Please login to submit feedback.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+                context.pushNamed('login_screen'); // Navigate to login
+              },
+              child: const Text('Login'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildSettingsItem(
+    BuildContext context,
+    String title,
+    String iconPath,
+    VoidCallback onTap,
+  ) {
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: onTap,
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: FlutterFlowTheme.of(context).lightGrey,
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 16.0, 8.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Container(
+                  width: 48.0,
+                  height: 48.0,
+                  decoration: BoxDecoration(
+                    color: FlutterFlowTheme.of(context).samewhite,
+                    shape: BoxShape.circle,
+                  ),
+                  alignment: const AlignmentDirectional(0.0, 0.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(0.0),
+                    child: SvgPicture.asset(
+                      iconPath,
+                      width: 24.0,
+                      height: 24.0,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                      fontFamily: 'SF Pro Display',
+                      color: FlutterFlowTheme.of(context).sameBlack,
+                      fontSize: 17.0,
+                      letterSpacing: 0.0,
+                      fontWeight: FontWeight.normal,
+                      useGoogleFonts: false,
+                      lineHeight: 1.5,
+                    ),
+                  ),
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(0.0),
+                  child: SvgPicture.asset(
+                    'assets/images/arrow_right.svg',
+                    width: 20.0,
+                    height: 20.0,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ].divide(const SizedBox(width: 16.0)),
+            ),
           ),
         ),
       ),

@@ -8,12 +8,13 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-// import 'package:fluttertoast/fluttertoast.dart';
-
 Future showCustomToastBottom(
   String text,
 ) async {
   // Add your function code here!
-  // Simplified implementation - just print message
   print("Toast: $text");
+  
+  // Simple fallback - just print to console since we fixed the main screens
+  // The important OTP error messages are now handled directly in verification screens
+  print("ERROR MESSAGE: $text");
 }

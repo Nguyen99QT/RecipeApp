@@ -37,7 +37,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
       print('[DEBUG] HomePage initState - postFrameCallback started');
       print('[DEBUG] isLogin: ${FFAppState().isLogin}');
       print('[DEBUG] token: ${FFAppState().token}');
-      
+
       if (FFAppState().isLogin == true) {
         print('[DEBUG] Calling getUserApiCall...');
         _model.getUser = await RecipeAppGroup.getUserApiCall.call(
@@ -51,14 +51,16 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
         FFAppState().countryCodeEdit =
             RecipeAppGroup.getUserApiCall.countryCode(
-          (_model.getUser?.jsonBody ?? ''),
-        ) ?? '';
+                  (_model.getUser?.jsonBody ?? ''),
+                ) ??
+                '';
         FFAppState().phone = RecipeAppGroup.getUserApiCall.phone(
-          (_model.getUser?.jsonBody ?? ''),
-        ) ?? '';
+              (_model.getUser?.jsonBody ?? ''),
+            ) ??
+            '';
         print('[DEBUG] Updated FFAppState with user data');
         FFAppState().update(() {});
-        
+
         print('[DEBUG] Calling isVerifyAccountApiCall...');
         _model.isVerifiedCheck =
             await RecipeAppGroup.isVerifyAccountApiCall.call(
@@ -89,8 +91,9 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                     onTap: () => FocusScope.of(dialogContext).unfocus(),
                     child: VerifiedEmailDialogWidget(
                       email: RecipeAppGroup.getUserApiCall.email(
-                        (_model.getUser?.jsonBody ?? ''),
-                      ) ?? '',
+                            (_model.getUser?.jsonBody ?? ''),
+                          ) ??
+                          '',
                     ),
                   ),
                 ),
@@ -100,11 +103,13 @@ class _HomePageWidgetState extends State<HomePageWidget> {
         } else {
           FFAppState().countryCodeEdit =
               RecipeAppGroup.getUserApiCall.countryCode(
-            (_model.getUser?.jsonBody ?? ''),
-          ) ?? '';
+                    (_model.getUser?.jsonBody ?? ''),
+                  ) ??
+                  '';
           FFAppState().phone = RecipeAppGroup.getUserApiCall.phone(
-            (_model.getUser?.jsonBody ?? ''),
-          ) ?? '';
+                (_model.getUser?.jsonBody ?? ''),
+              ) ??
+              '';
           FFAppState().update(() {});
         }
       }

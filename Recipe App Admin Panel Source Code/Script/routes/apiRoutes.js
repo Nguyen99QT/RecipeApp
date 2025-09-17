@@ -47,6 +47,7 @@ routes.post("/DeleteAccountUser", checkAuthorization, apiController.DeleteAccoun
 
 // Routes For Intro
 routes.post("/getAllIntro", apiController.getAllIntro);
+routes.get("/getAllIntro", apiController.getAllIntro);
 
 //Routes For Category
 routes.post("/GetAllCategory", apiController.GetAllCategory);
@@ -79,7 +80,16 @@ routes.post("/DeleteFavouriteRecipe", checkAuthorization, apiController.DeleteFa
 //Routes For Reviews
 routes.post("/AddReview", checkAuthorization, apiController.AddReview);
 
+routes.post("/AddAppFeedback", checkAuthorization, apiController.AddAppFeedback);
+
 routes.post("/GetReviewByRecipeId", apiController.GetReviewByRecipeId);
+
+// Admin Routes For Review Management
+routes.post("/GetAllReviewsForApproval", apiController.GetAllReviewsForApproval);
+
+routes.post("/ApproveReview", apiController.ApproveReview);
+
+routes.post("/RejectReview", apiController.RejectReview);
 
 // Routes For FAQ
 routes.post("/getAllFaq", apiController.getAllFaq);
@@ -92,6 +102,17 @@ routes.get("/getAdmob", apiController.getAdmob);
 routes.post("/GetPolicyAndTerms", apiController.GetPolicyAndTerms);
 
 //Routes For NotiFiaction
+routes.post("/GetUnreadNotificationCount", apiController.GetUnreadNotificationCount);
+routes.get("/GetUnreadNotificationCount", apiController.GetUnreadNotificationCount);
+routes.post("/MarkNotificationAsRead", apiController.MarkNotificationAsRead);
+
 routes.post("/GetAllNotification", apiController.GetAllNotification);
+
+//Routes For AI Generated Recipes
+const aiRecipeController = require("../controllers/aiRecipeController");
+routes.post("/saveAiRecipe", checkAuthorization, aiRecipeController.saveAiRecipe);
+routes.post("/getUserAiRecipes", checkAuthorization, aiRecipeController.getUserAiRecipes);
+routes.post("/deleteAiRecipe", checkAuthorization, aiRecipeController.deleteAiRecipe);
+routes.post("/updateAiRecipe", checkAuthorization, aiRecipeController.updateAiRecipe);
 
 module.exports = routes;

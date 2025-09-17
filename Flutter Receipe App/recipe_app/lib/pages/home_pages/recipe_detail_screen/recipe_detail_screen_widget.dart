@@ -4,6 +4,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/pages/componants/blank_componant/blank_componant_widget.dart';
 import '/pages/componants/custom_app_button/custom_app_button_widget.dart';
+import '/pages/componants/recipe_reviews_section/recipe_reviews_section_widget.dart';
 import '/pages/shimmers/shimmer_recipe_detail/shimmer_recipe_detail_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/custom_code/widgets/index.dart' as custom_widgets;
@@ -691,7 +692,7 @@ class _RecipeDetailScreenWidgetState extends State<RecipeDetailScreenWidget>
                                             recipeDetailScreenGetRecipeByIdApiResponse
                                                 .jsonBody,
                                           ),
-                                          'Name',
+                                          '',
                                         ) !=
                                         '')
                                   Padding(
@@ -704,7 +705,7 @@ class _RecipeDetailScreenWidgetState extends State<RecipeDetailScreenWidget>
                                           recipeDetailScreenGetRecipeByIdApiResponse
                                               .jsonBody,
                                         ),
-                                        'Name',
+                                        '',
                                       ),
                                       style: FlutterFlowTheme.of(context)
                                           .bodyMedium
@@ -720,29 +721,26 @@ class _RecipeDetailScreenWidgetState extends State<RecipeDetailScreenWidget>
                                           ),
                                     ),
                                   ),
-                                if (RecipeAppGroup.getRecipeByIdApiCall
+                                if ((RecipeAppGroup.getRecipeByIdApiCall
                                         .averageRating(
                                       recipeDetailScreenGetRecipeByIdApiResponse
                                           .jsonBody,
-                                    ) !=
-                                    0)
+                                    ) ?? 0.0) >
+                                    0.0)
                                   Padding(
                                     padding: const EdgeInsetsDirectional.fromSTEB(
                                         16.0, 8.0, 16.0, 16.0),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.max,
                                       children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsetsDirectional.fromSTEB(
-                                                  0.0, 0.0, 8.0, 0.0),
-                                          child: SvgPicture.asset(
-                                            'assets/images/star_yellow.svg',
-                                            width: 18.0,
-                                            height: 18.0,
-                                            fit: BoxFit.cover,
-                                          ),
+                                        _buildAverageStarRating(
+                                          RecipeAppGroup.getRecipeByIdApiCall
+                                              .averageRating(
+                                                recipeDetailScreenGetRecipeByIdApiResponse
+                                                    .jsonBody,
+                                              ) ?? 0.0,
                                         ),
+                                        const SizedBox(width: 8.0),
                                         Text(
                                           valueOrDefault<String>(
                                             RecipeAppGroup.getRecipeByIdApiCall
@@ -750,7 +748,7 @@ class _RecipeDetailScreenWidgetState extends State<RecipeDetailScreenWidget>
                                                   recipeDetailScreenGetRecipeByIdApiResponse
                                                       .jsonBody,
                                                 )
-                                                ?.toString(),
+                                                ?.toStringAsFixed(1),
                                             '4.0',
                                           ),
                                           style: FlutterFlowTheme.of(context)
@@ -770,7 +768,7 @@ class _RecipeDetailScreenWidgetState extends State<RecipeDetailScreenWidget>
                                         Text(
                                           '(${formatNumber(
                                             RecipeAppGroup.getRecipeByIdApiCall
-                                                .totalRating(
+                                                .totalReviews(
                                               recipeDetailScreenGetRecipeByIdApiResponse
                                                   .jsonBody,
                                             ),
@@ -1339,6 +1337,21 @@ class _RecipeDetailScreenWidgetState extends State<RecipeDetailScreenWidget>
                               ],
                             ),
                           ),
+                          
+                          // Reviews Section - Compact
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 8.0),
+                            child: RecipeReviewsSectionWidget(
+                              recipeId: widget.recipeDetailId ?? '',
+                              averageRating: RecipeAppGroup.getRecipeByIdApiCall.averageRating(
+                                recipeDetailScreenGetRecipeByIdApiResponse.jsonBody,
+                              )?.toDouble(),
+                              totalReviews: RecipeAppGroup.getRecipeByIdApiCall.totalReviews(
+                                recipeDetailScreenGetRecipeByIdApiResponse.jsonBody,
+                              ),
+                            ),
+                          ),
+                          
                           Padding(
                             padding: const EdgeInsetsDirectional.fromSTEB(
                                 16.0, 12.0, 16.0, 24.0),
@@ -1399,7 +1412,31 @@ class _RecipeDetailScreenWidgetState extends State<RecipeDetailScreenWidget>
                                   FFAppState().favChange = true;
                                   FFAppState().update(() {});
 
-                                  context.pushNamed('login_screen');
+                                  // Show login dialog instead of direct navigation
+                                  await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Please Login'),
+                                        content: const Text('You need to login to start cooking this recipe.'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop(); // Close dialog
+                                            },
+                                            child: const Text('Cancel'),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop(); // Close dialog
+                                              context.pushNamed('login_screen'); // Navigate to login
+                                            },
+                                            child: const Text('Login'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
                                 }
                               },
                               child: wrapWithModel(
@@ -1477,6 +1514,48 @@ class _RecipeDetailScreenWidgetState extends State<RecipeDetailScreenWidget>
           ),
         );
       },
+    );
+  }
+
+  Widget _buildAverageStarRating(double averageRating) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        double starValue = index + 1.0;
+        
+        if (averageRating >= starValue) {
+          // Sao đầy
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 1.0),
+            child: SvgPicture.asset(
+              'assets/images/star_yellow.svg',
+              width: 18.0,
+              height: 18.0,
+              fit: BoxFit.cover,
+            ),
+          );
+        } else if (averageRating >= starValue - 0.5) {
+          // Sao nửa - có thể dùng icon hoặc svg khác
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 1.0),
+            child: Icon(
+              Icons.star_half_rounded,
+              color: FlutterFlowTheme.of(context).warning,
+              size: 18.0,
+            ),
+          );
+        } else {
+          // Sao rỗng
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 1.0),
+            child: Icon(
+              Icons.star_outline_rounded,
+              color: FlutterFlowTheme.of(context).lightGrey,
+              size: 18.0,
+            ),
+          );
+        }
+      }),
     );
   }
 }

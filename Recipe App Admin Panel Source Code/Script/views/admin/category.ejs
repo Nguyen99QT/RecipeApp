@@ -141,6 +141,21 @@
                   </div>
                   <!--end::Alert-->
                   <% } %>
+                  
+                  <% if(flash.success && flash.success.length> 0){ %>
+                  <!--begin::Alert Success-->
+                  <div class="alert alert-dismissible bg-light-success d-flex align-items-center mb-10">
+                    <!--begin::Content-->
+                    <span class="fs-4 text-success fw-bold text-center ps-5"><%= flash.success %></span>
+                    <!--end::Content-->
+                    <!--begin::Close-->
+                    <button type="button" class="btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
+                      <i class="ki-duotone ki-cross fs-1 text-success fw-bold"><span class="path1"></span><span class="path2"></span></i>
+                    </button>
+                    <!--end::Close-->
+                  </div>
+                  <!--end::Alert Success-->
+                  <% } %>
                   <!-- complete flash message -->
 
                   <!--begin::Table-->

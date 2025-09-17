@@ -439,6 +439,22 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                                 ),
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              0.0, 0.0, 0.0, 8.0),
+                          child: Text(
+                            'Must have 8+ chars, UPPERCASE, lowercase, number, special char',
+                            style: FlutterFlowTheme.of(context)
+                                .bodySmall
+                                .override(
+                                  fontFamily: 'SF Pro Display',
+                                  color: FlutterFlowTheme.of(context).black40,
+                                  fontSize: 13.0,
+                                  letterSpacing: 0.0,
+                                  useGoogleFonts: false,
+                                ),
+                          ),
+                        ),
                         SizedBox(
                           width: double.infinity,
                           child: TextFormField(

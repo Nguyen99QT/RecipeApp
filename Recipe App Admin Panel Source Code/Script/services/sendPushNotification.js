@@ -14,7 +14,7 @@ admin.initializeApp({
 // const description = "This is a test notification for you";
 
 // Function to send notifications
-const sendPushNotification = async (registrationTokens, title, message) => {
+const sendPushNotification = async (registrationTokens, title, message, data = {}) => {
 
     const totalTokens = registrationTokens.length;
 
@@ -27,6 +27,15 @@ const sendPushNotification = async (registrationTokens, title, message) => {
             },
             token: token
         };
+
+        // Add custom data if provided
+        if (Object.keys(data).length > 0) {
+            messagePayload.data = {};
+            // Convert all data values to strings (Firebase requirement)
+            for (const [key, value] of Object.entries(data)) {
+                messagePayload.data[key] = String(value);
+            }
+        }
 
         try {
             // Send the notification

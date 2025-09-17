@@ -352,25 +352,47 @@ class _ResetpasswordScreenWidgetState extends State<ResetpasswordScreenWidget> {
                             hoverColor: Colors.transparent,
                             highlightColor: Colors.transparent,
                             onTap: () async {
+                              // Validate form first
                               if (_model.formKey.currentState == null ||
                                   !_model.formKey.currentState!.validate()) {
                                 return;
                               }
-                              if (_model.textController1.text ==
+                              
+                              // Double check password match (redundant but safer)
+                              if (_model.textController1.text !=
                                   _model.textController2.text) {
+                                await actions.showCustomToastBottom(
+                                  'New password and confirm password must be the same',
+                                );
+                                return;
+                              }
+                              
+                              // Check minimum length
+                              if (_model.textController1.text.length < 6) {
+                                await actions.showCustomToastBottom(
+                                  'Password must be at least 6 characters long',
+                                );
+                                return;
+                              }
+                              
+                              // Call API with both newPassword and confirmPassword
+                              try {
                                 _model.changePasswordFunction =
                                     await RecipeAppGroup.resetPasswordApiCall
                                         .call(
                                   email: widget.email,
-                                  newPassword: _model.textController2.text,
+                                  newPassword: _model.textController1.text,
+                                  confirmPassword: _model.textController2.text,
                                 );
+
+                                print('Reset Password API Response: ${_model.changePasswordFunction?.jsonBody}');
 
                                 if (RecipeAppGroup.resetPasswordApiCall.success(
                                       (_model.changePasswordFunction
                                               ?.jsonBody ??
                                           ''),
                                     ) ==
-                                    1) {
+                                    true) {
                                   await showDialog(
                                     barrierDismissible: false,
                                     context: context,
@@ -395,17 +417,48 @@ class _ResetpasswordScreenWidgetState extends State<ResetpasswordScreenWidget> {
                                     },
                                   );
                                 } else {
+                                  // Enhanced error handling
+                                  String errorMessage = 'Failed to reset password. Please try again.';
+                                  
+                                  try {
+                                    // Try to get specific error message from server
+                                    final serverMessage = RecipeAppGroup.resetPasswordApiCall.message(
+                                      (_model.changePasswordFunction?.jsonBody ?? ''),
+                                    );
+                                    
+                                    if (serverMessage != null && serverMessage.isNotEmpty) {
+                                      errorMessage = serverMessage;
+                                    } else {
+                                      // Check for other possible error fields
+                                      final responseJson = _model.changePasswordFunction?.jsonBody;
+                                      if (responseJson != null) {
+                                        print('Reset Password Error Response: $responseJson');
+                                        
+                                        // Try different error field names
+                                        final errorField = getJsonField(responseJson, r'''$.error''');
+                                        final messageField = getJsonField(responseJson, r'''$.message''');
+                                        
+                                        if (errorField != null) {
+                                          errorMessage = errorField.toString();
+                                        } else if (messageField != null) {
+                                          errorMessage = messageField.toString();
+                                        }
+                                      }
+                                    }
+                                  } catch (e) {
+                                    print('Error parsing response: $e');
+                                    errorMessage = 'Password and confirm password do not match or password is too short (minimum 6 characters)';
+                                  }
+                                  
+                                  print('Showing error message: $errorMessage');
                                   await actions.showCustomToastBottom(
-                                    RecipeAppGroup.resetPasswordApiCall.message(
-                                      (_model.changePasswordFunction
-                                              ?.jsonBody ??
-                                          ''),
-                                    )!,
+                                    errorMessage,
                                   );
                                 }
-                              } else {
+                              } catch (e) {
+                                print('API call failed: $e');
                                 await actions.showCustomToastBottom(
-                                  '     Please enter same password     ',
+                                  'Network error. Please check your connection and try again.',
                                 );
                               }
 

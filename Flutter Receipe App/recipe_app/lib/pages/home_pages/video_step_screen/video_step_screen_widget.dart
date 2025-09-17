@@ -169,8 +169,6 @@ class _VideoStepScreenWidgetState extends State<VideoStepScreenWidget>
                             ),
                           );
                         }
-                        final containerGetAdmobApiResponse = snapshot.data!;
-
                         return Container(
                           width: double.infinity,
                           height: double.infinity,
@@ -214,9 +212,6 @@ class _VideoStepScreenWidgetState extends State<VideoStepScreenWidget>
                                         ),
                                       );
                                     }
-                                    final containerGetRecipeByIdApiResponse =
-                                        snapshot.data!;
-
                                     return Container(
                                       decoration: const BoxDecoration(),
                                       child: Column(
@@ -245,14 +240,31 @@ class _VideoStepScreenWidgetState extends State<VideoStepScreenWidget>
                                                               null ||
                                                           widget.videoPath ==
                                                               '') {
+                                                        // Build proper YouTube URL from urlPath
+                                                        String youtubeUrl = '';
+                                                        if (widget.urlPath != null && widget.urlPath!.isNotEmpty) {
+                                                          // Check if it's already a full URL
+                                                          if (widget.urlPath!.startsWith('http')) {
+                                                            youtubeUrl = widget.urlPath!;
+                                                          } else {
+                                                            // Extract video ID and create proper URL
+                                                            String videoId = widget.urlPath!;
+                                                            if (videoId.contains('&')) {
+                                                              videoId = videoId.split('&')[0];
+                                                            }
+                                                            youtubeUrl = 'https://www.youtube.com/watch?v=$videoId';
+                                                          }
+                                                        }
+                                                        
+                                                        print('[DEBUG] YouTube URL for player: $youtubeUrl');
+                                                        
                                                         return FlutterFlowYoutubePlayer(
-                                                          url:
-                                                              'https://www.youtube.com/watch?v=${widget.urlPath}',
+                                                          url: youtubeUrl,
                                                           width:
                                                               double.infinity,
                                                           height: 269.0,
                                                           autoPlay: false,
-                                                          looping: true,
+                                                          looping: false,
                                                           mute: false,
                                                           showControls: true,
                                                           showFullScreen: true,
@@ -262,7 +274,7 @@ class _VideoStepScreenWidgetState extends State<VideoStepScreenWidget>
                                                       } else {
                                                         return FlutterFlowVideoPlayer(
                                                           path:
-                                                              'https://recipe.templatevictory.com/uploads/video/${widget.videoPath}',
+                                                              '${FFAppConstants.videoUrl}${widget.videoPath}',
                                                           videoType:
                                                               VideoType.network,
                                                           width:
@@ -328,12 +340,7 @@ class _VideoStepScreenWidgetState extends State<VideoStepScreenWidget>
                                                           height: 50.0,
                                                           text: valueOrDefault<
                                                               String>(
-                                                            RecipeAppGroup
-                                                                .getRecipeByIdApiCall
-                                                                .overView(
-                                                              containerGetRecipeByIdApiResponse
-                                                                  .jsonBody,
-                                                            ),
+                                                            widget.overview,
                                                             'overView',
                                                           ),
                                                         ),
@@ -354,79 +361,40 @@ class _VideoStepScreenWidgetState extends State<VideoStepScreenWidget>
                                               highlightColor:
                                                   Colors.transparent,
                                               onTap: () async {
-                                                await actions
-                                                    .showRewardedVideoAd(
-                                                  () async {
-                                                    await showModalBottomSheet(
-                                                      isScrollControlled: true,
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      enableDrag: false,
-                                                      useSafeArea: true,
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return WebViewAware(
-                                                          child:
-                                                              GestureDetector(
-                                                            onTap: () =>
-                                                                FocusScope.of(
-                                                                        context)
-                                                                    .unfocus(),
-                                                            child: Padding(
-                                                              padding: MediaQuery
-                                                                  .viewInsetsOf(
-                                                                      context),
-                                                              child: SizedBox(
-                                                                height: 552.0,
-                                                                child:
-                                                                    RateUsBottomsheetWidget(
-                                                                  rateId: widget
-                                                                      .recipeDetailId,
-                                                                ),
-                                                              ),
+                                                print('[DEBUG] Review button tapped! Showing Review bottomsheet directly...');
+                                                await showModalBottomSheet(
+                                                  isScrollControlled: true,
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  enableDrag: false,
+                                                  useSafeArea: true,
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return WebViewAware(
+                                                      child:
+                                                          GestureDetector(
+                                                        onTap: () =>
+                                                            FocusScope.of(
+                                                                    context)
+                                                                .unfocus(),
+                                                        child: Padding(
+                                                          padding: MediaQuery
+                                                              .viewInsetsOf(
+                                                                  context),
+                                                          child: SizedBox(
+                                                            height: 552.0,
+                                                            child:
+                                                                RateUsBottomsheetWidget(
+                                                              rateId: widget
+                                                                  .recipeDetailId,
                                                             ),
                                                           ),
-                                                        );
-                                                      },
-                                                    ).then((value) =>
-                                                        safeSetState(() {}));
+                                                        ),
+                                                      ),
+                                                    );
                                                   },
-                                                  () async {
-                                                    await showModalBottomSheet(
-                                                      isScrollControlled: true,
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      enableDrag: false,
-                                                      useSafeArea: true,
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return WebViewAware(
-                                                          child:
-                                                              GestureDetector(
-                                                            onTap: () =>
-                                                                FocusScope.of(
-                                                                        context)
-                                                                    .unfocus(),
-                                                            child: Padding(
-                                                              padding: MediaQuery
-                                                                  .viewInsetsOf(
-                                                                      context),
-                                                              child: SizedBox(
-                                                                height: 552.0,
-                                                                child:
-                                                                    RateUsBottomsheetWidget(
-                                                                  rateId: widget
-                                                                      .recipeDetailId,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        );
-                                                      },
-                                                    ).then((value) =>
-                                                        safeSetState(() {}));
-                                                  },
-                                                );
+                                                ).then((value) =>
+                                                    safeSetState(() {}));
                                               },
                                               child: wrapWithModel(
                                                 model:
@@ -434,7 +402,7 @@ class _VideoStepScreenWidgetState extends State<VideoStepScreenWidget>
                                                 updateCallback: () =>
                                                     safeSetState(() {}),
                                                 child: const CustomAppButtonWidget(
-                                                  tittle: 'Rate us',
+                                                  tittle: 'Review',
                                                 ),
                                               ),
                                             ),

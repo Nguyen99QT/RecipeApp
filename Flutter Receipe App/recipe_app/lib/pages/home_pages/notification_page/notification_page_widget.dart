@@ -3,6 +3,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/pages/componants/custom_appbar/custom_appbar_widget.dart';
 import '/pages/componants/no_notifications_yet_container/no_notifications_yet_container_widget.dart';
+import '/services/notification_service.dart';
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -29,7 +30,66 @@ class _NotificationPageWidgetState extends State<NotificationPageWidget> {
     super.initState();
     _model = createModel(context, () => NotificationPageModel());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
+    // Setup real-time notification listener for new, updated, and deleted notifications
+    NotificationService.instance.onNewNotification = (notificationData) {
+      print('[DEBUG] ===== NOTIFICATION PAGE LISTENER CALLED =====');
+      print('[DEBUG] Notification page: Received real-time notification: $notificationData');
+      print('[DEBUG] Notification title: ${notificationData['title']}');
+      print('[DEBUG] Notification refresh flag: ${notificationData['refresh']}');
+      
+      // Refresh notification list for any real-time notification event:
+      // 1. New notifications from admin
+      // 2. Deleted notifications (refresh: true)
+      // 3. Updated notifications (refresh: true)
+      if (notificationData['refresh'] == true || 
+          notificationData['title'] != null || 
+          notificationData['message'] != null) {
+        print('[DEBUG] ===== TRIGGERING NOTIFICATION PAGE REFRESH =====');
+        print('[DEBUG] Notification page: Clearing cache and refreshing notification list');
+        
+        // Clear notification cache to force fresh data from server
+        FFAppState().clearGetAllNotificationCacheCache();
+        print('[DEBUG] Cache cleared successfully');
+        
+        if (mounted) {
+          print('[DEBUG] Calling safeSetState to refresh UI');
+          safeSetState(() {
+            // Force rebuild to refresh the notification list from server
+          });
+          print('[DEBUG] safeSetState called successfully');
+        } else {
+          print('[WARNING] Widget not mounted, skipping UI refresh');
+        }
+      } else {
+        print('[DEBUG] Notification does not match refresh criteria');
+      }
+      print('[DEBUG] ===== NOTIFICATION PAGE LISTENER FINISHED =====');
+    };
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      safeSetState(() {});
+      _markAllNotificationsAsRead();
+    });
+  }
+
+  Future<void> _markAllNotificationsAsRead() async {
+    try {
+      if (FFAppState().token.isNotEmpty && FFAppState().userId.isNotEmpty) {
+        final response =
+            await RecipeAppGroup.markNotificationAsReadApiCall.call(
+          token: FFAppState().token,
+          userId: FFAppState().userId,
+        );
+
+        if (response.succeeded) {
+          print('[DEBUG] Marked all notifications as read');
+          // Reset unread count to 0
+          FFAppState().unreadNotificationCount = 0;
+        }
+      }
+    } catch (e) {
+      print('[ERROR] Failed to mark notifications as read: $e');
+    }
   }
 
   @override
@@ -70,11 +130,50 @@ class _NotificationPageWidgetState extends State<NotificationPageWidget> {
                         child: FutureBuilder<ApiCallResponse>(
                           future: FFAppState().getAllNotificationCache(
                             requestFn: () =>
-                                RecipeAppGroup.getAllNotificationApiCall.call(),
+                                RecipeAppGroup.getAllNotificationApiCall.call(
+                              token: FFAppState().token,
+                            ),
                           ),
                           builder: (context, snapshot) {
+                            // Debug logging
+                            print(
+                                '[DEBUG] NotificationPage FutureBuilder state:');
+                            print('  - hasData: ${snapshot.hasData}');
+                            print('  - hasError: ${snapshot.hasError}');
+                            print(
+                                '  - connectionState: ${snapshot.connectionState}');
+
+                            if (snapshot.hasError) {
+                              print('  - Error: ${snapshot.error}');
+                              return Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.error_outline,
+                                      size: 64,
+                                      color: FlutterFlowTheme.of(context).error,
+                                    ),
+                                    SizedBox(height: 16),
+                                    Text(
+                                      'Failed to load notifications',
+                                      style: FlutterFlowTheme.of(context)
+                                          .headlineSmall,
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'Please check your internet connection',
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyMedium,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+
                             // Customize what your widget looks like when it's loading.
                             if (!snapshot.hasData) {
+                              print('  - Loading data...');
                               return Center(
                                 child: SizedBox(
                                   width: 50.0,
@@ -87,8 +186,18 @@ class _NotificationPageWidgetState extends State<NotificationPageWidget> {
                                 ),
                               );
                             }
+
                             final listViewGetAllNotificationApiResponse =
                                 snapshot.data!;
+
+                            // Debug API response
+                            print('  - API Response received:');
+                            print(
+                                '    statusCode: ${listViewGetAllNotificationApiResponse.statusCode}');
+                            print(
+                                '    succeeded: ${listViewGetAllNotificationApiResponse.succeeded}');
+                            print(
+                                '    bodyText: ${listViewGetAllNotificationApiResponse.bodyText}');
 
                             return Builder(
                               builder: (context) {
@@ -100,7 +209,24 @@ class _NotificationPageWidgetState extends State<NotificationPageWidget> {
                                             )
                                             ?.toList() ??
                                         [];
+
+                                // Debug notification data
+                                print(
+                                    '  - Notification list length: ${notificationList.length}');
+                                if (notificationList.isNotEmpty) {
+                                  print('  - First notification sample:');
+                                  final first = notificationList.first;
+                                  print(
+                                      '    title: ${getJsonField(first, r'''$.title''')}');
+                                  print(
+                                      '    description: ${getJsonField(first, r'''$.description''')}');
+                                  print(
+                                      '    date: ${getJsonField(first, r'''$.date''')}');
+                                }
+
                                 if (notificationList.isEmpty) {
+                                  print(
+                                      '  - No notifications found, showing empty state');
                                   return const Center(
                                     child: SizedBox(
                                       width: double.infinity,
@@ -114,7 +240,15 @@ class _NotificationPageWidgetState extends State<NotificationPageWidget> {
                                 return RefreshIndicator(
                                   key: const Key('RefreshIndicator_u6xvpywm'),
                                   color: FlutterFlowTheme.of(context).tertiary,
-                                  onRefresh: () async {},
+                                  onRefresh: () async {
+                                    print(
+                                        '[DEBUG] Pull-to-refresh triggered, clearing cache and refreshing...');
+                                    // Clear the cache to force fresh data fetch
+                                    FFAppState()
+                                        .clearGetAllNotificationCacheCache();
+                                    // Trigger rebuild to reload data
+                                    safeSetState(() {});
+                                  },
                                   child: ListView.separated(
                                     padding: const EdgeInsets.fromLTRB(
                                       0,
@@ -147,8 +281,9 @@ class _NotificationPageWidgetState extends State<NotificationPageWidget> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Align(
-                                                alignment: const AlignmentDirectional(
-                                                    0.0, 0.0),
+                                                alignment:
+                                                    const AlignmentDirectional(
+                                                        0.0, 0.0),
                                                 child: Container(
                                                   width: 40.0,
                                                   height: 40.0,
@@ -176,8 +311,9 @@ class _NotificationPageWidgetState extends State<NotificationPageWidget> {
                                               ),
                                               Expanded(
                                                 child: Padding(
-                                                  padding: const EdgeInsetsDirectional
-                                                      .fromSTEB(
+                                                  padding:
+                                                      const EdgeInsetsDirectional
+                                                          .fromSTEB(
                                                           14.0, 0.0, 0.0, 0.0),
                                                   child: Column(
                                                     mainAxisSize:
@@ -253,8 +389,122 @@ class _NotificationPageWidgetState extends State<NotificationPageWidget> {
                                                               lineHeight: 1.5,
                                                             ),
                                                       ),
-                                                    ].divide(
-                                                        const SizedBox(height: 4.0)),
+                                                      // Show "View Details" button for new_recipe notifications
+                                                      if (getJsonField(
+                                                                notificationListItem,
+                                                                r'''$.type''',
+                                                              ) ==
+                                                              'new_recipe' &&
+                                                          getJsonField(
+                                                                notificationListItem,
+                                                                r'''$.recipeId._id''',
+                                                              ) !=
+                                                              null)
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  top: 8.0),
+                                                          child: ElevatedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              final recipeId =
+                                                                  getJsonField(
+                                                                notificationListItem,
+                                                                r'''$.recipeId._id''',
+                                                              ).toString();
+
+                                                              final recipeName =
+                                                                  getJsonField(
+                                                                notificationListItem,
+                                                                r'''$.recipeId.name''',
+                                                              ).toString();
+
+                                                              // Navigate to recipe detail page
+                                                              context.pushNamed(
+                                                                'recipe_detail_screen',
+                                                                queryParameters:
+                                                                    {
+                                                                  'recipeDetailId':
+                                                                      serializeParam(
+                                                                    recipeId,
+                                                                    ParamType
+                                                                        .String,
+                                                                  ),
+                                                                  'name':
+                                                                      serializeParam(
+                                                                    recipeName,
+                                                                    ParamType
+                                                                        .String,
+                                                                  ),
+                                                                }.withoutNulls,
+                                                              );
+                                                            },
+                                                            style:
+                                                                ElevatedButton
+                                                                    .styleFrom(
+                                                              backgroundColor:
+                                                                  FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .primaryTheme,
+                                                              foregroundColor:
+                                                                  FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .samewhite,
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                horizontal:
+                                                                    16.0,
+                                                                vertical: 8.0,
+                                                              ),
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8.0),
+                                                              ),
+                                                            ),
+                                                            child: Row(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              children: [
+                                                                Icon(
+                                                                  Icons
+                                                                      .visibility,
+                                                                  size: 16.0,
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .samewhite,
+                                                                ),
+                                                                const SizedBox(
+                                                                    width: 6.0),
+                                                                Text(
+                                                                  'View Details',
+                                                                  style: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .bodyMedium
+                                                                      .override(
+                                                                        fontFamily:
+                                                                            'SF Pro Display',
+                                                                        color: FlutterFlowTheme.of(context)
+                                                                            .samewhite,
+                                                                        fontSize:
+                                                                            14.0,
+                                                                        fontWeight:
+                                                                            FontWeight.w600,
+                                                                        useGoogleFonts:
+                                                                            false,
+                                                                      ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                    ].divide(const SizedBox(
+                                                        height: 4.0)),
                                                   ),
                                                 ),
                                               ),

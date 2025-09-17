@@ -1,0 +1,373 @@
+<!-- partial:partials/header -->
+<%- include('../layouts/header.ejs') %>
+
+<!--begin::App-->
+<div class="d-flex flex-column flex-root app-root" id="kt_app_root">
+
+  <!--begin::Page-->
+  <div class="app-page flex-column flex-column-fluid" id="kt_app_page">
+    <!--begin::navbar-->
+    <div id="kt_app_header" class="app-header d-flex flex-column flex-stack">
+      <!--begin::navbar main-->
+      <%- include('../layouts/navbar.ejs') %>
+      <!--end::navbar main-->
+      <!--begin::Separator-->
+      <div class="app-header-separator"></div>
+      <!--end::Separator-->
+    </div>
+    <!--end::navbar-->
+
+    <!--begin::Wrapper-->
+    <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
+      <!--begin::Sidebar-->
+      <div id="kt_app_sidebar" class="app-sidebar flex-column" data-kt-drawer="true" data-kt-drawer-name="app-sidebar" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="250px" data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_app_sidebar_mobile_toggle">
+        <!--begin::Main-->
+        <%- include('../layouts/sidebar.ejs') %>
+        <!--end::Main-->
+      </div>
+      <!--end::Sidebar-->
+
+      <!--begin::Main-->
+      <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+        <!--begin::Content wrapper-->
+        <div class="d-flex flex-column flex-column-fluid">
+          <!--begin::Toolbar-->
+          <div id="kt_app_toolbar" class="app-toolbar pt-5">
+            <!--begin::Toolbar container-->
+            <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex align-items-stretch">
+              <!--begin::Toolbar wrapper-->
+              <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
+                <!--begin::Page title-->
+                <div class="page-title d-flex flex-column gap-1 me-3 mb-2">
+                  <!--begin::Breadcrumb-->
+                  <ul class="breadcrumb breadcrumb-separatorless fw-semibold mb-6">
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item text-gray-700 fw-bold lh-1">
+                      <a href="/recipe-reviews" class="text-gray-500">
+                        <i class="ki-solid ki-star fs-1 text-gray-400 me-n1"></i>
+                      </a>
+                    </li>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item">
+                      <i class="ki-duotone ki-right fs-4 text-gray-700 mx-n1"></i>
+                    </li>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item text-gray-700 fw-bold lh-1">Recipe Reviews</li>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item">
+                      <i class="ki-duotone ki-right fs-4 text-gray-700 mx-n1"></i>
+                    </li>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item text-gray-700 fw-bold">View All Recipe Reviews</li>
+                    <!--end::Item-->
+                  </ul>
+                  <!--end::Breadcrumb-->
+                  <!--begin::Title-->
+                  <h1 class="page-heading d-flex flex-column justify-content-center text-dark fw-bolder fs-1 lh-0">Recipe Reviews Management</h1>
+                  <!--end::Title-->
+                </div>
+                <!--end::Page title-->
+              </div>
+              <!--end::Toolbar wrapper-->
+            </div>
+            <!--end::Toolbar container-->
+          </div>
+          <!--end::Toolbar-->
+          <!--begin::Content-->
+          <div id="kt_app_content" class="app-content flex-column-fluid">
+            <!--begin::Content container-->
+            <div id="kt_app_content_container" class="app-container container-fluid">
+              <!--begin: intro-->
+              <div class="card card-flush border">
+                <!--begin::Card header-->
+                <div class="card-header border-0 pt-6">
+                  <!--begin::Card title-->
+                  <div class="card-title mb-5">
+                    <!--begin::Search-->
+                    <div class="d-flex align-items-center position-relative my-1">
+                      <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-4">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                      <input type="text" data-kt-customer-table-filter="search" class="form-control form-control-solid w-250px ps-12" placeholder="Search Recipe Reviews" />
+                    </div>
+                    <!--end::Search-->
+                  </div>
+                  <!--end::Card title-->
+                  <!--begin::Card toolbar-->
+                  <div class="card-toolbar">
+                    <!--begin::Toolbar-->
+                    <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
+                      <!--begin::Filter-->
+                      <button type="button" class="btn btn-light-primary me-3" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+                        <i class="ki-duotone ki-filter fs-2">
+                          <span class="path1"></span>
+                          <span class="path2"></span>
+                        </i>Filter
+                      </button>
+                      <!--begin::Menu 1-->
+                      <div class="menu menu-sub menu-sub-dropdown w-300px w-md-325px" data-kt-menu="true" id="kt-toolbar-filter">
+                        <!--begin::Header-->
+                        <div class="px-7 py-5">
+                          <div class="fs-4 text-dark fw-bold">Filter Options</div>
+                        </div>
+                        <!--end::Header-->
+                        <!--begin::Separator-->
+                        <div class="separator border-gray-200"></div>
+                        <!--end::Separator-->
+                        <!--begin::Content-->
+                        <div class="px-7 py-5">
+                          <!--begin::Input group-->
+                          <div class="mb-10">
+                            <!--begin::Label-->
+                            <label class="form-label fs-5 fw-semibold mb-3">Status:</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <select class="form-select form-select-solid fw-bold" data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true" data-kt-customer-table-filter="status" data-hide-search="true">
+                              <option></option>
+                              <option value="enabled">Enabled</option>
+                              <option value="disabled">Disabled</option>
+                            </select>
+                            <!--end::Input-->
+                          </div>
+                          <!--end::Input group-->
+                          <!--begin::Actions-->
+                          <div class="d-flex justify-content-end">
+                            <button type="reset" class="btn btn-light btn-active-light-primary me-2" data-kt-menu-dismiss="true" data-kt-customer-table-filter="reset">Reset</button>
+                            <button type="submit" class="btn btn-primary" data-kt-menu-dismiss="true" data-kt-customer-table-filter="filter">Apply</button>
+                          </div>
+                          <!--end::Actions-->
+                        </div>
+                        <!--end::Content-->
+                      </div>
+                      <!--end::Menu 1-->
+                      <!--end::Filter-->
+                    </div>
+                    <!--end::Toolbar-->
+                  </div>
+                  <!--end::Card toolbar-->
+                </div>
+                <!--end::Card header-->
+                <!--begin::Card body-->
+                <div class="card-body pt-0">
+                  <!-- flash message -->
+                  <% if(flash.error.length> 0){ %>
+                  <!--begin::Alert-->
+                  <div class="alert alert-dismissible bg-light-danger d-flex align-items-center mb-10">
+                    <!--begin::Content-->
+                    <span class="fs-4 text-danger fw-bold text-center ps-5"><%= flash.error %></span>
+                    <!--end::Content-->
+                    <!--begin::Close-->
+                    <button type="button" class="btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
+                      <i class="ki-duotone ki-cross fs-1 text-danger fw-bold"><span class="path1"></span><span class="path2"></span></i>
+                    </button>
+                    <!--end::Close-->
+                  </div>
+                  <!--end::Alert-->
+                  <% } %>
+                  <!-- complete flash message -->
+
+                  <!--begin::Table-->
+                  <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_customers_table">
+                    <thead>
+                      <tr class="text-start text-gray-400 fw-bold fs-5 text-uppercase gs-0">
+                        <th class="text-center min-w-70px">Sr.no</th>
+                        <th class="text-center min-w-125px">User Name</th>
+                        <th class="text-center min-w-150px">Recipe Name</th>
+                        <th class="text-center min-w-125px">Rating</th>
+                        <th class="text-center min-w-125px">Comment</th>
+                        <th class="text-center min-w-125px">Enable/Disable</th>
+                      </tr>
+                    </thead>
+                    <tbody class="fw-semibold text-gray-600">
+                      <% if (reviews.length > 0) { %>
+                      <% for (let i = 0; i < reviews.length; i++) { %>
+                      <!-- Only show recipe reviews -->
+                      <% if (reviews[i].recipeId && reviews[i].recipeId.name) { %>
+                      <!-- begin::tr -->
+                      <tr>
+                        <td class="text-center"><%= i+1 %></td>
+                        <td class="text-center pe-0">
+                          <span class="fw-bold text-dark">
+                            <% if (reviews[i].userId && reviews[i].userId.firstname) { %>
+                              <%= reviews[i].userId.firstname %>&nbsp;<%= reviews[i].userId.lastname %>
+                            <% } else { %>
+                              <span class="text-muted">Unknown User</span>
+                            <% } %>
+                          </span>
+                        </td>
+                        <td class="text-center pe-0">
+                          <span class="fw-bold text-dark"><%= reviews[i].recipeId.name %></span>
+                        </td>
+
+                        <td class="pe-0" data-order="rating-<%= reviews[i].rating %>">
+                          <div class="rating justify-content-center">
+                            <% for (let j = 1; j <= 5; j++) { %>
+                            <div class="rating-label <%= j <= reviews[i].rating ? 'checked' : '' %>">
+                              <i class="ki-duotone ki-star fs-3"></i>
+                            </div>
+                            <% } %>
+                          </div>
+                        </td>
+
+                        <td class=" text-center">
+                          <%= reviews[i].comment.length > 50 ? reviews[i].comment.substring(0, 50) + '......' : reviews[i].comment %>
+                        </td>
+
+                        <!--begin::Switch-->
+                        <td>
+                          <div class="switchedit d-flex justify-content-center" data-bs-toggle="modal" data-bs-target="#kt_modal_Enable_Disable_Review<%= i %>">
+                            <label class="switch">
+                              <button class="buttonslider ms-5">
+                                <input type="checkbox" name="isEnable" <% if(reviews[i].isEnable === true){%> checked <%} %> style="display: none;">
+                                <span class="slider round"></span>
+                              </button>
+                            </label>
+                          </div>
+                        </td>
+                        <!--end::Switch-->
+
+                      </tr>
+                      <!-- end::tr -->
+                      
+                      <!-- begin::Modal - Enable/Disable Review -->
+                      <div class="modal fade" id="kt_modal_Enable_Disable_Review<%= i %>" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title fs-1" id="confirmLabel">Confirmation</h5>
+                              <!--begin::Close-->
+                              <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                                <i class="ki-duotone ki-cross fs-2"><span class="path1"></span><span class="path2"></span></i>
+                              </div>
+                              <!--end::Close-->
+                            </div>
+                            <div class="modal-body">
+                              <p class="fs-2">Are you sure you want to <span class="fw-bold"><% if(reviews[i].isEnable === true){%> Disable <%} else {%> Enable <%} %></span> this recipe review?</p>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary fs-3" data-bs-dismiss="modal">Cancel</button>
+                              <form action="/recipe-reviews/enable-disable/<%= reviews[i]._id %>" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-danger fs-3">Confirm</button>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- end::Modal - Enable/Disable Review -->
+                      <% } %>
+                      <% } %>
+                      <% } else { %>
+                      <tr>
+                        <td colspan="7" class="text-center fs-3 text-muted py-10">No recipe reviews found</td>
+                      </tr>
+                      <% } %>
+                    </tbody>
+                  </table>
+                  <!--end::Table-->
+                </div>
+                <!--end::Card body-->
+              </div>
+              <!--end: intro-->
+            </div>
+            <!--end::Content container-->
+          </div>
+          <!--end::Content-->
+        </div>
+        <!--end::Content wrapper-->
+
+        <!--begin::Footer-->
+        <%- include('../layouts/footer.ejs') %>
+        <!--end::Footer-->
+      </div>
+      <!--end::Main-->
+    </div>
+    <!--end::Wrapper-->
+  </div>
+  <!--end::Page-->
+</div>
+<!--end::App-->
+
+<!--begin::Drawers-->
+
+<!--end::Drawers-->
+
+
+<!--begin::Scrolltop-->
+<div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
+  <i class="ki-solid ki-arrow-up"></i>
+</div>
+<!--end::Scrolltop-->
+
+<!--begin::Modals-->
+
+<!--end::Modals-->
+
+<!--begin::Javascript-->
+<script>var hostUrl = "assets/";</script>
+<!--begin::Global Javascript Bundle(mandatory for all pages)-->
+<script src="/admin/assets/plugins/global/plugins.bundle.js"></script>
+<script src="/admin/assets/js/scripts.bundle.js"></script>
+<!--end::Global Javascript Bundle-->
+<!--begin::Vendors Javascript(used for this page only)-->
+<script src="/admin/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+<!--end::Vendors Javascript-->
+<!--begin::Custom Javascript(used for this page only)-->
+<script src="/admin/assets/js/custom/apps/customers/list/list.js"></script>
+<script src="/admin/assets/js/custom/apps/customers/list/export.js"></script>
+<script src="/admin/assets/js/widgets.bundle.js"></script>
+<script src="/admin/assets/js/custom/widgets.js"></script>
+<script src="/admin/assets/js/custom/apps/chat/chat.js"></script>
+<script src="/admin/assets/js/custom/utilities/modals/upgrade-plan.js"></script>
+<script src="/admin/assets/js/custom/utilities/modals/create-campaign.js"></script>
+<script src="/admin/assets/js/custom/utilities/modals/users-search.js"></script>
+
+<script>
+// Custom filter functionality for Recipe Reviews
+document.addEventListener('DOMContentLoaded', function() {
+    // Filter functionality
+    const filterButton = document.querySelector('[data-kt-customer-table-filter="filter"]');
+    const resetButton = document.querySelector('[data-kt-customer-table-filter="reset"]');
+    const statusSelect = document.querySelector('[data-kt-customer-table-filter="status"]');
+    
+    if (filterButton) {
+        filterButton.addEventListener('click', function() {
+            const statusValue = statusSelect ? statusSelect.value : '';
+            let currentUrl = new URL(window.location.href);
+            
+            if (statusValue) {
+                currentUrl.searchParams.set('status', statusValue);
+            } else {
+                currentUrl.searchParams.delete('status');
+            }
+            
+            window.location.href = currentUrl.toString();
+        });
+    }
+    
+    if (resetButton) {
+        resetButton.addEventListener('click', function() {
+            let currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.delete('status');
+            window.location.href = currentUrl.toString();
+        });
+    }
+    
+    // Set current filter value
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentStatus = urlParams.get('status');
+    if (currentStatus && statusSelect) {
+        statusSelect.value = currentStatus;
+    }
+});
+</script>
+<!--end::Custom Javascript-->
+<!--end::Javascript-->
+
+</body>
+<!--end::Body-->
+</html>

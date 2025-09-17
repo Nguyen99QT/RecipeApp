@@ -16,13 +16,26 @@ const addCategory = async (req, res) => {
         // Extract data from the request
         const name = req.body.name;
 
+        // Check if category name already exists (case insensitive)
+        const existingCategory = await categoryModel.findOne({ 
+            name: { $regex: new RegExp(`^${name}$`, 'i') } 
+        });
+
+        if (existingCategory) {
+            req.flash('error', `Category "${name}" already exists! Please choose a different name.`);
+            return res.redirect('back');
+        }
+
         //save category
         const newCategory = await new categoryModel({ name }).save();
 
+        req.flash('success', `Category "${name}" has been added successfully.`);
         return res.redirect('back');
 
     } catch (error) {
         console.log(error.message);
+        req.flash('error', 'An error occurred while adding the category. Please try again.');
+        return res.redirect('back');
     }
 }
 
@@ -34,10 +47,19 @@ const loadcategory = async (req, res) => {
         //fetch all category data
         const category = await categoryModel.find();
 
+        // Add recipe count for each category
+        const categoryWithCounts = await Promise.all(category.map(async (cat) => {
+            const recipeCount = await recipeModel.countDocuments({ categoryId: cat._id });
+            return {
+                ...cat.toObject(),
+                recipeCount: recipeCount
+            };
+        }));
+
         //  fetch admin
         const loginData = await loginModel.find();
 
-        return res.render("category", { category, loginData });
+        return res.render("category", { category: categoryWithCounts, loginData });
 
     } catch (error) {
         console.log(error.message);
@@ -53,13 +75,32 @@ const editCategory = async (req, res) => {
         const id = req.body.id;
         const name = req.body.name;
 
+        // Check if another category with the same name already exists (excluding current category)
+        const existingCategory = await categoryModel.findOne({ 
+            name: { $regex: new RegExp(`^${name}$`, 'i') },
+            _id: { $ne: id }
+        });
+
+        if (existingCategory) {
+            req.flash('error', `Category "${name}" already exists! Please choose a different name.`);
+            return res.redirect('back');
+        }
+
         // update category
         const updatedCategory = await categoryModel.findOneAndUpdate({ _id: id }, { $set: { name } }, { new: true });
+
+        if (updatedCategory) {
+            req.flash('success', `Category has been updated to "${name}" successfully.`);
+        } else {
+            req.flash('error', 'Category not found!');
+        }
 
         return res.redirect('back');
 
     } catch (error) {
         console.log(error.message);
+        req.flash('error', 'An error occurred while updating the category. Please try again.');
+        return res.redirect('back');
     }
 }
 
@@ -71,41 +112,74 @@ const deleteCategory = async (req, res) => {
         // Extract data from the request
         const id = req.query.id;
 
-        const recipes = await recipeModel.find({ categoryId: id });
+        console.log(`[DELETE CATEGORY] Checking category ID: ${id}`);
 
-        recipes.map(async (item) => {
+        // First check if category exists
+        const category = await categoryModel.findById(id);
+        if (!category) {
+            req.flash('error', 'Category not found!');
+            return res.redirect('back');
+        }
 
-            //delete image
-            deleteImages(item.image);
+        // Check if there are recipes using this category
+        const recipeCount = await recipeModel.countDocuments({ categoryId: id });
+        console.log(`[DELETE CATEGORY] Found ${recipeCount} recipes using this category`);
 
-            // delete gallery
-            item.gallery.map((image) => {
-                deleteImages(image);
-            })
+        if (recipeCount > 0) {
+            // Prevent deletion and show error message
+            req.flash('error', `Cannot delete category "${category.name}" because it contains ${recipeCount} recipe(s). Please move or delete the recipes first.`);
+            console.log(`[DELETE CATEGORY] Deletion blocked - category contains ${recipeCount} recipes`);
+            return res.redirect('back');
+        }
 
-            if (item.video) {
-                //delete video
-                deleteVideo(item.video);
-            }
-
-            // delete recipe review
-            await reviewModel.deleteMany({ recipeId: item._id });
-
-            //delete user favourite recipe
-            await favouriteRecipeModel.deleteMany({ recipeId: item._id });
-
-        });
-
-        //delete  recipe
-        await recipeModel.deleteMany({ categoryId: id });
-
-        // delete category
+        // If no recipes, proceed with deletion
         const deletedCategory = await categoryModel.deleteOne({ _id: id });
+        console.log(`[DELETE CATEGORY] Category "${category.name}" deleted successfully`);
+
+        req.flash('success', `Category "${category.name}" has been deleted successfully.`);
 
         return res.redirect('back');
 
     } catch (error) {
-        console.log(error.message);
+        console.log('[DELETE CATEGORY ERROR]:', error.message);
+        req.flash('error', 'An error occurred while deleting the category. Please try again.');
+        return res.redirect('back');
+    }
+}
+
+// Check category usage before delete
+const checkCategoryUsage = async (req, res) => {
+    try {
+        const id = req.query.id;
+        
+        const recipeCount = await recipeModel.countDocuments({ categoryId: id });
+        const category = await categoryModel.findById(id);
+        
+        if (!category) {
+            return res.status(404).json({
+                status: false,
+                message: 'Category not found'
+            });
+        }
+        
+        return res.json({
+            status: true,
+            data: {
+                categoryName: category.name,
+                recipeCount: recipeCount,
+                canDelete: true,
+                warningMessage: recipeCount > 0 ? 
+                    `This will delete ${recipeCount} recipe(s) and all related data (reviews, favourites, images, videos)` : 
+                    'This category can be safely deleted'
+            }
+        });
+        
+    } catch (error) {
+        console.log('[CHECK CATEGORY USAGE ERROR]:', error.message);
+        return res.status(500).json({
+            status: false,
+            message: 'Error checking category usage'
+        });
     }
 }
 
@@ -113,5 +187,6 @@ module.exports = {
     loadcategory,
     addCategory,
     editCategory,
-    deleteCategory
+    deleteCategory,
+    checkCategoryUsage
 }

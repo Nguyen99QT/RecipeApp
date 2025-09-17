@@ -353,6 +353,13 @@ class FFAppState extends ChangeNotifier {
     prefs.setString('ff_ioInterstitial', value);
   }
 
+  int _unreadNotificationCount = 0;
+  int get unreadNotificationCount => _unreadNotificationCount;
+  set unreadNotificationCount(int value) {
+    _unreadNotificationCount = value;
+    notifyListeners();
+  }
+
   String _AndroidAdmobId = '';
   String get AndroidAdmobId => _AndroidAdmobId;
   set AndroidAdmobId(String value) {

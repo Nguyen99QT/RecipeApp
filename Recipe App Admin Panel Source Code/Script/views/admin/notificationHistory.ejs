@@ -1,0 +1,755 @@
+<!-- partial:partials/header -->
+<%- include('../layouts/header.ejs') %>
+
+<!--begin::App-->
+<div class="d-flex flex-column flex-root app-root" id="kt_app_root">
+
+  <!--begin::Page-->
+  <div class="app-page flex-column flex-column-fluid" id="kt_app_page">
+    <!--begin::navbar-->
+    <div id="kt_app_header" class="app-header d-flex flex-column flex-stack">
+      <!--begin::navbar main-->
+      <%- include('../layouts/navbar.ejs') %>
+      <!--end::navbar main-->
+      <!--begin::Separator-->
+      <div class="app-header-separator"></div>
+      <!--end::Separator-->
+    </div>
+    <!--end::navbar-->
+
+    <!--begin::Wrapper-->
+    <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
+      <!--begin::Sidebar-->
+      <div id="kt_app_sidebar" class="app-sidebar flex-column" data-kt-drawer="true" data-kt-drawer-name="app-sidebar" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="250px" data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_app_sidebar_mobile_toggle">
+        <!--begin::Main sidebar-->
+        <%- include('../layouts/sidebar.ejs') %>
+        <!--end::Main sidebar-->
+      </div>
+      <!--end::Sidebar-->
+
+      <!--begin::Main-->
+      <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+        <!--begin::Content wrapper-->
+        <div class="d-flex flex-column flex-column-fluid">
+          <!--begin::Toolbar-->
+          <div id="kt_app_toolbar" class="app-toolbar pt-5">
+            <!--begin::Toolbar container-->
+            <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex align-items-stretch">
+              <!--begin::Toolbar wrapper-->
+              <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
+                <!--begin::Page title-->
+                <div class="page-title d-flex flex-column gap-1 me-3 mb-2">
+                  <!--begin::Breadcrumb-->
+                  <ul class="breadcrumb breadcrumb-separatorless fw-semibold mb-6">
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item text-gray-700 fw-bold lh-1">
+                      <a href="#" class="text-gray-500">
+                        <i class="ki-outline ki-notification-status fs-2x"></i>
+                      </a>
+                    </li>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item">
+                      <i class="ki-outline ki-right fs-4 text-gray-700 mx-n1"></i>
+                    </li>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item text-gray-700 fw-bold lh-1">Notification History</li>
+                    <!--end::Item-->
+                  </ul>
+                  <!--end::Breadcrumb-->
+                  <!--begin::Title-->
+                  <h1 class="page-heading d-flex flex-column justify-content-center text-dark fw-bolder fs-1 lh-0">Notification History</h1>
+                  <!--end::Title-->
+                </div>
+                <!--end::Page title-->
+                <!--begin::Actions-->
+                <div class="d-flex align-items-center gap-2 gap-lg-3">
+                  <a href="/send-notification" class="btn btn-primary">
+                    <i class="ki-outline ki-plus fs-2"></i>Send New Notification
+                  </a>
+                </div>
+                <!--end::Actions-->
+              </div>
+              <!--end::Toolbar wrapper-->
+            </div>
+            <!--end::Toolbar container-->
+          </div>
+          <!--end::Toolbar-->
+
+          <!--begin::Content-->
+          <div id="kt_app_content" class="app-content flex-column-fluid">
+            <!--begin::Content container-->
+            <div id="kt_app_content_container" class="app-container container-fluid">
+              
+              <!-- Flash Messages -->
+              <% if (typeof success !== 'undefined' && success.length > 0) { %>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                  <%= success %>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              <% } %>
+
+              <% if (typeof error !== 'undefined' && error.length > 0) { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  <%= error %>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+              <% } %>
+
+              <!--begin::Notifications Table-->
+              <div class="card">
+                <!--begin::Card header-->
+                <div class="card-header border-0 pt-6">
+                  <!--begin::Card title-->
+                  <div class="card-title">
+                    <!--begin::Search-->
+                    <div class="d-flex align-items-center position-relative my-1">
+                      <i class="ki-outline ki-magnifier fs-3 position-absolute ms-5"></i>
+                      <input type="text" id="notification-search" class="form-control form-control-solid w-250px ps-13" placeholder="Search notifications..." />
+                    </div>
+                    <!--end::Search-->
+                  </div>
+                  <!--end::Card title-->
+                  <!--begin::Card toolbar-->
+                  <div class="card-toolbar">
+                    <!--begin::Toolbar-->
+                    <div class="d-flex justify-content-end align-items-center gap-3" data-kt-customer-table-toolbar="base">
+                      <!--begin::Stats Display-->
+                      <div class="d-flex align-items-center gap-2 me-3">
+                        <span class="badge badge-light-primary fs-7">Total: <%= stats.total %></span>
+                        <span class="badge badge-light-success fs-7">Enabled: <%= stats.enabled %></span>
+                        <span class="badge badge-light-danger fs-7">Disabled: <%= stats.disabled %></span>
+                      </div>
+                      <!--end::Stats Display-->
+                      
+                      <!--begin::Status Filter-->
+                      <div class="w-150px">
+                        <select class="form-select form-select-solid" id="notification-status-filter" onchange="filterByStatus()">
+                          <option value="all" <%= currentFilter === 'all' ? 'selected' : '' %>>All Status</option>
+                          <option value="enabled" <%= currentFilter === 'enabled' ? 'selected' : '' %>>Enabled Only</option>
+                          <option value="disabled" <%= currentFilter === 'disabled' ? 'selected' : '' %>>Disabled Only</option>
+                        </select>
+                      </div>
+                      <!--end::Status Filter-->
+                      
+                      <!--begin::Type Filter-->
+                      <div class="w-150px">
+                        <select class="form-select form-select-solid" id="notification-type-filter" data-placeholder="Filter by type">
+                          <option value="">All Types</option>
+                          <option value="general">General</option>
+                          <option value="new_recipe">Recipe</option>
+                        </select>
+                      </div>
+                      <!--end::Type Filter-->
+                    </div>
+                    <!--end::Toolbar-->
+                  </div>
+                  <!--end::Card toolbar-->
+                </div>
+                <!--end::Card header-->
+                <!--begin::Card body-->
+                <div class="card-body pt-0">
+                  <!--begin::Table-->
+                  <table class="table align-middle table-row-dashed fs-6 gy-5" id="notification_table">
+                    <thead>
+                      <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
+                        <th class="min-w-125px">Type</th>
+                        <th class="min-w-200px">Title</th>
+                        <th class="min-w-300px">Message</th>
+                        <th class="min-w-150px">Recipe</th>
+                        <th class="min-w-125px">Date Sent</th>
+                        <th class="min-w-100px">Status</th>
+                        <th class="text-end min-w-70px">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody class="fw-semibold text-gray-600" id="notification-tbody">
+                      <% if (notifications && notifications.length > 0) { %>
+                        <% notifications.forEach(function(notification) { %>
+                          <tr data-type="<%= notification.type %>">
+                            <td>
+                              <% if (notification.type === 'general') { %>
+                                <span class="badge badge-light-primary fs-7 fw-bold">
+                                  <i class="ki-outline ki-notification-bing fs-6 me-1"></i>General
+                                </span>
+                              <% } else if (notification.type === 'new_recipe') { %>
+                                <span class="badge badge-light-success fs-7 fw-bold">
+                                  <i class="ki-outline ki-bowl fs-6 me-1"></i>Recipe
+                                </span>
+                              <% } else { %>
+                                <span class="badge badge-light-secondary fs-7 fw-bold">
+                                  <i class="ki-outline ki-question fs-6 me-1"></i>Unknown
+                                </span>
+                              <% } %>
+                            </td>
+                            <td>
+                              <div class="d-flex flex-column">
+                                <div class="d-flex align-items-center">
+                                  <a href="#" class="text-gray-800 text-hover-primary mb-1 fw-bold me-2"><%= notification.title || 'No Title' %></a>
+                                  <% if (notification.isEnabled) { %>
+                                    <span class="badge badge-sm badge-success">Enabled</span>
+                                  <% } else { %>
+                                    <span class="badge badge-sm badge-danger">Disabled</span>
+                                  <% } %>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="text-gray-600" style="max-width: 300px; word-wrap: break-word;">
+                                <% 
+                                  const desc = notification.message || '';
+                                  const cleanDesc = desc.replace(/<[^>]*>/g, '');
+                                %>
+                                <%= cleanDesc.substring(0, 100) %>
+                                <% if (cleanDesc.length > 100) { %>...
+                                <% } %>
+                              </div>
+                            </td>
+                            <td>
+                              <% if (notification.type === 'new_recipe' && notification.recipeId) { %>
+                                <div class="d-flex align-items-center">
+                                  <div class="symbol symbol-50px me-3">
+                                    <img src="/uploads/images/<%= notification.recipeId.image || 'default.jpg' %>" 
+                                         alt="<%= notification.recipeId.name || 'Recipe' %>" 
+                                         class="rounded"
+                                         onerror="this.src='/uploads/images/error_image.png'; this.onerror=null;" />
+                                  </div>
+                                  <div class="d-flex flex-column">
+                                    <span class="text-gray-800 fw-bold"><%= notification.recipeId.name || 'Unknown Recipe' %></span>
+                                  </div>
+                                </div>
+                              <% } else { %>
+                                <span class="text-muted">-</span>
+                              <% } %>
+                            </td>
+                            <td>
+                              <div class="d-flex flex-column">
+                                <span class="text-gray-800 fw-bold"><%= moment(notification.createdAt).format('MMM DD, YYYY') %></span>
+                                <span class="text-muted fs-7"><%= moment(notification.createdAt).format('hh:mm A') %></span>
+                              </div>
+                            </td>
+                            <td>
+                              <% if (notification.isEnabled !== false) { %>
+                                <span class="badge badge-light-success">
+                                  <i class="ki-outline ki-check-circle fs-6 me-1"></i>Enabled
+                                </span>
+                              <% } else { %>
+                                <span class="badge badge-light-danger">
+                                  <i class="ki-outline ki-cross-circle fs-6 me-1"></i>Disabled
+                                </span>
+                              <% } %>
+                            </td>
+                            <td class="text-end">
+                              <a href="#" class="btn btn-sm btn-light btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+                                Actions
+                                <i class="ki-outline ki-down fs-5 ms-1"></i>
+                              </a>
+                              <!--begin::Menu-->
+                              <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-150px py-4" data-kt-menu="true">
+                                <!--begin::Menu item-->
+                                <div class="menu-item px-3">
+                                  <a href="#" class="menu-link px-3" onclick="editNotification('<%= notification._id %>')">
+                                    <i class="ki-outline ki-pencil fs-6 me-2"></i>Edit
+                                  </a>
+                                </div>
+                                <!--end::Menu item-->
+                                <!--begin::Menu item-->
+                                <div class="menu-item px-3">
+                                  <% if (notification.isEnabled !== false) { %>
+                                    <a href="#" class="menu-link px-3 text-warning" onclick="toggleNotificationStatus('<%= notification._id %>', false, this)">
+                                      <i class="ki-outline ki-cross-circle fs-6 me-2"></i>Disable
+                                    </a>
+                                  <% } else { %>
+                                    <a href="#" class="menu-link px-3 text-success" onclick="toggleNotificationStatus('<%= notification._id %>', true, this)">
+                                      <i class="ki-outline ki-check-circle fs-6 me-2"></i>Enable
+                                    </a>
+                                  <% } %>
+                                </div>
+                                <!--end::Menu item-->
+                                <!--begin::Menu item-->
+                                <div class="menu-item px-3">
+                                  <a href="#" class="menu-link px-3 text-danger" onclick="deleteNotification('<%= notification._id %>', this)">
+                                    <i class="ki-outline ki-trash fs-6 me-2"></i>Delete
+                                  </a>
+                                </div>
+                                <!--end::Menu item-->
+                                <% if (notification.type === 'new_recipe' && notification.recipeId && notification.recipeId._id) { %>
+                                <!--begin::Menu item-->
+                                <div class="menu-item px-3">
+                                  <a href="/edit-recipe?id=<%= notification.recipeId._id %>" class="menu-link px-3">
+                                    <i class="ki-outline ki-bowl fs-6 me-2"></i>View Recipe
+                                  </a>
+                                </div>
+                                <!--end::Menu item-->
+                                <% } %>
+                              </div>
+                              <!--end::Menu-->
+                            </td>
+                          </tr>
+                        <% }); %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="7" class="text-center py-10">
+                            <div class="d-flex flex-column align-items-center">
+                              <i class="ki-outline ki-notification-off fs-3x text-muted mb-3"></i>
+                              <span class="text-muted fs-5">No notifications sent yet</span>
+                              <a href="/send-notification" class="btn btn-primary mt-3">Send First Notification</a>
+                            </div>
+                          </td>
+                        </tr>
+                      <% } %>
+                    </tbody>
+                  </table>
+                  <!--end::Table-->
+                </div>
+                <!--end::Card body-->
+              </div>
+              <!--end::Notifications Table-->
+
+            </div>
+            <!--end::Content container-->
+          </div>
+          <!--end::Content-->
+        </div>
+        <!--end::Content wrapper-->
+      </div>
+      <!--end::Main-->
+    </div>
+    <!--end::Wrapper-->
+  </div>
+  <!--end::Page-->
+</div>
+<!--end::App-->
+
+<!--Scripts-->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing search and filter...');
+    
+    const searchInput = document.getElementById('notification-search');
+    const typeFilter = document.getElementById('notification-type-filter');
+    const tableBody = document.getElementById('notification-tbody');
+    
+    if (!searchInput || !typeFilter || !tableBody) {
+        console.error('Required elements not found');
+        return;
+    }
+    
+    console.log('Elements found, setting up event listeners...');
+
+    function filterTable() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const selectedType = typeFilter.value;
+        
+        console.log('Filtering:', { searchTerm, selectedType });
+        
+        // Get all data rows (excluding header and any message rows)
+        const dataRows = tableBody.querySelectorAll('tr[data-type]');
+        let visibleCount = 0;
+        
+        dataRows.forEach(function(row) {
+            const type = row.getAttribute('data-type');
+            const rowText = row.textContent.toLowerCase();
+            
+            const matchesSearch = !searchTerm || rowText.includes(searchTerm);
+            const matchesType = !selectedType || type === selectedType;
+            
+            if (matchesSearch && matchesType) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        
+        console.log(`Showing ${visibleCount} of ${dataRows.length} rows`);
+        
+        // Handle no results case
+        handleNoResults(visibleCount === 0 && dataRows.length > 0);
+    }
+    
+    function handleNoResults(showNoResults) {
+        let noResultsRow = tableBody.querySelector('.no-results-message');
+        
+        if (showNoResults && !noResultsRow) {
+            noResultsRow = document.createElement('tr');
+            noResultsRow.className = 'no-results-message';
+            noResultsRow.innerHTML = `
+                <td colspan="7" class="text-center py-8">
+                    <div class="d-flex flex-column align-items-center">
+                        <i class="ki-outline ki-file-search fs-3x text-muted mb-3"></i>
+                        <span class="text-muted fs-6">No notifications found matching your criteria</span>
+                        <button class="btn btn-sm btn-light-primary mt-3" onclick="clearAllFilters()">
+                            <i class="ki-outline ki-arrow-left fs-5 me-1"></i>Clear Filters
+                        </button>
+                    </div>
+                </td>
+            `;
+            tableBody.appendChild(noResultsRow);
+        } else if (!showNoResults && noResultsRow) {
+            noResultsRow.remove();
+        }
+    }
+
+    // Event listeners
+    searchInput.addEventListener('input', function(e) {
+        console.log('Search input:', e.target.value);
+        filterTable();
+    });
+    
+    typeFilter.addEventListener('change', function(e) {
+        console.log('Type filter:', e.target.value);
+        filterTable();
+    });
+    
+    // Test initial state
+    console.log('Initial rows:', tableBody.querySelectorAll('tr[data-type]').length);
+});
+
+// Global function to clear filters
+function clearAllFilters() {
+    const searchInput = document.getElementById('notification-search');
+    const typeFilter = document.getElementById('notification-type-filter');
+    
+    if (searchInput) searchInput.value = '';
+    if (typeFilter) typeFilter.value = '';
+    
+    // Remove no results message
+    const noResultsRow = document.querySelector('.no-results-message');
+    if (noResultsRow) noResultsRow.remove();
+    
+    // Show all rows
+    const allRows = document.querySelectorAll('#notification-tbody tr[data-type]');
+    allRows.forEach(row => row.style.display = '');
+    
+    console.log('Filters cleared');
+}
+
+function editNotification(notificationId) {
+    // Show confirmation and redirect to edit page
+    Swal.fire({
+        title: 'Edit Notification',
+        text: 'Do you want to edit this notification?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: '<i class="ki-outline ki-pencil fs-6 me-2"></i>Yes, Edit',
+        cancelButtonText: '<i class="ki-outline ki-cross fs-6 me-2"></i>Cancel',
+        customClass: {
+            confirmButton: 'btn btn-primary me-3',
+            cancelButton: 'btn btn-light'
+        },
+        buttonsStyling: false,
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // For now, we'll redirect to send notification page with edit mode
+            // You can implement a dedicated edit page if needed
+            window.location.href = `/send-notification?edit=${notificationId}`;
+        }
+    });
+}
+
+function deleteNotification(notificationId, buttonElement) {
+    Swal.fire({
+        title: 'Delete Notification',
+        text: 'Are you sure you want to delete this notification? This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '<i class="ki-outline ki-trash fs-6 me-2"></i>Yes, Delete',
+        cancelButtonText: '<i class="ki-outline ki-cross fs-6 me-2"></i>Cancel',
+        customClass: {
+            confirmButton: 'btn btn-danger me-3',
+            cancelButton: 'btn btn-light'
+        },
+        buttonsStyling: false,
+        reverseButtons: true,
+        focusCancel: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Show loading state
+            const button = buttonElement || event.target.closest('a');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Deleting...';
+            button.style.pointerEvents = 'none';
+        
+        // Send delete request
+        fetch(`/delete-notification/${notificationId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remove the row from table with animation
+                const row = button.closest('tr');
+                row.style.transition = 'opacity 0.3s ease';
+                row.style.opacity = '0';
+                
+                setTimeout(() => {
+                    row.remove();
+                    // Update statistics
+                    updateStatistics();
+                }, 300);
+                
+                // Show success message
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: 'Notification has been deleted successfully.',
+                    icon: 'success',
+                    timer: 2500,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    customClass: {
+                        title: 'fw-bold'
+                    }
+                });
+            } else {
+                throw new Error(data.message || 'Failed to delete notification');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('error', 'Failed to delete notification. Please try again.');
+            
+            // Restore button state
+            button.innerHTML = originalText;
+            button.style.pointerEvents = 'auto';
+        });
+        }
+    });
+}
+
+function showAlert(type, message) {
+    const alertConfig = {
+        title: type === 'success' ? 'Success!' : 'Error!',
+        text: message,
+        icon: type === 'success' ? 'success' : 'error',
+        confirmButtonText: 'OK',
+        customClass: {
+            confirmButton: type === 'success' ? 'btn btn-success' : 'btn btn-danger',
+            title: 'fw-bold',
+            content: 'text-gray-700'
+        },
+        buttonsStyling: false,
+        timer: type === 'success' ? 3000 : null,
+        timerProgressBar: type === 'success',
+        showCloseButton: true,
+        backdrop: true,
+        allowOutsideClick: true,
+        allowEscapeKey: true
+    };
+
+    Swal.fire(alertConfig);
+}
+
+function toggleNotificationStatus(notificationId, enableStatus, buttonElement) {
+    const action = enableStatus ? 'enable' : 'disable';
+    const actionTitle = enableStatus ? 'Enable Notification' : 'Disable Notification';
+    const confirmMessage = `Are you sure you want to ${action} this notification?`;
+    
+    Swal.fire({
+        title: actionTitle,
+        text: confirmMessage,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: `<i class="ki-outline ${enableStatus ? 'ki-check-circle' : 'ki-cross-circle'} fs-6 me-2"></i>Yes, ${action.charAt(0).toUpperCase() + action.slice(1)}`,
+        cancelButtonText: '<i class="ki-outline ki-cross fs-6 me-2"></i>Cancel',
+        customClass: {
+            confirmButton: `btn ${enableStatus ? 'btn-success' : 'btn-warning'} me-3`,
+            cancelButton: 'btn btn-light'
+        },
+        buttonsStyling: false,
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Show loading state
+            const button = buttonElement || event.target.closest('a');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Processing...';
+            button.style.pointerEvents = 'none';
+        
+        // Send update request
+        fetch(`/toggle-notification-status/${notificationId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ isEnabled: enableStatus })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success message with auto-reload
+                Swal.fire({
+                    title: 'Success!',
+                    text: `Notification ${action}d successfully!`,
+                    icon: 'success',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                    customClass: {
+                        title: 'fw-bold'
+                    },
+                    willClose: () => {
+                        // Refresh the page to show updated status
+                        window.location.reload();
+                    }
+                });
+            } else {
+                throw new Error(data.message || `Failed to ${action} notification`);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('error', `Failed to ${action} notification. Please try again.`);
+            
+            // Restore button state
+            button.innerHTML = originalText;
+            button.style.pointerEvents = 'auto';
+        });
+        }
+    });
+}
+
+function updateStatistics() {
+    // This function is no longer needed since we removed statistics cards
+}
+</script>
+
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.all.min.js"></script>
+
+<!-- Custom SweetAlert2 Styling -->
+<style>
+.swal2-popup {
+    border-radius: 15px !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    font-family: inherit !important;
+}
+
+.swal2-title {
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 1rem !important;
+}
+
+.swal2-content {
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.swal2-icon {
+    margin-bottom: 1.5rem !important;
+}
+
+.swal2-icon.swal2-success {
+    border-color: #50cd89 !important;
+    color: #50cd89 !important;
+}
+
+.swal2-icon.swal2-error {
+    border-color: #f1416c !important;
+    color: #f1416c !important;
+}
+
+.swal2-icon.swal2-warning {
+    border-color: #ffc700 !important;
+    color: #ffc700 !important;
+}
+
+.swal2-icon.swal2-question {
+    border-color: #009ef7 !important;
+    color: #009ef7 !important;
+}
+
+.swal2-timer-progress-bar {
+    background: #50cd89 !important;
+}
+
+.swal2-close {
+    font-size: 1.5rem !important;
+    padding: 0.5rem !important;
+}
+
+/* Custom button styles */
+.swal2-actions .btn {
+    font-weight: 600 !important;
+    padding: 0.75rem 1.5rem !important;
+    font-size: 0.95rem !important;
+    border-radius: 0.475rem !important;
+    margin: 0 0.5rem !important;
+}
+</style>
+
+<script>
+// Filter by status function
+function filterByStatus() {
+    const filter = document.getElementById('notification-status-filter').value;
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set('filter', filter);
+    
+    // Add loading state
+    document.getElementById('notification-status-filter').disabled = true;
+    
+    // Navigate to filtered results
+    window.location.href = currentUrl.toString();
+}
+
+// Search functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('notification-search');
+    const table = document.querySelector('[data-kt-table-widget-4="datatable_wrapper"]');
+    
+    if (searchInput && table) {
+        searchInput.addEventListener('input', function() {
+            const filter = this.value.toLowerCase();
+            const rows = table.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const titleCell = row.cells[2]; // Title column
+                const messageCell = row.cells[3]; // Message column
+                
+                if (titleCell && messageCell) {
+                    const titleText = titleCell.textContent.toLowerCase();
+                    const messageText = messageCell.textContent.toLowerCase();
+                    
+                    if (titleText.includes(filter) || messageText.includes(filter)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        });
+    }
+    
+    // Type filter functionality
+    const typeFilter = document.getElementById('notification-type-filter');
+    if (typeFilter) {
+        typeFilter.addEventListener('change', function() {
+            const filter = this.value.toLowerCase();
+            const rows = table.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const typeCell = row.cells[1]; // Type column
+                
+                if (typeCell) {
+                    const typeText = typeCell.textContent.toLowerCase();
+                    
+                    if (filter === '' || typeText.includes(filter)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+        });
+    }
+});
+</script>
+
+<!--partial:partials/footer -->
+<%- include('../layouts/footer.ejs') %>

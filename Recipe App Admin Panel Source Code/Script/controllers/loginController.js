@@ -38,14 +38,14 @@ const login = async (req, res) => {
         if (!isExistEmail) {
 
             req.flash('error', 'We’re sorry, something went wrong when attempting to sign in.');
-            return res.redirect('back');
+            return res.redirect(req.get('Referrer') || '/');
 
         } else {
 
             if (password !== isExistEmail.password) {
 
                 req.flash('error', 'We’re sorry, something went wrong when attempting to sign in.');
-                return res.redirect('back');
+                return res.redirect(req.get('Referrer') || '/');
 
             } else {
 
@@ -107,14 +107,14 @@ const isActiveUser = async (req, res) => {
             // Find current user
             const currentUser = await userModel.findById({ _id: id });
 
-            await userModel.findByIdAndUpdate({ _id: id }, { $set: { isOTPVerified: currentUser.isOTPVerified === 0 ? 1 : 0 } }, { new: true });
+            await userModel.findByIdAndUpdate({ _id: id }, { $set: { is_active: currentUser.is_active === 0 ? 1 : 0 } }, { new: true });
 
-            return res.redirect('back');
+            return res.redirect(req.get('Referrer') || '/');
         }
         else {
 
             req.flash('error', 'You have no access to active/disactive user, Only admin have access to this functionality...!!');
-            return res.redirect('back');
+            return res.redirect(req.get('Referrer') || '/');
         }
 
     } catch (error) {
@@ -201,14 +201,14 @@ const changePassword = async (req, res) => {
 
         if (newpassword !== comfirmpassword) {
             req.flash('error', 'Confirm password does not match');
-            return res.redirect('back');
+            return res.redirect(req.get('Referrer') || '/');
         }
 
         const matchPassword = await adminLoginModel.findOne({ password: oldpassword });
 
         if (!matchPassword) {
             req.flash('error', 'Current password is wrong, please try again');
-            return res.redirect('back');
+            return res.redirect(req.get('Referrer') || '/');
         }
 
         await adminLoginModel.findOneAndUpdate({ password: oldpassword }, { $set: { password: newpassword } }, { new: true });

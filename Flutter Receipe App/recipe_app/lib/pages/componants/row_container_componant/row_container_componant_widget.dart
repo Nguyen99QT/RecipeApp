@@ -107,6 +107,22 @@ class _RowContainerComponantWidgetState
                   height: 114.0,
                   fit: BoxFit.cover,
                   alignment: const Alignment(0.0, 0.0),
+                  errorWidget: (context, error, stackTrace) => Container(
+                    width: 114.0,
+                    height: 114.0,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(12.0),
+                        topLeft: Radius.circular(12.0),
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.error_outline,
+                      color: Colors.grey,
+                      size: 24.0,
+                    ),
+                  ),
                 ),
               ),
               Expanded(

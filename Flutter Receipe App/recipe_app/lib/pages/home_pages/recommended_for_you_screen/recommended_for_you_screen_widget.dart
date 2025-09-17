@@ -388,7 +388,7 @@ class _RecommendedForYouScreenWidgetState
                                                                       getAllRecipeListItem,
                                                                       r'''$.totalCookTime''',
                                                                     ).toString(),
-                                                                    favCondition: functions.checkFavOrNot(
+                                                                    favCondition: FFAppState().isLogin == true ? functions.checkFavOrNot(
                                                                             RecipeAppGroup.getAllFavouriteRecipesApiCall
                                                                                 .favouriteRecipeList(
                                                                                   columnGetAllFavouriteRecipesApiResponse.jsonBody,
@@ -398,7 +398,7 @@ class _RecommendedForYouScreenWidgetState
                                                                               getAllRecipeListItem,
                                                                               r'''$._id''',
                                                                             ).toString()) ==
-                                                                        true,
+                                                                        true : false,
                                                                     onFavTap:
                                                                         () async {
                                                                       if (FFAppState()
@@ -707,7 +707,7 @@ class _RecommendedForYouScreenWidgetState
                                                                           filterRecipeListItem,
                                                                           r'''$.totalCookTime''',
                                                                         ).toString(),
-                                                                        favCondition: functions.checkFavOrNot(
+                                                                        favCondition: FFAppState().isLogin == true ? functions.checkFavOrNot(
                                                                                 RecipeAppGroup.getAllFavouriteRecipesApiCall
                                                                                     .favouriteRecipeList(
                                                                                       columnGetAllFavouriteRecipesApiResponse.jsonBody,
@@ -717,7 +717,7 @@ class _RecommendedForYouScreenWidgetState
                                                                                   filterRecipeListItem,
                                                                                   r'''$._id''',
                                                                                 ).toString()) ==
-                                                                            true,
+                                                                            true : false,
                                                                         onFavTap:
                                                                             () async {
                                                                           if (FFAppState().isLogin ==

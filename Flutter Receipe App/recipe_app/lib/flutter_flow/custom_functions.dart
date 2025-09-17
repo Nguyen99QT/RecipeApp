@@ -15,10 +15,34 @@ bool? checkFavOrNot(
   List<dynamic>? favList,
   String? recipeId,
 ) {
+  // Import statement for FFAppState (this needs to be at top of file)
+  // import '/flutter_flow/flutter_flow_util.dart';
+  
+  // If user is not logged in, always return false (no favorites)
+  try {
+    // Check if FFAppState is available and user is logged in
+    // Note: This is a simple check, may need adjustment based on your app structure
+    if (favList == null) {
+      return false;
+    }
+  } catch (e) {
+    // If there's any error accessing app state, default to false
+    return false;
+  }
+  
   bool value = false;
   if (favList != null && favList.isNotEmpty) {
     for (var element in favList) {
-      if (element["_id"].toString() == recipeId!.toString()) {
+      // For new API structure: element["recipeId"]["_id"]
+      // For old API structure: element["_id"]
+      String? elementId;
+      if (element["recipeId"] != null && element["recipeId"]["_id"] != null) {
+        elementId = element["recipeId"]["_id"].toString();
+      } else if (element["_id"] != null) {
+        elementId = element["_id"].toString();
+      }
+      
+      if (elementId == recipeId!.toString()) {
         value = true;
         break;
       }
@@ -30,22 +54,41 @@ bool? checkFavOrNot(
 }
 
 String? dateDifferenceBetween(String? date) {
-  String dateStr = date!;
-  //DateTime givenDate = DateFormat("yyyy-MM-dd").parse(dateStr);
-  DateTime givenDate = DateFormat.yMMMMd('en_US').parse(dateStr);
+  if (date == null || date.isEmpty) return "Unknown";
+  
+  try {
+    String dateStr = date;
+    DateTime givenDate;
+    
+    // Try different date formats
+    if (dateStr.contains('/')) {
+      // Handle formats like "9/14/2025" or "09/14/2025"
+      givenDate = DateFormat("M/d/yyyy").parse(dateStr);
+    } else if (dateStr.contains('-')) {
+      // Handle formats like "2025-09-14"
+      givenDate = DateFormat("yyyy-MM-dd").parse(dateStr);
+    } else {
+      // Fallback to original format
+      givenDate = DateFormat.yMMMMd('en_US').parse(dateStr);
+    }
 
-  DateTime currentDate = DateTime.now();
-  int differenceInDays = currentDate.difference(givenDate).inDays;
-  String newString = "";
+    DateTime currentDate = DateTime.now();
+    int differenceInDays = currentDate.difference(givenDate).inDays;
+    String newString = "";
 
-  if (differenceInDays == 0) {
-    newString = "Today";
-  } else if (differenceInDays == 1) {
-    newString = "Yesterday";
-  } else {
-    newString = "$differenceInDays Day's ago";
+    if (differenceInDays == 0) {
+      newString = "Today";
+    } else if (differenceInDays == 1) {
+      newString = "Yesterday";
+    } else {
+      newString = "$differenceInDays Day's ago";
+    }
+    
+    return newString;
+  } catch (e) {
+    print('[ERROR] Failed to parse date: $date, error: $e');
+    return "Unknown date";
   }
-  return newString;
 }
 
 String? getCategoryName(

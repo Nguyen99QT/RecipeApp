@@ -97,7 +97,51 @@
                     </div>
                     <!--end::Search-->
                   </div>
-                  <!--begin::Card title-->
+                  <!--end::Card title-->
+                  
+                  <!--begin::Card toolbar-->
+                  <div class="card-toolbar flex-row-fluid justify-content-end gap-5">
+                    <!--begin::Stats-->
+                    <div class="d-flex align-items-center me-5 stats-container">
+                      <div class="me-4">
+                        <span class="badge badge-light-primary fs-7 fw-bold">Total: <%= stats.total %></span>
+                      </div>
+                      <div class="me-4">
+                        <span class="badge badge-light-success fs-7 fw-bold">Enabled: <%= stats.enabled %></span>
+                      </div>
+                      <div class="me-4">
+                        <span class="badge badge-light-danger fs-7 fw-bold">Disabled: <%= stats.disabled %></span>
+                      </div>
+                      <div class="me-4">
+                        <span class="badge badge-light-info fs-7 fw-bold">Recipe: <%= stats.recipe %></span>
+                      </div>
+                      <div>
+                        <span class="badge badge-light-warning fs-7 fw-bold">App: <%= stats.app %></span>
+                      </div>
+                    </div>
+                    <!--end::Stats-->
+                    
+                    <!--begin::Filter buttons-->
+                    <div class="d-flex align-items-center gap-2">
+                      <!--begin::Status filter-->
+                      <select class="form-select form-select-solid w-150px" id="statusFilter">
+                        <option value="all" <%= currentStatusFilter === 'all' ? 'selected' : '' %>>All Status</option>
+                        <option value="enabled" <%= currentStatusFilter === 'enabled' ? 'selected' : '' %>>Enabled</option>
+                        <option value="disabled" <%= currentStatusFilter === 'disabled' ? 'selected' : '' %>>Disabled</option>
+                      </select>
+                      <!--end::Status filter-->
+                      
+                      <!--begin::Type filter-->
+                      <select class="form-select form-select-solid w-150px" id="typeFilter">
+                        <option value="all" <%= currentTypeFilter === 'all' ? 'selected' : '' %>>All Types</option>
+                        <option value="recipe" <%= currentTypeFilter === 'recipe' ? 'selected' : '' %>>Recipe Reviews</option>
+                        <option value="app" <%= currentTypeFilter === 'app' ? 'selected' : '' %>>App Feedback</option>
+                      </select>
+                      <!--end::Type filter-->
+                    </div>
+                    <!--end::Filter buttons-->
+                  </div>
+                  <!--end::Card toolbar-->
                 </div>
                 <!--end::Card header-->
                 <!--begin::Card body-->
@@ -125,8 +169,8 @@
                     <thead>
                       <tr class="text-start text-gray-400 fw-bold fs-5 text-uppercase gs-0">
                         <th class="text-center min-w-70px">Sr.no</th>
-                        <th class="text-center min-w-125px">User name</th>
-                        <th class="text-center min-w-125px">Recipe Name</th>
+                        <th class="text-center min-w-125px">User Name</th>
+                        <th class="text-center min-w-150px">Recipe/Type</th>
                         <th class="text-center min-w-125px">Rating</th>
                         <th class="text-center min-w-125px">Comment</th>
                         <th class="text-center min-w-125px">Enable/Disable</th>
@@ -138,8 +182,28 @@
                       <!-- begin::tr -->
                       <tr>
                         <td class="text-center"><%= i+1 %></td>
-                        <td class="text-center pe-0"><%= reviews[i].userId.firstname  %>&nbsp;<%= reviews[i].userId.lastname  %> </td>
-                        <td class="text-center pe-0"><%= reviews[i].recipeId.name  %> </td>
+                        <td class="text-center pe-0">
+                          <span class="fw-bold text-dark">
+                            <% if (reviews[i].userId && reviews[i].userId.firstname) { %>
+                              <%= reviews[i].userId.firstname %>&nbsp;<%= reviews[i].userId.lastname %>
+                            <% } else { %>
+                              <span class="text-muted">Unknown User</span>
+                            <% } %>
+                          </span>
+                        </td>
+                        <td class="text-center pe-0">
+                          <div class="d-flex flex-column align-items-center">
+                            <% if (reviews[i].recipeId && reviews[i].recipeId.name) { %>
+                              <!-- Recipe Review -->
+                              <span class="fw-bold text-dark mb-1"><%= reviews[i].recipeId.name %></span>
+                              <span class="badge badge-light-info fs-8">Recipe Review</span>
+                            <% } else { %>
+                              <!-- App Feedback -->
+                              <span class="fw-bold text-muted mb-1">General Feedback</span>
+                              <span class="badge badge-light-warning fs-8">App Feedback</span>
+                            <% } %>
+                          </div>
+                        </td>
 
                         <td class="pe-0" data-order="rating-<%= reviews[i].rating %>">
                           <div class="rating justify-content-center">
@@ -256,6 +320,101 @@
   </i>
 </div>
 <!--end::Scrolltop-->
+
+<!-- Custom CSS for Review Page -->
+<style>
+.badge.fs-8 {
+    font-size: 0.7rem !important;
+    padding: 0.25rem 0.5rem;
+}
+
+.badge.fs-7 {
+    font-size: 0.75rem !important;
+    padding: 0.35rem 0.6rem;
+}
+
+.review-status-column {
+    min-width: 150px;
+}
+
+.review-type-column {
+    min-width: 180px;
+}
+
+.stats-container .badge {
+    margin: 0 2px;
+}
+
+@media (max-width: 768px) {
+    .stats-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .stats-container .badge {
+        font-size: 0.65rem !important;
+        padding: 0.2rem 0.4rem;
+    }
+}
+</style>
+
+<!-- Review Filter JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔧 Review Filter Script Loading...');
+    
+    const statusFilter = document.getElementById('statusFilter');
+    const typeFilter = document.getElementById('typeFilter');
+    
+    console.log('StatusFilter element:', statusFilter);
+    console.log('TypeFilter element:', typeFilter);
+    
+    if (!statusFilter || !typeFilter) {
+        console.error('❌ Filter elements not found!');
+        return;
+    }
+    
+    function applyFilters() {
+        const status = statusFilter.value;
+        const type = typeFilter.value;
+        
+        console.log('🔄 Applying filters - Status:', status, 'Type:', type);
+        
+        // Build query parameters
+        const params = new URLSearchParams();
+        if (status && status !== 'all') {
+            params.set('status', status);
+        }
+        if (type && type !== 'all') {
+            params.set('type', type);
+        }
+        
+        // Redirect with filters
+        const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+        console.log('🔀 Redirecting to:', newUrl);
+        
+        // Add a small delay to see the log before redirect
+        setTimeout(() => {
+            window.location.href = newUrl;
+        }, 100);
+    }
+    
+    // Add event listeners for dropdown changes
+    statusFilter.addEventListener('change', function(event) {
+        console.log('📊 Status filter changed from', event.target.value, 'to', this.value);
+        applyFilters();
+    });
+    
+    typeFilter.addEventListener('change', function(event) {
+        console.log('📝 Type filter changed from', event.target.value, 'to', this.value);
+        applyFilters();
+    });
+    
+    console.log('✅ Review filters initialized successfully');
+    console.log('Current values - Status:', statusFilter.value, 'Type:', typeFilter.value);
+});
+</script>
 
 <!-- partial:partials/header -->
 <%- include('../layouts/footer.ejs') %>

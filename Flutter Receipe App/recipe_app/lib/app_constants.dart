@@ -1,7 +1,7 @@
 
 abstract class FFAppConstants {
   static const String imageUrl =
-      'http://recipe.templatevictory.com/uploads/images/';
+      'http://10.0.2.2:3000/uploads/images/';
   static const String videoUrl =
-      'http://recipe.templatevictory.com/uploads/video/';
+      'http://10.0.2.2:3000/uploads/video/';
 }

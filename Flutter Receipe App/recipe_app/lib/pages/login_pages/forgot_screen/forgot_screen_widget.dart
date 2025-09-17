@@ -211,7 +211,7 @@ class _ForgotScreenWidgetState extends State<ForgotScreenWidget> {
                                   (_model.forgotPasswordFunction?.jsonBody ??
                                       ''),
                                 ) ==
-                                1) {
+                                true) {
                               await actions.showCustomToastBottom(
                                 RecipeAppGroup.forgotPasswordCall.message(
                                   (_model.forgotPasswordFunction?.jsonBody ??

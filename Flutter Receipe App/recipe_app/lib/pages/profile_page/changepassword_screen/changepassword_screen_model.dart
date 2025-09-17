@@ -12,7 +12,27 @@ class ChangepasswordScreenModel
   final formKey = GlobalKey<FormState>();
   // Model for custom_appbar component.
   late CustomAppbarModel customAppbarModel;
-  // State field(s) for TextField widget.
+  
+  // Current password API error state
+  String? currentPasswordError;
+  
+  // State field(s) for Current Password TextField widget.
+  FocusNode? textFieldFocusNode0;
+  TextEditingController? textController0;
+  late bool passwordVisibility0;
+  String? Function(BuildContext, String?)? textController0Validator;
+  String? _textController0Validator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Please enter your current password';
+    }
+    // Return API error if exists
+    if (currentPasswordError != null) {
+      return currentPasswordError;
+    }
+    return null;
+  }
+  
+  // State field(s) for New Password TextField widget.
   FocusNode? textFieldFocusNode1;
   TextEditingController? textController1;
   late bool passwordVisibility1;
@@ -20,6 +40,38 @@ class ChangepasswordScreenModel
   String? _textController1Validator(BuildContext context, String? val) {
     if (val == null || val.isEmpty) {
       return 'Please enter a valid new password';
+    }
+
+    // Check if new password is same as current password
+    if (textController0 != null && textController0!.text.isNotEmpty && val == textController0!.text) {
+      return 'New password must be different from current password';
+    }
+
+    // Comprehensive password validation - collect all missing requirements
+    List<String> missingRequirements = [];
+    
+    if (val.length < 8) {
+      missingRequirements.add('8+ chars');
+    }
+    
+    if (!RegExp(r'(?=.*[a-z])').hasMatch(val)) {
+      missingRequirements.add('lowercase');
+    }
+    
+    if (!RegExp(r'(?=.*[A-Z])').hasMatch(val)) {
+      missingRequirements.add('UPPERCASE');
+    }
+    
+    if (!RegExp(r'(?=.*[0-9])').hasMatch(val)) {
+      missingRequirements.add('number');
+    }
+    
+    if (!RegExp(r'(?=.*[!@#$%^&*(),.?":{}|<>])').hasMatch(val)) {
+      missingRequirements.add('special char');
+    }
+    
+    if (missingRequirements.isNotEmpty) {
+      return 'Missing: ${missingRequirements.join(', ')}';
     }
 
     return null;
@@ -35,6 +87,11 @@ class ChangepasswordScreenModel
       return 'Please enter a valid confirm password';
     }
 
+    // Check if confirm password matches new password
+    if (textController1.text != val) {
+      return 'Confirm password must match new password';
+    }
+
     return null;
   }
 
@@ -43,9 +100,20 @@ class ChangepasswordScreenModel
   // Stores action output result for [Backend Call - API (ChangePassword)] action in custom_app_button widget.
   ApiCallResponse? changePasswordFunction;
 
+  // Methods to handle current password error
+  void setCurrentPasswordError(String error) {
+    currentPasswordError = error;
+  }
+
+  void clearCurrentPasswordError() {
+    currentPasswordError = null;
+  }
+
   @override
   void initState(BuildContext context) {
     customAppbarModel = createModel(context, () => CustomAppbarModel());
+    passwordVisibility0 = false;
+    textController0Validator = _textController0Validator;
     passwordVisibility1 = false;
     textController1Validator = _textController1Validator;
     passwordVisibility2 = false;
@@ -56,12 +124,12 @@ class ChangepasswordScreenModel
   @override
   void dispose() {
     customAppbarModel.dispose();
+    textFieldFocusNode0?.dispose();
+    textController0?.dispose();
     textFieldFocusNode1?.dispose();
     textController1?.dispose();
-
     textFieldFocusNode2?.dispose();
     textController2?.dispose();
-
     customAppButtonModel.dispose();
   }
 }

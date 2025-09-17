@@ -168,23 +168,23 @@ class _FavComponantWidgetState extends State<FavComponantWidget> {
                                             image:
                                                 '${FFAppConstants.imageUrl}${getJsonField(
                                               favoriteListItem,
-                                              r'''$.image''',
+                                              r'''$.recipeId.image''',
                                             ).toString()}',
                                             name: getJsonField(
                                               favoriteListItem,
-                                              r'''$.name''',
+                                              r'''$.recipeId.name''',
                                             ).toString(),
-                                            avreragerating: getJsonField(
+                                            avreragerating: (getJsonField(
                                               favoriteListItem,
-                                              r'''$.averageRating''',
-                                            ).toDouble(),
-                                            totalReview: getJsonField(
+                                              r'''$.recipeId.averageRating''',
+                                            ) ?? 0.0).toDouble(),
+                                            totalReview: (getJsonField(
                                               favoriteListItem,
-                                              r'''$.totalRating''',
-                                            ).toDouble(),
+                                              r'''$.recipeId.totalRating''',
+                                            ) ?? 0.0).toDouble(),
                                             totaltime: getJsonField(
                                               favoriteListItem,
-                                              r'''$.totalCookTime''',
+                                              r'''$.recipeId.totalCookTime''',
                                             ).toString(),
                                             favCondition: true,
                                             onFavTap: () async {
@@ -196,7 +196,7 @@ class _FavComponantWidgetState extends State<FavComponantWidget> {
                                                         .call(
                                                   recipeId: getJsonField(
                                                     favoriteListItem,
-                                                    r'''$._id''',
+                                                    r'''$.recipeId._id''',
                                                   ).toString(),
                                                   token: FFAppState().token,
                                                 );
@@ -212,7 +212,7 @@ class _FavComponantWidgetState extends State<FavComponantWidget> {
                                                 FFAppState().recipeId =
                                                     getJsonField(
                                                   favoriteListItem,
-                                                  r'''$._id''',
+                                                  r'''$.recipeId._id''',
                                                 ).toString();
                                                 FFAppState().update(() {});
 
@@ -230,14 +230,14 @@ class _FavComponantWidgetState extends State<FavComponantWidget> {
                                                       serializeParam(
                                                     getJsonField(
                                                       favoriteListItem,
-                                                      r'''$._id''',
+                                                      r'''$.recipeId._id''',
                                                     ).toString(),
                                                     ParamType.String,
                                                   ),
                                                   'name': serializeParam(
                                                     getJsonField(
                                                       favoriteListItem,
-                                                      r'''$.name''',
+                                                      r'''$.recipeId.name''',
                                                     ).toString(),
                                                     ParamType.String,
                                                   ),

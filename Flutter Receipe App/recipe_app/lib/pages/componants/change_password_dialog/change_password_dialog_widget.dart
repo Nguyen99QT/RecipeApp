@@ -120,16 +120,8 @@ class _ChangePasswordDialogWidgetState
                 ),
                 FFButtonWidget(
                   onPressed: () async {
-                    FFAppState().isLogin = false;
-                    FFAppState().userDetail = null;
-                    FFAppState().userId = '';
-                    FFAppState().token = '';
-                    FFAppState().recipeId = '';
-                    FFAppState().favChange = false;
-                    FFAppState().update(() {});
+                    // Only close the dialog, parent screen will handle navigation
                     Navigator.pop(context);
-                    context.safePop();
-                    context.safePop();
                   },
                   text: 'Ok',
                   options: FFButtonOptions(

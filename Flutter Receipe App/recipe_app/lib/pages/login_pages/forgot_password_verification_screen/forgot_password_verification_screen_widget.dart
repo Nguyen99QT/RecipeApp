@@ -190,7 +190,7 @@ class _ForgotPasswordVerificationScreenWidgetState
                                         ?.jsonBody ??
                                     ''),
                               ) ==
-                              1) {
+                              true) {
                             await actions.showCustomToastBottom(
                               RecipeAppGroup.forgotPasswordVerificationApiCall
                                   .message(
@@ -210,13 +210,36 @@ class _ForgotPasswordVerificationScreenWidgetState
                               }.withoutNulls,
                             );
                           } else {
-                            await actions.showCustomToastBottom(
-                              RecipeAppGroup.forgotPasswordVerificationApiCall
-                                  .message(
-                                (_model.forgotPasswordVerificationFunction
-                                        ?.jsonBody ??
-                                    ''),
-                              )!,
+                            // Show error message using SnackBar instead of custom toast
+                            final errorMessage = RecipeAppGroup.forgotPasswordVerificationApiCall.message(
+                              (_model.forgotPasswordVerificationFunction?.jsonBody ?? ''),
+                            ) ?? 'Invalid OTP. Please try again.';
+                            
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  errorMessage,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                backgroundColor: Colors.red.withOpacity(0.9),
+                                duration: const Duration(seconds: 4),
+                                behavior: SnackBarBehavior.floating,
+                                margin: const EdgeInsets.all(16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                action: SnackBarAction(
+                                  label: 'OK',
+                                  textColor: Colors.white,
+                                  onPressed: () {
+                                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                  },
+                                ),
+                              ),
                             );
                           }
 

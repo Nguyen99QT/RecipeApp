@@ -130,8 +130,22 @@ class _EditprofileScreenWidgetState extends State<EditprofileScreenWidget> {
                                             children: [
                                               Builder(
                                                 builder: (context) {
-                                                  if (_model.image == null ||
+                                                  if (_model.uploadedLocalFile.bytes?.isNotEmpty == true) {
+                                                    // Hiển thị ảnh đã chọn từ local
+                                                    return ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              100.0),
+                                                      child: Image.memory(
+                                                        _model.uploadedLocalFile.bytes!,
+                                                        width: 104.0,
+                                                        height: 104.0,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    );
+                                                  } else if (_model.image == null ||
                                                       _model.image == '') {
+                                                    // Hiển thị ảnh avatar từ server
                                                     return ClipRRect(
                                                       borderRadius:
                                                           BorderRadius.circular(
@@ -146,7 +160,7 @@ class _EditprofileScreenWidgetState extends State<EditprofileScreenWidget> {
                                                                 milliseconds:
                                                                     200),
                                                         imageUrl:
-                                                            'http://recipe.templatevictory.com/uploads/images/${RecipeAppGroup.getUserApiCall.avatar(
+                                                            '${FFAppConstants.imageUrl}${RecipeAppGroup.getUserApiCall.avatar(
                                                           containerGetUserApiResponse
                                                               .jsonBody,
                                                         )}',
@@ -165,12 +179,13 @@ class _EditprofileScreenWidgetState extends State<EditprofileScreenWidget> {
                                                       ),
                                                     );
                                                   } else {
+                                                    // Hiển thị ảnh khác từ server
                                                     return ClipRRect(
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               100.0),
                                                       child: Image.network(
-                                                        'http://recipe.templatevictory.com/uploads/images/${_model.image}',
+                                                        '${FFAppConstants.imageUrl}${_model.image}',
                                                         width: 104.0,
                                                         height: 104.0,
                                                         fit: BoxFit.cover,

@@ -39,38 +39,45 @@ class _IntroScreenWidgetState extends State<IntroScreenWidget> {
     try {
       print('Loading AdMob configuration...');
       final admobResponse = await RecipeAppGroup.getAdmobApiCall.call();
-      
+
       if (admobResponse.succeeded) {
-        FFAppState().anbanner = RecipeAppGroup.getAdmobApiCall.androidbanneradid(
-          admobResponse.jsonBody,
-        ) ?? '';
+        FFAppState().anbanner =
+            RecipeAppGroup.getAdmobApiCall.androidbanneradid(
+                  admobResponse.jsonBody,
+                ) ??
+                '';
         FFAppState().iobanner = RecipeAppGroup.getAdmobApiCall.iosbanneradid(
-          admobResponse.jsonBody,
-        ) ?? '';
+              admobResponse.jsonBody,
+            ) ??
+            '';
         FFAppState().anInterstitial =
             RecipeAppGroup.getAdmobApiCall.androidinterstitialadid(
-          admobResponse.jsonBody,
-        ) ?? '';
+                  admobResponse.jsonBody,
+                ) ??
+                '';
         FFAppState().ioInterstitial =
             RecipeAppGroup.getAdmobApiCall.iosinterstitialadid(
-          admobResponse.jsonBody,
-        ) ?? '';
+                  admobResponse.jsonBody,
+                ) ??
+                '';
         FFAppState().AndroidAdmobId =
             'ca-app-pub-3940256099942544~${RecipeAppGroup.getAdmobApiCall.androidappadid(
-          admobResponse.jsonBody,
-        ) ?? ''}';
+                  admobResponse.jsonBody,
+                ) ?? ''}';
         FFAppState().IosAdmobId =
             'ca-app-pub-3940256099942544~${RecipeAppGroup.getAdmobApiCall.iosappadid(
-          admobResponse.jsonBody,
-        ) ?? ''}';
+                  admobResponse.jsonBody,
+                ) ?? ''}';
         FFAppState().rewardedVideoAndroidId =
             RecipeAppGroup.getAdmobApiCall.androidrewardedads(
-          admobResponse.jsonBody,
-        ) ?? '';
+                  admobResponse.jsonBody,
+                ) ??
+                '';
         FFAppState().rewardedVideoIOSId =
             RecipeAppGroup.getAdmobApiCall.iosrewardedads(
-          admobResponse.jsonBody,
-        ) ?? '';
+                  admobResponse.jsonBody,
+                ) ??
+                '';
         FFAppState().update(() {});
         print('AdMob configuration loaded successfully');
       } else {
@@ -116,14 +123,14 @@ class _IntroScreenWidgetState extends State<IntroScreenWidget> {
                       print('  - hasData: ${snapshot.hasData}');
                       print('  - hasError: ${snapshot.hasError}');
                       print('  - connectionState: ${snapshot.connectionState}');
-                      
+
                       if (snapshot.hasError) {
                         print('  - error: ${snapshot.error}');
                         return Center(
                           child: Text('Error: ${snapshot.error}'),
                         );
                       }
-                      
+
                       // Customize what your widget looks like when it's loading.
                       if (!snapshot.hasData) {
                         print('  - Loading data...');
@@ -141,9 +148,43 @@ class _IntroScreenWidgetState extends State<IntroScreenWidget> {
                       }
                       final stackGetAllIntroApiResponse = snapshot.data!;
                       print('  - API Response received:');
-                      print('    statusCode: ${stackGetAllIntroApiResponse.statusCode}');
-                      print('    succeeded: ${stackGetAllIntroApiResponse.succeeded}');
-                      print('    bodyText: ${stackGetAllIntroApiResponse.bodyText}');
+                      print(
+                          '    statusCode: ${stackGetAllIntroApiResponse.statusCode}');
+                      print(
+                          '    succeeded: ${stackGetAllIntroApiResponse.succeeded}');
+                      print(
+                          '    bodyText: ${stackGetAllIntroApiResponse.bodyText}');
+
+                      // Check if API call failed
+                      if (!stackGetAllIntroApiResponse.succeeded) {
+                        print('  - API call failed, showing error state');
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.error_outline,
+                                size: 60,
+                                color: FlutterFlowTheme.of(context).secondaryText,
+                              ),
+                              SizedBox(height: 20),
+                              Text(
+                                'Không thể tải dữ liệu',
+                                style: FlutterFlowTheme.of(context).headlineSmall,
+                              ),
+                              SizedBox(height: 10),
+                              TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _model.clearIntroCacheCache();
+                                  });
+                                },
+                                child: Text('Thử lại'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
 
                       return Stack(
                         alignment: const AlignmentDirectional(0.0, 1.0),
@@ -182,39 +223,44 @@ class _IntroScreenWidgetState extends State<IntroScreenWidget> {
                                         final introListItem =
                                             introList[introListIndex];
                                         return Stack(
-                                          alignment:
-                                              const AlignmentDirectional(0.0, 1.0),
+                                          alignment: const AlignmentDirectional(
+                                              0.0, 1.0),
                                           children: [
                                             Align(
-                                              alignment: const AlignmentDirectional(
-                                                  0.0, -1.0),
+                                              alignment:
+                                                  const AlignmentDirectional(
+                                                      0.0, -1.0),
                                               child: ClipRRect(
                                                 borderRadius:
                                                     BorderRadius.circular(0.0),
                                                 child: CachedNetworkImage(
-                                                  fadeInDuration: const Duration(
-                                                      milliseconds: 200),
-                                                  fadeOutDuration: const Duration(
-                                                      milliseconds: 200),
-                                                  imageUrl:
-                                                      '${FFAppConstants.imageUrl}${getJsonField(
-                                                    introListItem,
-                                                    r'''$.image''',
-                                                  ).toString()}',
+                                                  fadeInDuration:
+                                                      const Duration(
+                                                          milliseconds: 200),
+                                                  fadeOutDuration:
+                                                      const Duration(
+                                                          milliseconds: 200),
+                                                  imageUrl: buildImageUrl(
+                                                    getJsonField(
+                                                      introListItem,
+                                                      r'''$.image''',
+                                                    ).toString(),
+                                                  ),
                                                   width: double.infinity,
                                                   height:
                                                       MediaQuery.sizeOf(context)
                                                               .height *
                                                           0.65,
                                                   fit: BoxFit.fill,
-                                                  alignment:
-                                                      const Alignment(0.0, -1.0),
+                                                  alignment: const Alignment(
+                                                      0.0, -1.0),
                                                 ),
                                               ),
                                             ),
                                             Align(
-                                              alignment: const AlignmentDirectional(
-                                                  0.0, 1.0),
+                                              alignment:
+                                                  const AlignmentDirectional(
+                                                      0.0, 1.0),
                                               child: Container(
                                                 width: double.infinity,
                                                 height:
@@ -238,8 +284,9 @@ class _IntroScreenWidgetState extends State<IntroScreenWidget> {
                                                   ),
                                                 ),
                                                 child: Padding(
-                                                  padding: const EdgeInsetsDirectional
-                                                      .fromSTEB(20.0, 24.0,
+                                                  padding:
+                                                      const EdgeInsetsDirectional
+                                                          .fromSTEB(20.0, 24.0,
                                                           20.0, 150.0),
                                                   child: Column(
                                                     mainAxisSize:
@@ -255,10 +302,10 @@ class _IntroScreenWidgetState extends State<IntroScreenWidget> {
                                                           padding:
                                                               const EdgeInsetsDirectional
                                                                   .fromSTEB(
-                                                                      16.0,
-                                                                      0.0,
-                                                                      16.0,
-                                                                      0.0),
+                                                                  16.0,
+                                                                  0.0,
+                                                                  16.0,
+                                                                  0.0),
                                                           child: Text(
                                                             getJsonField(
                                                               introListItem,
@@ -314,10 +361,10 @@ class _IntroScreenWidgetState extends State<IntroScreenWidget> {
                                                           padding:
                                                               const EdgeInsetsDirectional
                                                                   .fromSTEB(
-                                                                      16.0,
-                                                                      0.0,
-                                                                      16.0,
-                                                                      0.0),
+                                                                  16.0,
+                                                                  0.0,
+                                                                  16.0,
+                                                                  0.0),
                                                           child: Text(
                                                             getJsonField(
                                                               introListItem,
@@ -347,8 +394,8 @@ class _IntroScreenWidgetState extends State<IntroScreenWidget> {
                                                           ),
                                                         ),
                                                       ),
-                                                    ].divide(
-                                                        const SizedBox(height: 8.0)),
+                                                    ].divide(const SizedBox(
+                                                        height: 8.0)),
                                                   ),
                                                 ),
                                               ),
@@ -358,10 +405,11 @@ class _IntroScreenWidgetState extends State<IntroScreenWidget> {
                                       },
                                     ),
                                     Align(
-                                      alignment: const AlignmentDirectional(0.0, 1.0),
+                                      alignment:
+                                          const AlignmentDirectional(0.0, 1.0),
                                       child: Padding(
-                                        padding: const EdgeInsetsDirectional.fromSTEB(
-                                            0.0, 0.0, 0.0, 135.0),
+                                        padding: const EdgeInsetsDirectional
+                                            .fromSTEB(0.0, 0.0, 0.0, 135.0),
                                         child: smooth_page_indicator
                                             .SmoothPageIndicator(
                                           controller:
@@ -379,8 +427,8 @@ class _IntroScreenWidgetState extends State<IntroScreenWidget> {
                                             await _model.pageViewController!
                                                 .animateToPage(
                                               i,
-                                              duration:
-                                                  const Duration(milliseconds: 500),
+                                              duration: const Duration(
+                                                  milliseconds: 500),
                                               curve: Curves.ease,
                                             );
                                             safeSetState(() {});
@@ -417,14 +465,11 @@ class _IntroScreenWidgetState extends State<IntroScreenWidget> {
                               hoverColor: Colors.transparent,
                               highlightColor: Colors.transparent,
                               onTap: () async {
-                                if (FFAppState().introIndex ==
-                                    (RecipeAppGroup.getAllIntroApiCall
-                                            .introList(
-                                              stackGetAllIntroApiResponse
-                                                  .jsonBody,
-                                            )!
-                                            .length -
-                                        1)) {
+                                final introList = RecipeAppGroup.getAllIntroApiCall
+                                    .introList(stackGetAllIntroApiResponse.jsonBody);
+                                    
+                                if (introList != null && 
+                                    FFAppState().introIndex == (introList.length - 1)) {
                                   FFAppState().intro = true;
                                   FFAppState().update(() {});
 
@@ -440,31 +485,31 @@ class _IntroScreenWidgetState extends State<IntroScreenWidget> {
                                 model: _model.customAppButtonModel,
                                 updateCallback: () => safeSetState(() {}),
                                 child: CustomAppButtonWidget(
-                                  tittle: FFAppState().introIndex ==
-                                          (RecipeAppGroup.getAllIntroApiCall
-                                                  .introList(
-                                                    stackGetAllIntroApiResponse
-                                                        .jsonBody,
-                                                  )!
-                                                  .length -
-                                              1)
-                                      ? 'Get started'
-                                      : 'Next',
+                                  tittle: () {
+                                    final introList = RecipeAppGroup.getAllIntroApiCall
+                                        .introList(stackGetAllIntroApiResponse.jsonBody);
+                                    if (introList == null || introList.isEmpty) {
+                                      return 'Get started'; // Default when no data
+                                    }
+                                    return FFAppState().introIndex == (introList.length - 1)
+                                        ? 'Get started'
+                                        : 'Next';
+                                  }(),
                                 ),
                               ),
                             ),
                           ),
                           Opacity(
-                            opacity: FFAppState().introIndex ==
-                                    (RecipeAppGroup.getAllIntroApiCall
-                                            .introList(
-                                              stackGetAllIntroApiResponse
-                                                  .jsonBody,
-                                            )!
-                                            .length -
-                                        1)
-                                ? 0.0
-                                : 1.0,
+                            opacity: () {
+                              final introList = RecipeAppGroup.getAllIntroApiCall
+                                  .introList(stackGetAllIntroApiResponse.jsonBody);
+                              if (introList == null || introList.isEmpty) {
+                                return 0.0; // Hide when no data
+                              }
+                              return FFAppState().introIndex == (introList.length - 1)
+                                  ? 0.0
+                                  : 1.0;
+                            }(),
                             child: Padding(
                               padding: const EdgeInsetsDirectional.fromSTEB(
                                   0.0, 0.0, 0.0, 20.0),

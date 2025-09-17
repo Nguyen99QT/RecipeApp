@@ -120,12 +120,16 @@ class _FlutterFlowYoutubePlayerState extends State<FlutterFlowYoutubePlayer>
 
   void initializePlayer() {
     if (!mounted) {
+      print('[DEBUG] YouTube Player: Widget not mounted, skipping initialization');
       return;
     }
     final videoId = _convertUrlToId(widget.url);
     if (videoId == null) {
+      print('[ERROR] YouTube Player: Invalid URL or unable to extract video ID from: ${widget.url}');
       return;
     }
+    
+    print('[DEBUG] YouTube Player: Initializing with video ID: $videoId');
     _videoId = videoId;
     _youtubeWrapper = YoutubeFullScreenWrapper.of(context);
 
@@ -133,18 +137,25 @@ class _FlutterFlowYoutubePlayerState extends State<FlutterFlowYoutubePlayer>
         _youtubeFullScreenControllerMap.containsKey(_videoId)) {
       _controller = _youtubeFullScreenControllerMap[_videoId]!;
       _youtubeFullScreenControllerMap.clear();
+      print('[DEBUG] YouTube Player: Using existing controller for fullscreen');
     } else {
-      _controller = YoutubePlayerController.fromVideoId(
-        videoId: videoId,
-        autoPlay: widget.autoPlay,
-        params: YoutubePlayerParams(
-          mute: widget.mute,
-          loop: widget.looping,
-          showControls: widget.showControls,
-          showFullscreenButton: widget.showFullScreen,
-          strictRelatedVideos: widget.strictRelatedVideos,
-        ),
-      );
+      try {
+        _controller = YoutubePlayerController.fromVideoId(
+          videoId: videoId,
+          autoPlay: widget.autoPlay,
+          params: YoutubePlayerParams(
+            mute: widget.mute,
+            loop: widget.looping,
+            showControls: widget.showControls,
+            showFullscreenButton: widget.showFullScreen,
+            strictRelatedVideos: widget.strictRelatedVideos,
+          ),
+        );
+        print('[DEBUG] YouTube Player: Controller created successfully');
+      } catch (e) {
+        print('[ERROR] YouTube Player: Failed to create controller: $e');
+        return;
+      }
     }
     if (handleFullScreen) {
       _controller!.setFullScreenListener((fullScreen) {
@@ -159,30 +170,47 @@ class _FlutterFlowYoutubePlayerState extends State<FlutterFlowYoutubePlayer>
   }
 
   @override
-  Widget build(BuildContext context) => FittedBox(
+  Widget build(BuildContext context) {
+    if (_controller == null) {
+      print('[WARNING] YouTube Player: Controller is null, showing loading...');
+      return Container(
+        height: height,
+        width: width,
+        decoration: BoxDecoration(
+          color: Colors.black12,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Center(
+          child: CircularProgressIndicator(
+            color: Colors.red,
+          ),
+        ),
+      );
+    }
+
+    return FittedBox(
         fit: BoxFit.cover,
         child: SizedBox(
           height: height,
           width: width,
-          child: _controller != null
-              ? handleFullScreen
-                  ? YoutubePlayerScaffold(
-                      controller: _controller!,
-                      builder: (_, player) => player,
-                      autoFullScreen: false,
-                      gestureRecognizers: const <Factory<
-                          TapGestureRecognizer>>{},
-                      enableFullScreenOnVerticalDrag: false,
-                    )
-                  : YoutubePlayer(
-                      controller: _controller!,
-                      gestureRecognizers: const <Factory<
-                          TapGestureRecognizer>>{},
-                      enableFullScreenOnVerticalDrag: false,
-                    )
-              : Container(color: Colors.transparent),
+          child: handleFullScreen
+              ? YoutubePlayerScaffold(
+                  controller: _controller!,
+                  builder: (_, player) => player,
+                  autoFullScreen: false,
+                  gestureRecognizers: const <Factory<
+                      TapGestureRecognizer>>{},
+                  enableFullScreenOnVerticalDrag: false,
+                )
+              : YoutubePlayer(
+                  controller: _controller!,
+                  gestureRecognizers: const <Factory<
+                      TapGestureRecognizer>>{},
+                  enableFullScreenOnVerticalDrag: false,
+                ),
         ),
       );
+  }
 }
 
 /// Wraps the page in order to properly show the YouTube video when fullscreen.
@@ -231,8 +259,26 @@ class _YoutubeFullScreenWrapperState extends State<YoutubeFullScreenWrapper> {
 
 String? _convertUrlToId(String url, {bool trimWhitespaces = true}) {
   assert(url.isNotEmpty, 'Url cannot be empty');
-  if (!url.contains("http") && (url.length == 11)) return url;
+  print('[DEBUG] YouTube URL conversion input: $url');
+  
+  // Handle direct video ID format like "zvlct2ZXhj8&t=275s"
+  if (!url.contains("http")) {
+    // Extract just the video ID part (before any parameters)
+    final videoIdMatch = RegExp(r'^([_\-a-zA-Z0-9]{11}).*$').firstMatch(url);
+    if (videoIdMatch != null) {
+      final videoId = videoIdMatch.group(1);
+      print('[DEBUG] Extracted video ID from direct format: $videoId');
+      return videoId;
+    }
+    // If it's exactly 11 characters, it's likely a video ID
+    if (url.length == 11) {
+      print('[DEBUG] Using direct video ID: $url');
+      return url;
+    }
+  }
+  
   if (trimWhitespaces) url = url.trim();
+  
   for (final regex in [
     RegExp(
       r"^https:\/\/(?:www\.|m\.)?youtube\.com\/watch\?v=([_\-a-zA-Z0-9]{11}).*$",
@@ -243,7 +289,13 @@ String? _convertUrlToId(String url, {bool trimWhitespaces = true}) {
     RegExp(r"^https:\/\/youtu\.be\/([_\-a-zA-Z0-9]{11}).*$")
   ]) {
     final match = regex.firstMatch(url);
-    if (match != null && match.groupCount >= 1) return match.group(1);
+    if (match != null && match.groupCount >= 1) {
+      final videoId = match.group(1);
+      print('[DEBUG] Extracted video ID from URL: $videoId');
+      return videoId;
+    }
   }
+  
+  print('[ERROR] Could not extract video ID from URL: $url');
   return null;
 }

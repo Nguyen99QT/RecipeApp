@@ -30,6 +30,9 @@ class _ChangepasswordScreenWidgetState
     super.initState();
     _model = createModel(context, () => ChangepasswordScreenModel());
 
+    _model.textController0 ??= TextEditingController();
+    _model.textFieldFocusNode0 ??= FocusNode();
+
     _model.textController1 ??= TextEditingController();
     _model.textFieldFocusNode1 ??= FocusNode();
 
@@ -110,6 +113,133 @@ class _ChangepasswordScreenWidgetState
                               padding: const EdgeInsetsDirectional.fromSTEB(
                                   0.0, 0.0, 0.0, 4.0),
                               child: Text(
+                                'Current password',
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .override(
+                                      fontFamily: 'SF Pro Display',
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryTextColor,
+                                      fontSize: 17.0,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FontWeight.normal,
+                                      useGoogleFonts: false,
+                                      lineHeight: 1.5,
+                                    ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: double.infinity,
+                              child: TextFormField(
+                                controller: _model.textController0,
+                                focusNode: _model.textFieldFocusNode0,
+                                autofocus: false,
+                                textInputAction: TextInputAction.next,
+                                obscureText: !_model.passwordVisibility0,
+                                onChanged: (value) {
+                                  // Clear current password error when user types
+                                  if (_model.currentPasswordError != null) {
+                                    _model.clearCurrentPasswordError();
+                                    safeSetState(() {});
+                                  }
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'Enter your current password',
+                                  hintStyle: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .override(
+                                        fontFamily: 'SF Pro Display',
+                                        color: FlutterFlowTheme.of(context)
+                                            .black40,
+                                        fontSize: 17.0,
+                                        letterSpacing: 0.0,
+                                        useGoogleFonts: false,
+                                      ),
+                                  errorStyle: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .override(
+                                        fontFamily: 'SF Pro Display',
+                                        color: FlutterFlowTheme.of(context)
+                                            .errorColor,
+                                        fontSize: 17.0,
+                                        letterSpacing: 0.0,
+                                        useGoogleFonts: false,
+                                      ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color:
+                                          FlutterFlowTheme.of(context).black20,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12.0),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryTheme,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12.0),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: FlutterFlowTheme.of(context)
+                                          .errorColor,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12.0),
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: FlutterFlowTheme.of(context)
+                                          .errorColor,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12.0),
+                                  ),
+                                  filled: true,
+                                  fillColor: FlutterFlowTheme.of(context)
+                                      .backgroundColor,
+                                  contentPadding:
+                                      const EdgeInsetsDirectional.fromSTEB(
+                                          16.0, 15.0, 16.0, 15.0),
+                                  suffixIcon: InkWell(
+                                    onTap: () => safeSetState(
+                                      () => _model.passwordVisibility0 =
+                                          !_model.passwordVisibility0,
+                                    ),
+                                    focusNode: FocusNode(skipTraversal: true),
+                                    child: Icon(
+                                      _model.passwordVisibility0
+                                          ? Icons.visibility_outlined
+                                          : Icons.visibility_off_outlined,
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryText,
+                                      size: 24.0,
+                                    ),
+                                  ),
+                                ),
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .override(
+                                      fontFamily: 'SF Pro Display',
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryTextColor,
+                                      fontSize: 17.0,
+                                      letterSpacing: 0.0,
+                                      useGoogleFonts: false,
+                                    ),
+                                keyboardType: TextInputType.visiblePassword,
+                                cursorColor:
+                                    FlutterFlowTheme.of(context).primaryText,
+                                validator: _model.textController0Validator
+                                    .asValidator(context),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 16.0, 0.0, 4.0),
+                              child: Text(
                                 'New password',
                                 style: FlutterFlowTheme.of(context)
                                     .bodyMedium
@@ -122,6 +252,22 @@ class _ChangepasswordScreenWidgetState
                                       fontWeight: FontWeight.normal,
                                       useGoogleFonts: false,
                                       lineHeight: 1.5,
+                                    ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 0.0, 0.0, 8.0),
+                              child: Text(
+                                'Must have 8+ chars, UPPERCASE, lowercase, number, special char',
+                                style: FlutterFlowTheme.of(context)
+                                    .bodySmall
+                                    .override(
+                                      fontFamily: 'SF Pro Display',
+                                      color: FlutterFlowTheme.of(context).black40,
+                                      fontSize: 13.0,
+                                      letterSpacing: 0.0,
+                                      useGoogleFonts: false,
                                     ),
                               ),
                             ),
@@ -353,6 +499,66 @@ class _ChangepasswordScreenWidgetState
                   ),
                 ),
               ),
+              // Forgot Password Link
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(16.0, 8.0, 16.0, 8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Forgot your current password? ',
+                          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            fontFamily: 'SF Pro Display',
+                            color: FlutterFlowTheme.of(context).primaryTextColor,
+                            fontSize: 15.0,
+                            letterSpacing: 0.0,
+                            useGoogleFonts: false,
+                          ),
+                        ),
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () async {
+                            context.pushNamed('forgot_screen');
+                          },
+                          child: Text(
+                            'Reset it here',
+                            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              fontFamily: 'SF Pro Display',
+                              color: FlutterFlowTheme.of(context).primaryTheme,
+                              fontSize: 15.0,
+                              letterSpacing: 0.0,
+                              fontWeight: FontWeight.w600,
+                              useGoogleFonts: false,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
+                      child: Text(
+                        'You\'ll receive an email to reset your password',
+                        textAlign: TextAlign.center,
+                        style: FlutterFlowTheme.of(context).bodySmall.override(
+                          fontFamily: 'SF Pro Display',
+                          color: FlutterFlowTheme.of(context).black40,
+                          fontSize: 13.0,
+                          letterSpacing: 0.0,
+                          useGoogleFonts: false,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Builder(
                 builder: (context) => Padding(
                   padding:
@@ -367,56 +573,87 @@ class _ChangepasswordScreenWidgetState
                           !_model.formKey.currentState!.validate()) {
                         return;
                       }
-                      if (_model.textController1.text ==
-                          _model.textController2.text) {
-                        _model.changePasswordFunction =
-                            await RecipeAppGroup.changePasswordCall.call(
-                          currentPassword: FFAppState().currentPassword,
-                          newPassword: _model.textController1.text,
-                          confirmPassword: _model.textController2.text,
-                          token: FFAppState().token,
-                        );
+                      
+                      // Clear any previous errors
+                      _model.clearCurrentPasswordError();
+                      
+                      _model.changePasswordFunction =
+                          await RecipeAppGroup.changePasswordCall.call(
+                        currentPassword: _model.textController0.text,
+                        newPassword: _model.textController1.text,
+                        confirmPassword: _model.textController2.text,
+                        token: FFAppState().token,
+                      );
 
-                        if (RecipeAppGroup.changePasswordCall.success(
-                              (_model.changePasswordFunction?.jsonBody ?? ''),
-                            ) ==
-                            1) {
-                          await actions.showCustomToastBottom(
-                            RecipeAppGroup.changePasswordCall.message(
-                              (_model.changePasswordFunction?.jsonBody ?? ''),
-                            )!,
-                          );
-                          await showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (dialogContext) {
-                              return Dialog(
-                                elevation: 0,
-                                insetPadding: EdgeInsets.zero,
-                                backgroundColor: Colors.transparent,
-                                alignment: const AlignmentDirectional(0.0, 0.0)
-                                    .resolve(Directionality.of(context)),
-                                child: WebViewAware(
-                                  child: GestureDetector(
-                                    onTap: () =>
-                                        FocusScope.of(dialogContext).unfocus(),
-                                    child: const ChangePasswordDialogWidget(),
-                                  ),
+                      // Debug API response
+                      print('API Response: ${_model.changePasswordFunction?.jsonBody}');
+                      print('Success value: ${RecipeAppGroup.changePasswordCall.success((_model.changePasswordFunction?.jsonBody ?? ''))}');
+
+                      // Check success condition - API returns boolean true, not integer 1
+                      var successValue = RecipeAppGroup.changePasswordCall.success(
+                        (_model.changePasswordFunction?.jsonBody ?? ''),
+                      );
+                      
+                      if (successValue == true || successValue == 1) {
+                        // Success case - show success message and dialog
+                        print('PASSWORD CHANGE SUCCESS - Showing dialog');
+                        
+                        print('About to show dialog');
+                        
+                        await showDialog<bool>(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (dialogContext) {
+                            return Dialog(
+                              elevation: 0,
+                              insetPadding: EdgeInsets.zero,
+                              backgroundColor: Colors.transparent,
+                              alignment: const AlignmentDirectional(0.0, 0.0)
+                                  .resolve(Directionality.of(context)),
+                              child: WebViewAware(
+                                child: GestureDetector(
+                                  onTap: () =>
+                                      FocusScope.of(dialogContext).unfocus(),
+                                  child: const ChangePasswordDialogWidget(),
                                 ),
-                              );
-                            },
-                          );
-                        } else {
-                          await actions.showCustomToastBottom(
-                            RecipeAppGroup.changePasswordCall.message(
-                              (_model.changePasswordFunction?.jsonBody ?? ''),
-                            )!,
-                          );
+                              ),
+                            );
+                          },
+                        ).catchError((error) {
+                          // If dialog fails, just log the error
+                          print('Dialog failed: $error');
+                          return false;
+                        });
+                        
+                        print('Dialog completed');
+                        
+                        // Navigate back to profile/settings after dialog closes
+                        if (context.mounted) {
+                          print('Navigating back');
+                          context.safePop();
                         }
                       } else {
-                        await actions.showCustomToastBottom(
-                          '     Please enter same password     ',
-                        );
+                        // Handle specific error types
+                        print('PASSWORD CHANGE FAILED - Processing error');
+                        String errorMessage = RecipeAppGroup.changePasswordCall.message(
+                          (_model.changePasswordFunction?.jsonBody ?? ''),
+                        ) ?? 'Failed to change password. Please try again.';
+                        
+                        print('Error message: $errorMessage');
+                        
+                        // Check if it's a current password error
+                        if (errorMessage.toLowerCase().contains('current password') || 
+                            errorMessage.toLowerCase().contains('incorrect')) {
+                          // Set inline error for current password field
+                          _model.setCurrentPasswordError(errorMessage);
+                          safeSetState(() {});
+                          
+                          // Validate form to show the error
+                          _model.formKey.currentState?.validate();
+                        } else {
+                          // For other errors, show toast
+                          await actions.showCustomToastBottom(errorMessage);
+                        }
                       }
 
                       safeSetState(() {});
