@@ -18,11 +18,11 @@ class RecipeAppGroup {
     // Use cached IP if available, otherwise default to emulator IP
     final cachedIp = NetworkUtils.getCachedIp();
     if (cachedIp != null) {
-      return 'http://$cachedIp:8190/api';
+      return 'http://$cachedIp:3000/api';
     }
     
     // Fallback to emulator IP
-    return 'http://10.0.2.2:8190/api';
+    return 'http://10.0.2.2:3000/api';
   }
   
   // Initialize network detection (call this once at app startup)

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'ai_recipe_generator/ai_recipe_generator_main.dart';
-import 'ai_recipe_test_debug.dart';
 
-/// Debug page để test AI Recipe Generator module
+/// AI Recipe Generator main entry page
 class AIRecipeDebugPage extends StatelessWidget {
   const AIRecipeDebugPage({super.key});
 
@@ -12,7 +11,7 @@ class AIRecipeDebugPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'AI Recipe Generator Debug',
+          'AI Recipe Generator',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -162,30 +161,6 @@ class AIRecipeDebugPage extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 16),
-
-            SizedBox(
-              height: 56,
-              child: OutlinedButton.icon(
-                onPressed: () => _openTestDebug(context),
-                icon: const Icon(Icons.bug_report),
-                label: const Text(
-                  'Test Base64 Debug',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.orange,
-                  side: const BorderSide(color: Colors.orange, width: 2),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-            ),
-
             const SizedBox(height: 32),
 
             // Features List
@@ -211,16 +186,14 @@ class AIRecipeDebugPage extends StatelessWidget {
                       '✅ Share recipes',
                       '✅ Vietnamese interface',
                       '✅ Clean Architecture with BLoC',
-                      '⚠️ Gemini AI (requires API Key)',
+                      '✅ Powered by Gemini AI',
                     ].map((feature) => Padding(
                           padding: const EdgeInsets.only(bottom: 4),
                           child: Text(
                             feature,
                             style: TextStyle(
                               fontSize: 14,
-                              color: feature.startsWith('⚠️')
-                                  ? Colors.orange[700]
-                                  : Colors.grey[700],
+                              color: Colors.grey[700],
                             ),
                           ),
                         )),
@@ -258,14 +231,6 @@ class AIRecipeDebugPage extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => SavedAIRecipesEntry(geminiApiKey: apiKey),
-      ),
-    );
-  }
-
-  void _openTestDebug(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const AIRecipeTestDebugPage(),
       ),
     );
   }

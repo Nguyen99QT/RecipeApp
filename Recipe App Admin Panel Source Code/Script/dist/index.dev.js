@@ -66,7 +66,12 @@ var adminRoutes = require("./routes/adminRoutes");
 
 app.use('/', adminRoutes); // Start the server on the specified port and listen on all interfaces
 
-app.listen(process.env.SERVER_PORT, '0.0.0.0', function () {
+var httpServer = app.listen(process.env.SERVER_PORT, '0.0.0.0', function () {
   console.log("server is start", process.env.SERVER_PORT);
   console.log("server listening on all interfaces (0.0.0.0)");
-});
+}); // Initialize WebSocket service for real-time notifications
+
+var NotificationWebSocketService = require('./services/notificationWebSocketService');
+
+global.notificationWS = new NotificationWebSocketService(httpServer);
+console.log('📡 Real-time notification system initialized');

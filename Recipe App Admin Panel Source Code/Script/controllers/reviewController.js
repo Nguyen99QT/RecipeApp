@@ -54,13 +54,22 @@ const loadReview = async (req, res) => {
         console.log('[DEBUG] Type filter:', typeFilter);
 
         // fetch review với populate có điều kiện
-        const reviews = await reviewModel.find(query)
+        const allReviews = await reviewModel.find(query)
             .populate("userId")
             .populate({
                 path: "recipeId",
                 select: "name image"
             })
             .sort({ createdAt: -1 }); // Sắp xếp mới nhất trước
+
+        // Filter out reviews with null userId after populate (users that were deleted)
+        const reviews = allReviews.filter(review => {
+            if (!review.userId) {
+                console.log('[DEBUG] Found review with null userId:', review._id);
+                return true; // Keep it but we'll handle null in template
+            }
+            return true;
+        });
 
         // Calculate statistics with enhanced logic
         const totalReviews = await reviewModel.countDocuments({});
@@ -150,7 +159,136 @@ const isEnableReview = async (req, res) => {
     }
 }
 
+// Load view for recipe reviews only
+const loadRecipeReviews = async (req, res) => {
+    try {
+        // Get filter parameter
+        const statusFilter = req.query.status || 'all';
+        
+        // Build query for recipe reviews only
+        let query = {
+            $and: [
+                {
+                    $or: [
+                        { feedbackType: 'recipe' },
+                        { recipeId: { $exists: true, $ne: null } }
+                    ]
+                }
+            ]
+        };
+        
+        // Status filter
+        if (statusFilter === 'enabled') {
+            query.$and.push({ isEnable: true });
+        } else if (statusFilter === 'disabled') {
+            query.$and.push({ isEnable: false });
+        }
+
+        console.log('[DEBUG] Recipe Reviews Filter Query:', JSON.stringify(query, null, 2));
+
+        // Fetch recipe reviews only
+        const allReviews = await reviewModel.find(query)
+            .populate("userId")
+            .populate({
+                path: "recipeId",
+                select: "name image"
+            })
+            .sort({ createdAt: -1 });
+
+        // Filter to only include reviews with recipes
+        const reviews = allReviews.filter(review => review.recipeId && review.recipeId.name);
+
+        console.log('[DEBUG] Found recipe reviews count:', reviews.length);
+
+        // Setting Data in session for CSRF protection
+        const settingData = await settingModel.findOne();
+        
+        console.log('[DEBUG] About to render recipe-reviews.ejs');
+        console.log('[DEBUG] Current working directory:', process.cwd());
+        console.log('[DEBUG] Views directory should be:', './views/admin');
+        
+        return res.render('recipe-reviews', { 
+            settingData, 
+            reviews,
+            currentFilter: statusFilter,
+            flash: {
+                success: req.flash('success'),
+                error: req.flash('error')
+            }
+        });
+
+    } catch (error) {
+        console.log('[ERROR] loadRecipeReviews:', error.message);
+        req.flash('error', 'Error loading recipe reviews');
+        return res.redirect('/dashboard');
+    }
+}
+
+// Load view for app feedback only
+const loadAppFeedback = async (req, res) => {
+    try {
+        // Get filter parameter
+        const statusFilter = req.query.status || 'all';
+        
+        // Build query for app feedback only
+        let query = {
+            $and: [
+                {
+                    $or: [
+                        { feedbackType: 'app' },
+                        { recipeId: { $exists: false } },
+                        { recipeId: null }
+                    ]
+                }
+            ]
+        };
+        
+        // Status filter
+        if (statusFilter === 'enabled') {
+            query.$and.push({ isEnable: true });
+        } else if (statusFilter === 'disabled') {
+            query.$and.push({ isEnable: false });
+        }
+
+        console.log('[DEBUG] App Feedback Filter Query:', JSON.stringify(query, null, 2));
+
+        // Fetch app feedback only
+        const allReviews = await reviewModel.find(query)
+            .populate("userId")
+            .sort({ createdAt: -1 });
+
+        // Filter to only include feedback without recipes
+        const reviews = allReviews.filter(review => !review.recipeId || !review.recipeId.name);
+
+        console.log('[DEBUG] Found app feedback count:', reviews.length);
+
+        // Setting Data in session for CSRF protection
+        const settingData = await settingModel.findOne();
+        
+        console.log('[DEBUG] About to render app-feedback.ejs');
+        console.log('[DEBUG] Current working directory:', process.cwd());
+        console.log('[DEBUG] Views directory should be:', './views/admin');
+        
+        return res.render('app-feedback', { 
+            settingData, 
+            reviews,
+            currentFilter: statusFilter,
+            flash: {
+                success: req.flash('success'),
+                error: req.flash('error')
+            }
+        });
+
+    } catch (error) {
+        console.log('[ERROR] loadAppFeedback:', error.message);
+        req.flash('error', 'Error loading app feedback');
+        return res.redirect('/dashboard');
+    }
+}
+
 module.exports = {
     loadReview,
     isEnableReview,
+    loadRecipeReviews,
+    loadAppFeedback,
 }

@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "C:\\Aptech\\flutter\\packages\\flutter_tools\\gradle\\src\\main\\groovy\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\caong\\AppData\\Local\\Android\\sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "C:\\Aptech\\7. PRJ4\\Receipe\\Flutter Receipe App\\recipe_app\\android\\app\\.cxx\\Debug\\515z2x6s\\x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\caong\\AppData\\Local\\Android\\sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "C:\\Aptech\\7. PRJ4\\Receipe\\Flutter Receipe App\\recipe_app\\android\\app\\.cxx\\Debug\\515z2x6s\\x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}

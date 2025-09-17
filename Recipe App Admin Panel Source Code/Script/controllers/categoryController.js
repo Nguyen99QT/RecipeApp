@@ -16,13 +16,26 @@ const addCategory = async (req, res) => {
         // Extract data from the request
         const name = req.body.name;
 
+        // Check if category name already exists (case insensitive)
+        const existingCategory = await categoryModel.findOne({ 
+            name: { $regex: new RegExp(`^${name}$`, 'i') } 
+        });
+
+        if (existingCategory) {
+            req.flash('error', `Category "${name}" already exists! Please choose a different name.`);
+            return res.redirect('back');
+        }
+
         //save category
         const newCategory = await new categoryModel({ name }).save();
 
+        req.flash('success', `Category "${name}" has been added successfully.`);
         return res.redirect('back');
 
     } catch (error) {
         console.log(error.message);
+        req.flash('error', 'An error occurred while adding the category. Please try again.');
+        return res.redirect('back');
     }
 }
 
@@ -62,13 +75,32 @@ const editCategory = async (req, res) => {
         const id = req.body.id;
         const name = req.body.name;
 
+        // Check if another category with the same name already exists (excluding current category)
+        const existingCategory = await categoryModel.findOne({ 
+            name: { $regex: new RegExp(`^${name}$`, 'i') },
+            _id: { $ne: id }
+        });
+
+        if (existingCategory) {
+            req.flash('error', `Category "${name}" already exists! Please choose a different name.`);
+            return res.redirect('back');
+        }
+
         // update category
         const updatedCategory = await categoryModel.findOneAndUpdate({ _id: id }, { $set: { name } }, { new: true });
+
+        if (updatedCategory) {
+            req.flash('success', `Category has been updated to "${name}" successfully.`);
+        } else {
+            req.flash('error', 'Category not found!');
+        }
 
         return res.redirect('back');
 
     } catch (error) {
         console.log(error.message);
+        req.flash('error', 'An error occurred while updating the category. Please try again.');
+        return res.redirect('back');
     }
 }
 

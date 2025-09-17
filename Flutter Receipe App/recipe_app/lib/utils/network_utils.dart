@@ -87,7 +87,7 @@ class NetworkUtils {
   }
 
   /// Get the base URL for API calls
-  static Future<String> getApiBaseUrl({int port = 8190}) async {
+  static Future<String> getApiBaseUrl({int port = 3000}) async {
     final ip = await getLocalIpAddress();
     final baseUrl = 'http://$ip:$port/api';
     print('[DEBUG] API Base URL: $baseUrl');

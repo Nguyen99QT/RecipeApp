@@ -101,7 +101,22 @@
                       <div class="card-body border-top p-9">
 
                         <!-- flash message -->
-                        <% if(flash.error.length> 0){ %>
+                        <% if(flash.success && flash.success.length > 0){ %>
+                        <!--begin::Alert-->
+                        <div class="alert alert-dismissible bg-light-success d-flex align-items-center mb-10">
+                          <!--begin::Content-->
+                          <span class="fs-4 text-success fw-bold text-center ps-5"><%= flash.success %></span>
+                          <!--end::Content-->
+                          <!--begin::Close-->
+                          <button type="button" class="btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
+                            <i class="ki-duotone ki-cross fs-1 text-success fw-bold"><span class="path1"></span><span class="path2"></span></i>
+                          </button>
+                          <!--end::Close-->
+                        </div>
+                        <!--end::Alert-->
+                        <% } %>
+                        
+                        <% if(flash.error && flash.error.length > 0){ %>
                         <!--begin::Alert-->
                         <div class="alert alert-dismissible bg-light-danger d-flex align-items-center mb-10">
                           <!--begin::Content-->
@@ -121,17 +136,19 @@
                         <div class="row mb-10">
                           <div class="col-sm-6">
                             <label class="form-label required">Recipe Name</label>
-                            <input type="text" class="form-control form-control-lg form-control-solid " name="recipename" placeholder="Enter Recipe Name" required />
+                            <input type="text" class="form-control form-control-lg form-control-solid" name="recipename" id="recipename" placeholder="Enter Recipe Name" />
+                            <div class="invalid-feedback" id="recipename-error"></div>
                           </div>
                           <div class="col-sm-6">
                             <label class="form-label required">Image</label>
                             <input type="file" name="image" id="imageInput" class="file-upload-default" accept=".png, .jpg, .jpeg">
                             <div class="input-group col-xs-12">
-                              <input type="text" class="form-control form-control-lg form-control-solid  file-upload-info" placeholder="Choose Image" required>
+                              <input type="text" class="form-control form-control-lg form-control-solid file-upload-info" id="image-display" placeholder="Choose Image" readonly>
                               <span class="input-group-append">
                                 <button class="file-upload-browse btn btn-primary buttonedit" type="button">Upload</button>
                               </span>
                             </div>
+                            <div class="invalid-feedback" id="image-error"></div>
                           </div>
                         </div>
                         <!--end::Input group-->
@@ -150,7 +167,7 @@
                                       <div data-repeater-item>
                                         <div class="form-group row px-5">
                                           <div class="col-md-6 mb-8">
-                                            <input type="text" name="ingredients" class="form-control form-control-lg form-control-solid" placeholder="Enter an ingredient name, e.g., 1 teaspoon salt" required />
+                                            <input type="text" name="ingredients" class="form-control form-control-lg form-control-solid ingredients-input" placeholder="Enter an ingredient name, e.g., 1 teaspoon salt" />
                                           </div>
                                           <div class="col-md-1 mb-8">
                                             <a href="javascript:;" data-repeater-delete class="btn btn-flex btn-light-danger">
@@ -180,6 +197,7 @@
                                 </div>
                               </div>
                               <!--end::Repeater-->
+                              <div class="invalid-feedback" id="ingredients-error"></div>
                             </div>
                           </div>
                         </div>
@@ -189,21 +207,23 @@
                         <div class="row mb-10">
                           <div class="col-sm-6">
                             <label class="form-label required">Category</label>
-                            <select name="category" class="form-select form-select-solid" data-control="select2" data-placeholder="Select a category" required>
+                            <select name="category" id="category" class="form-select form-select-solid" data-control="select2" data-placeholder="Select a category">
                               <option></option>
                               <% category.forEach((item) => { %>
                               <option value="<%= item._id %>"><%= item.name %></option>
                               <% }) %>
                             </select>
+                            <div class="invalid-feedback" id="category-error"></div>
                           </div>
                           <div class="col-sm-6">
                             <label class="form-label required"> Cuisines</label>
-                            <select name="cuisines" class="form-select form-select-solid" data-control="select2" data-placeholder="Select a cuisines" required>
+                            <select name="cuisines" id="cuisines" class="form-select form-select-solid" data-control="select2" data-placeholder="Select a cuisines">
                               <option></option>
                               <% cuisines.forEach((item) => { %>
                               <option value="<%= item._id %>"><%= item.name %></option>
                               <% }) %>
                             </select>
+                            <div class="invalid-feedback" id="cuisines-error"></div>
                           </div>
                         </div>
                         <!--end::Input group-->
@@ -212,11 +232,13 @@
                         <div class="row mb-10">
                           <div class="col-sm-6">
                             <label class="form-label required">Prep Time</label>
-                            <input type="text" class="form-control form-control-lg form-control-solid" name="prepTime" placeholder="Enter prep Time" required />
+                            <input type="text" class="form-control form-control-lg form-control-solid" name="prepTime" id="prepTime" placeholder="Enter prep Time (e.g., 15 minutes)" />
+                            <div class="invalid-feedback" id="prepTime-error"></div>
                           </div>
                           <div class="col-sm-6">
                             <label class="form-label required">CookingTime</label>
-                            <input type="text" class="form-control form-control-lg form-control-solid" name="cookTime" placeholder="Enter Cook Time" required />
+                            <input type="text" class="form-control form-control-lg form-control-solid" name="cookTime" id="cookTime" placeholder="Enter Cook Time (e.g., 30 minutes)" />
+                            <div class="invalid-feedback" id="cookTime-error"></div>
                           </div>
                         </div>
                         <!--end::Input group-->
@@ -225,11 +247,13 @@
                         <div class="row mb-10">
                           <div class="col-sm-6">
                             <label class="form-label required">Total Cook Time</label>
-                            <input type="text" class="form-control form-control-lg form-control-solid" name="totalCookTime" placeholder="Enter Total Cook Time" required />
+                            <input type="text" class="form-control form-control-lg form-control-solid" name="totalCookTime" id="totalCookTime" placeholder="Enter Total Cook Time (e.g., 45 minutes)" />
+                            <div class="invalid-feedback" id="totalCookTime-error"></div>
                           </div>
                           <div class="col-sm-6">
                             <label class="form-label required">Recipe Servings</label>
-                            <input type="text" class="form-control form-control-lg form-control-solid" name="servings" placeholder="Enter Number of Servings" required />
+                            <input type="number" class="form-control form-control-lg form-control-solid" name="servings" id="servings" placeholder="Enter Number of Servings (e.g., 4)" min="1" />
+                            <div class="invalid-feedback" id="servings-error"></div>
                           </div>
                         </div>
                         <!--end::Input group-->
@@ -238,16 +262,18 @@
                         <div class="row mb-10">
                           <div class="col-sm-6">
                             <label class="form-label required"> Difficulty Level</label>
-                            <select name="difficultyLevel" class="form-select form-select-solid" data-control="select2" data-placeholder="Select a Difficulty Level" required>
+                            <select name="difficultyLevel" id="difficultyLevel" class="form-select form-select-solid" data-control="select2" data-placeholder="Select a Difficulty Level">
                               <option></option>
                               <option value="Easy">Easy</option>
                               <option value="Medium">Medium</option>
                               <option value="Hard">Hard</option>
                             </select>
+                            <div class="invalid-feedback" id="difficultyLevel-error"></div>
                           </div>
                           <div class="col-sm-6">
                             <label class="form-label">You Tube Link (option)</label>
-                            <input type="text" class="form-control form-control-lg form-control-solid" name="url" placeholder="Enter YouTube Link" />
+                            <input type="text" class="form-control form-control-lg form-control-solid" name="url" id="url" placeholder="Enter YouTube Link (https://youtube.com/...)" />
+                            <div class="invalid-feedback" id="url-error"></div>
                           </div>
                         </div>
                         <!--end::Input group-->
@@ -256,7 +282,7 @@
                         <div class="row mb-10">
                           <div class="col-sm-6">
                             <label class="form-label">Video</label>
-                            <input type="file" name="video" id="imageInput" class="file-upload-default" accept="video/*">
+                            <input type="file" name="video" id="videoInput" class="file-upload-default" accept="video/*">
                             <div class="input-group col-xs-12">
                               <input type="text" class="form-control form-control-lg form-control-solid  file-upload-info" placeholder="Choose Video" readonly>
                               <span class="input-group-append">
@@ -266,7 +292,7 @@
                           </div>
                           <div class="col-sm-6">
                             <label class="form-label">Gallery</label>
-                            <input type="file" name="gallery" id="imageInput" class="file-upload-default" accept=".png, .jpg, .jpeg" multiple>
+                            <input type="file" name="gallery" id="galleryInput" class="file-upload-default" accept=".png, .jpg, .jpeg" multiple>
                             <div class="input-group">
                               <input type="text" class="form-control form-control-lg form-control-solid  file-upload-info" placeholder="Choose multiple images for the gallery (Ctrl + Right-click)" readonly>
                               <span class="input-group-append">
@@ -281,7 +307,13 @@
                         <div class="row mb-10">
                           <div class="col-sm-12">
                             <label class="form-label required">Overview</label>
-                            <textarea name="overview" id="kt_docs_first_ckeditor_classic" placeholder="Enter a brief overview of the recipe, including key ingredients and cooking style"></textarea>
+                            <div id="overview-container">
+                              <div id="overview-loading" class="ck-editor-loading">
+                                <i class="fas fa-spinner fa-spin me-2"></i>Loading editor...
+                              </div>
+                              <textarea name="overview" id="kt_docs_first_ckeditor_classic" class="form-control" placeholder="Enter a brief overview of the recipe, including key ingredients and cooking style" style="height: 150px; display: none;"></textarea>
+                            </div>
+                            <div class="invalid-feedback" id="overview-error"></div>
                           </div>
                         </div>
                         <!--end::Input group-->
@@ -290,7 +322,13 @@
                         <div class="fv-row mb-2">
                           <div class="col-sm-12">
                             <label class="form-label required">How To Cook </label>
-                            <textarea class="form-control form-control-lg" id="kt_docs_second_ckeditor_classic" name="how_to_cook" placeholder="Describe the cooking process" style="height: 300px;"></textarea>
+                            <div id="howto-container">
+                              <div id="howto-loading" class="ck-editor-loading">
+                                <i class="fas fa-spinner fa-spin me-2"></i>Loading editor...
+                              </div>
+                              <textarea name="how_to_cook" id="kt_docs_second_ckeditor_classic" class="form-control" placeholder="Describe the cooking process step by step" style="height: 200px; display: none;"></textarea>
+                            </div>
+                            <div class="invalid-feedback" id="how_to_cook-error"></div>
                           </div>
                         </div>
                         <!--end::Input group-->
@@ -300,7 +338,8 @@
 
                       <!--begin::Actions-->
                       <div class="card-footer d-flex justify-content-start py-6 px-9">
-                        <button type="submit" class="btn btn-primary me-5">Add</button>
+                        <button type="submit" id="submit-btn" class="btn btn-primary me-5">Add</button>
+                        <button type="button" id="cancel-btn" class="btn btn-secondary">Cancel</button>
                       </div>
                       <!--end::Actions-->
 
@@ -351,4 +390,1397 @@
 
 
 <!-- partial:partials/header -->
+<%- include('../layouts/footer.ejs') %>
+
+<style>
+/* Container styling */
+#overview-container, #howto-container {
+    position: relative;
+    min-height: 150px;
+}
+
+/* Loading indicator styling */
+.ck-editor-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 150px;
+    border: 1px solid #e1e5e9;
+    border-radius: 0.475rem;
+    background-color: #f9f9f9;
+    color: #7e8299;
+    font-size: 14px;
+}
+
+/* CKEditor styling */
+.ck-editor__editable_inline {
+    min-height: 150px;
+}
+
+.ck-editor {
+    border: 1px solid #e1e5e9;
+    border-radius: 0.475rem;
+}
+
+.ck-editor__main > .ck-editor__editable {
+    border: none;
+    border-radius: 0;
+}
+
+.ck-editor__main > .ck-editor__editable.ck-focused {
+    border: none;
+    box-shadow: none;
+}
+
+.ck-editor.ck-focused {
+    border-color: #009ef7;
+    box-shadow: 0 0 0 0.2rem rgba(0, 158, 247, 0.25);
+}
+
+/* Error state styling for CKEditor */
+.ck-editor.is-invalid {
+    border-color: #f1416c !important;
+}
+
+.ck-editor.is-valid {
+    border-color: #50cd89 !important;
+}
+
+/* Error message styling */
+#overview-error, #how_to_cook-error {
+    color: #f1416c;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: none;
+}
+
+#overview-error.d-block, #how_to_cook-error.d-block {
+    display: block !important;
+}
+
+/* Hide original textareas completely */
+#kt_docs_first_ckeditor_classic,
+#kt_docs_second_ckeditor_classic {
+    display: none !important;
+}
+
+/* Show textareas only when CKEditor fails */
+#kt_docs_first_ckeditor_classic.fallback,
+#kt_docs_second_ckeditor_classic.fallback {
+    display: block !important;
+    border: 1px solid #e1e5e9;
+    border-radius: 0.475rem;
+    padding: 12px;
+}
+
+/* Fallback textarea error state */
+#kt_docs_first_ckeditor_classic.fallback.is-invalid,
+#kt_docs_second_ckeditor_classic.fallback.is-invalid {
+    border-color: #f1416c;
+}
+
+/* Select2 error state styling */
+.select2-container.is-invalid .select2-selection {
+    border-color: #f1416c !important;
+    box-shadow: 0 0 0 0.2rem rgba(241, 65, 108, 0.25) !important;
+}
+
+.select2-container.is-valid .select2-selection {
+    border-color: #50cd89 !important;
+    box-shadow: 0 0 0 0.2rem rgba(80, 205, 137, 0.25) !important;
+}
+
+/* Error message styling for all fields */
+.invalid-feedback {
+    color: #f1416c;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.invalid-feedback.d-block {
+    display: block !important;
+}
+</style>
+
+<script>
+// Custom Recipe Form Validation
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const submitBtn = document.getElementById('submit-btn');
+    
+    // Get CKEditor instances
+    let overviewEditor, howToCookEditor;
+    let editorsInitialized = false;
+    
+    // Prevent default CKEditor initialization
+    if (typeof KTAppCKEditorInit !== 'undefined') {
+        // Override the existing init function to prevent conflict
+        KTAppCKEditorInit.init = function() {
+            console.log('Default CKEditor init prevented - using custom initialization');
+        };
+    }
+    
+    // Function to hide loading and show CKEditor
+    function hideLading(loadingId) {
+        const loading = document.getElementById(loadingId);
+        if (loading) {
+            loading.style.display = 'none';
+        }
+    }
+    
+    // Function to hide loading and show editor fallback
+    function showEditor(textareaId, loadingId) {
+        const textarea = document.getElementById(textareaId);
+        const loading = document.getElementById(loadingId);
+        
+        if (loading) {
+            loading.style.display = 'none';
+        }
+        if (textarea) {
+            textarea.style.display = 'block';
+            textarea.classList.add('fallback');
+        }
+    }
+    
+    // Check if CKEditor is already initialized on an element
+    function isEditorInitialized(element) {
+        return element.classList.contains('ck-hidden') || 
+               element.nextElementSibling?.classList.contains('ck-editor');
+    }
+    
+    // Initialize CKEditors with conflict prevention
+    function initializeCKEditors() {
+        // Check if ClassicEditor is available
+        if (typeof ClassicEditor === 'undefined') {
+            console.log('CKEditor not yet loaded, retrying...');
+            setTimeout(initializeCKEditors, 200);
+            return;
+        }
+        
+        if (editorsInitialized) {
+            return; // Prevent multiple initializations
+        }
+        
+        editorsInitialized = true;
+        console.log('Starting custom CKEditor initialization...');
+        
+        // Initialize Overview editor
+        const overviewTextarea = document.querySelector('#kt_docs_first_ckeditor_classic');
+        if (overviewTextarea && !isEditorInitialized(overviewTextarea)) {
+            ClassicEditor.create(overviewTextarea, {
+                toolbar: {
+                    items: [
+                        'undo', 'redo', '|',
+                        'heading', '|',
+                        'bold', 'italic', '|',
+                        'bulletedList', 'numberedList', '|'
+                    ]
+                },
+                heading: {
+                    options: [
+                        { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                        { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+                    ]
+                }
+            })
+            .then(editor => {
+                overviewEditor = editor;
+                hideLading('overview-loading');
+                console.log('Overview editor initialized successfully');
+                
+                // Set minimum height
+                const editorElement = editor.ui.view.editable.element;
+                if (editorElement) {
+                    editorElement.style.minHeight = '150px';
+                }
+            })
+            .catch(error => {
+                console.error('Error initializing overview editor:', error);
+                hideLading('overview-loading');
+                showEditor('kt_docs_first_ckeditor_classic', 'overview-loading');
+            });
+        } else {
+            console.log('Overview editor already initialized or not found');
+            hideLading('overview-loading');
+        }
+        
+        // Initialize How to cook editor
+        const howToTextarea = document.querySelector('#kt_docs_second_ckeditor_classic');
+        if (howToTextarea && !isEditorInitialized(howToTextarea)) {
+            ClassicEditor.create(howToTextarea, {
+                toolbar: {
+                    items: [
+                        'undo', 'redo', '|',
+                        'heading', '|',
+                        'bold', 'italic', '|',
+                        'bulletedList', 'numberedList', '|'
+                    ]
+                },
+                heading: {
+                    options: [
+                        { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                        { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                        { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+                    ]
+                }
+            })
+            .then(editor => {
+                howToCookEditor = editor;
+                hideLading('howto-loading');
+                console.log('How to cook editor initialized successfully');
+                
+                // Set minimum height
+                const editorElement = editor.ui.view.editable.element;
+                if (editorElement) {
+                    editorElement.style.minHeight = '200px';
+                }
+            })
+            .catch(error => {
+                console.error('Error initializing how to cook editor:', error);
+                hideLading('howto-loading');
+                showEditor('kt_docs_second_ckeditor_classic', 'howto-loading');
+            });
+        } else {
+            console.log('How to cook editor already initialized or not found');
+            hideLading('howto-loading');
+        }
+    }
+    
+    // Delay initialization to allow default scripts to load first
+    setTimeout(() => {
+        // Check if editors were already initialized by the default script
+        const overviewTextarea = document.querySelector('#kt_docs_first_ckeditor_classic');
+        const howToTextarea = document.querySelector('#kt_docs_second_ckeditor_classic');
+        
+        if (overviewTextarea && isEditorInitialized(overviewTextarea)) {
+            console.log('Editors already initialized by default script');
+            hideLading('overview-loading');
+            hideLading('howto-loading');
+            return;
+        }
+        
+        // If not initialized, start our custom initialization
+        initializeCKEditors();
+    }, 1000);
+    
+    // Validation functions
+    function showError(fieldId, message) {
+        const field = document.getElementById(fieldId);
+        const errorDiv = document.getElementById(fieldId + '-error');
+        
+        if (field) {
+            field.classList.add('is-invalid');
+            field.classList.remove('is-valid');
+            
+            // Handle Select2 styling
+            const select2Container = field.parentElement.querySelector('.select2-container');
+            if (select2Container) {
+                select2Container.classList.add('is-invalid');
+                select2Container.classList.remove('is-valid');
+            }
+        }
+        if (errorDiv) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            errorDiv.classList.add('d-block');
+        }
+        
+        // Mark this field as having an error for scrolling
+        if (field) {
+            field.setAttribute('data-has-error', 'true');
+        }
+    }
+    
+    function showSuccess(fieldId) {
+        const field = document.getElementById(fieldId);
+        const errorDiv = document.getElementById(fieldId + '-error');
+        
+        if (field) {
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+            field.removeAttribute('data-has-error');
+            
+            // Handle Select2 styling
+            const select2Container = field.parentElement.querySelector('.select2-container');
+            if (select2Container) {
+                select2Container.classList.remove('is-invalid');
+                select2Container.classList.add('is-valid');
+            }
+        }
+        if (errorDiv) {
+            errorDiv.style.display = 'none';
+            errorDiv.classList.remove('d-block');
+        }
+    }
+    
+    function clearValidation() {
+        const fields = ['recipename', 'image', 'category', 'cuisines', 'prepTime', 'cookTime', 
+                       'totalCookTime', 'servings', 'difficultyLevel', 'url', 'overview', 'how_to_cook'];
+        
+        fields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            const errorDiv = document.getElementById(fieldId + '-error');
+            
+            if (field) {
+                field.classList.remove('is-invalid', 'is-valid');
+                field.removeAttribute('data-has-error');
+            }
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
+        });
+        
+        // Clear ingredients validation
+        const ingredientsError = document.getElementById('ingredients-error');
+        if (ingredientsError) {
+            ingredientsError.style.display = 'none';
+        }
+    }
+    
+    function scrollToFirstError() {
+        // First check for regular form fields with errors
+        const fieldWithError = document.querySelector('[data-has-error="true"]');
+        if (fieldWithError) {
+            scrollToElement(fieldWithError);
+            return;
+        }
+        
+        // Check for ingredients error
+        const ingredientsError = document.getElementById('ingredients-error');
+        if (ingredientsError && ingredientsError.style.display === 'block') {
+            const firstIngredientInput = document.querySelector('.ingredients-input');
+            if (firstIngredientInput) {
+                scrollToElement(firstIngredientInput);
+                return;
+            }
+        }
+        
+        // Check for CKEditor errors
+        const overviewError = document.getElementById('overview-error');
+        const howToCookError = document.getElementById('how_to_cook-error');
+        
+        if (overviewError && overviewError.style.display === 'block') {
+            const overviewContainer = document.getElementById('overview-container');
+            if (overviewContainer) {
+                scrollToElement(overviewContainer);
+                return;
+            }
+        }
+        
+        if (howToCookError && howToCookError.style.display === 'block') {
+            const howToCookContainer = document.getElementById('howto-container');
+            if (howToCookContainer) {
+                scrollToElement(howToCookContainer);
+                return;
+            }
+        }
+        
+        // Fallback: scroll to any visible error
+        const anyError = document.querySelector('.invalid-feedback[style*="block"], .is-invalid');
+        if (anyError) {
+            scrollToElement(anyError);
+        }
+    }
+    
+    function scrollToElement(element) {
+        const headerHeight = 100; // Account for fixed header
+        const elementPosition = element.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+        
+        window.scrollTo({
+            top: elementPosition,
+            behavior: 'smooth'
+        });
+        
+        // Add a highlight effect to draw attention
+        element.style.transition = 'all 0.3s ease';
+        element.style.boxShadow = '0 0 10px rgba(255, 0, 0, 0.5)';
+        
+        setTimeout(() => {
+            element.style.boxShadow = '';
+        }, 2000);
+        
+        // Focus on the element if it's focusable
+        if (element.focus && typeof element.focus === 'function') {
+            setTimeout(() => {
+                element.focus();
+            }, 300);
+        }
+    }
+    
+    function validateRecipeName() {
+        const recipeName = document.getElementById('recipename').value.trim();
+        
+        if (!recipeName) {
+            showError('recipename', 'Recipe name is required');
+            return false;
+        }
+        
+        if (recipeName.length < 3) {
+            showError('recipename', 'Recipe name must be at least 3 characters long');
+            return false;
+        }
+        
+        if (recipeName.length > 100) {
+            showError('recipename', 'Recipe name must not exceed 100 characters');
+            return false;
+        }
+        
+        showSuccess('recipename');
+        return true;
+    }
+    
+    function validateImage() {
+        const imageInput = document.getElementById('imageInput');
+        const imageDisplay = document.getElementById('image-display');
+        
+        if (!imageInput.files || imageInput.files.length === 0) {
+            showError('image', 'Recipe image is required');
+            return false;
+        }
+        
+        const file = imageInput.files[0];
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+        
+        if (!allowedTypes.includes(file.type)) {
+            showError('image', 'Please select a valid image file (JPEG, JPG, or PNG)');
+            return false;
+        }
+        
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        if (file.size > maxSize) {
+            showError('image', 'Image size must not exceed 5MB');
+            return false;
+        }
+        
+        showSuccess('image');
+        return true;
+    }
+    
+    function validateIngredients() {
+        const ingredientInputs = document.querySelectorAll('.ingredients-input');
+        let hasValidIngredient = false;
+        
+        ingredientInputs.forEach(input => {
+            if (input.value.trim()) {
+                hasValidIngredient = true;
+            }
+        });
+        
+        if (!hasValidIngredient) {
+            const ingredientsError = document.getElementById('ingredients-error');
+            if (ingredientsError) {
+                ingredientsError.textContent = 'At least one ingredient is required';
+                ingredientsError.style.display = 'block';
+            }
+            
+            // Mark first ingredient input for scrolling
+            const firstIngredient = document.querySelector('.ingredients-input');
+            if (firstIngredient) {
+                firstIngredient.setAttribute('data-has-error', 'true');
+                firstIngredient.classList.add('is-invalid');
+            }
+            
+            return false;
+        }
+        
+        // Clear error state
+        const ingredientsError = document.getElementById('ingredients-error');
+        if (ingredientsError) {
+            ingredientsError.style.display = 'none';
+        }
+        
+        // Remove error marking from all ingredient inputs
+        ingredientInputs.forEach(input => {
+            input.removeAttribute('data-has-error');
+            input.classList.remove('is-invalid');
+        });
+        
+        return true;
+    }
+    
+    function validateSelect(fieldId, fieldName) {
+        const field = document.getElementById(fieldId);
+        const value = field.value;
+        
+        if (!value || value === '') {
+            showError(fieldId, fieldName + ' is required');
+            return false;
+        }
+        
+        showSuccess(fieldId);
+        return true;
+    }
+    
+    function validateTimeField(fieldId, fieldName) {
+        const field = document.getElementById(fieldId);
+        const value = field.value.trim();
+        
+        if (!value) {
+            showError(fieldId, fieldName + ' is required');
+            return false;
+        }
+        
+        // Check if it contains numbers and common time units
+        const timePattern = /^[\d\s]+(minute|minutes|min|hour|hours|hr|hrs|second|seconds|sec)s?$/i;
+        
+        if (!timePattern.test(value)) {
+            showError(fieldId, fieldName + ' must include time units (e.g., "30 minutes", "1 hour")');
+            return false;
+        }
+        
+        showSuccess(fieldId);
+        return true;
+    }
+    
+    function validateServings() {
+        const servings = document.getElementById('servings');
+        const value = parseInt(servings.value);
+        
+        if (!servings.value || isNaN(value)) {
+            showError('servings', 'Number of servings is required');
+            return false;
+        }
+        
+        if (value < 1) {
+            showError('servings', 'Number of servings must be at least 1');
+            return false;
+        }
+        
+        if (value > 50) {
+            showError('servings', 'Number of servings cannot exceed 50');
+            return false;
+        }
+        
+        showSuccess('servings');
+        return true;
+    }
+    
+    function validateURL() {
+        const urlField = document.getElementById('url');
+        const value = urlField.value.trim();
+        
+        // URL is optional, so if empty, it's valid
+        if (!value) {
+            showSuccess('url');
+            return true;
+        }
+        
+        // Simple validation: just check if it's not empty and has some basic URL structure
+        if (value.length < 5) {
+            showError('url', 'Please enter a valid URL');
+            return false;
+        }
+        
+        showSuccess('url');
+        return true;
+    }
+    
+    function validateCKEditor(editorInstance, fieldName, fieldId) {
+        const errorDiv = document.getElementById(fieldId.replace('kt_docs_first_ckeditor_classic', 'overview').replace('kt_docs_second_ckeditor_classic', 'how_to_cook') + '-error');
+        const containerSelector = fieldId === 'kt_docs_first_ckeditor_classic' ? '#overview-container' : '#howto-container';
+        const container = document.querySelector(containerSelector);
+        
+        if (!editorInstance) {
+            showCKEditorError(fieldId, fieldName + ' is required');
+            return false;
+        }
+        
+        const content = editorInstance.getData().trim();
+        
+        if (!content || content === '<p>&nbsp;</p>' || content === '' || content === '<p></p>') {
+            showCKEditorError(fieldId, fieldName + ' is required');
+            return false;
+        }
+        
+        // Remove HTML tags for length check
+        const textContent = content.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+        
+        if (textContent.length < 10) {
+            showCKEditorError(fieldId, fieldName + ' must be at least 10 characters long');
+            return false;
+        }
+        
+        showCKEditorSuccess(fieldId);
+        return true;
+    }
+    
+    function showCKEditorError(fieldId, message) {
+        // Determine the correct error div ID
+        const errorDivId = fieldId === 'kt_docs_first_ckeditor_classic' ? 'overview-error' : 'how_to_cook-error';
+        const containerSelector = fieldId === 'kt_docs_first_ckeditor_classic' ? '#overview-container' : '#howto-container';
+        
+        const errorDiv = document.getElementById(errorDivId);
+        const container = document.querySelector(containerSelector);
+        const editorElement = document.querySelector(containerSelector + ' .ck-editor');
+        
+        // Show error message
+        if (errorDiv) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            errorDiv.classList.add('d-block');
+        }
+        
+        // Add error styling to editor
+        if (editorElement) {
+            editorElement.classList.add('is-invalid');
+            editorElement.classList.remove('is-valid');
+        }
+        
+        // Mark container for scrolling
+        if (container) {
+            container.setAttribute('data-has-error', 'true');
+        }
+        
+        console.log('CKEditor Error shown:', message, 'for field:', fieldId);
+    }
+    
+    function showCKEditorSuccess(fieldId) {
+        // Determine the correct error div ID
+        const errorDivId = fieldId === 'kt_docs_first_ckeditor_classic' ? 'overview-error' : 'how_to_cook-error';
+        const containerSelector = fieldId === 'kt_docs_first_ckeditor_classic' ? '#overview-container' : '#howto-container';
+        
+        const errorDiv = document.getElementById(errorDivId);
+        const container = document.querySelector(containerSelector);
+        const editorElement = document.querySelector(containerSelector + ' .ck-editor');
+        
+        // Hide error message
+        if (errorDiv) {
+            errorDiv.style.display = 'none';
+            errorDiv.classList.remove('d-block');
+        }
+        
+        // Add success styling to editor
+        if (editorElement) {
+            editorElement.classList.remove('is-invalid');
+            editorElement.classList.add('is-valid');
+        }
+        
+        // Remove error marking
+        if (container) {
+            container.removeAttribute('data-has-error');
+        }
+    }
+    
+    // Real-time validation
+    document.getElementById('recipename').addEventListener('blur', validateRecipeName);
+    document.getElementById('imageInput').addEventListener('change', validateImage);
+    
+    // Dropdown validation with Select2 support
+    function setupSelect2Validation(elementId, fieldName) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            // Regular change event for non-Select2 elements
+            element.addEventListener('change', function() {
+                validateSelect(elementId, fieldName);
+            });
+            
+            // Select2 specific events
+            $(element).on('select2:select', function() {
+                validateSelect(elementId, fieldName);
+            });
+            
+            $(element).on('select2:unselect', function() {
+                validateSelect(elementId, fieldName);
+            });
+            
+            $(element).on('select2:clear', function() {
+                validateSelect(elementId, fieldName);
+            });
+        }
+    }
+    
+    // Setup validation for all dropdowns
+    setupSelect2Validation('category', 'Category');
+    setupSelect2Validation('cuisines', 'Cuisines');
+    setupSelect2Validation('difficultyLevel', 'Difficulty level');
+    
+    document.getElementById('prepTime').addEventListener('blur', () => validateTimeField('prepTime', 'Prep time'));
+    document.getElementById('cookTime').addEventListener('blur', () => validateTimeField('cookTime', 'Cook time'));
+    document.getElementById('totalCookTime').addEventListener('blur', () => validateTimeField('totalCookTime', 'Total cook time'));
+    document.getElementById('servings').addEventListener('blur', validateServings);
+    document.getElementById('url').addEventListener('blur', validateURL);
+    
+    // Add validation for dynamically added ingredient inputs
+    document.addEventListener('input', function(e) {
+        if (e.target.classList.contains('ingredients-input')) {
+            // Clear ingredients error when user starts typing
+            const ingredientsError = document.getElementById('ingredients-error');
+            if (ingredientsError) {
+                ingredientsError.style.display = 'none';
+            }
+        }
+    });
+    
+    // Form submission validation
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        clearValidation();
+        
+        let isValid = true;
+        
+        // Validate all fields
+        if (!validateRecipeName()) isValid = false;
+        if (!validateImage()) isValid = false;
+        if (!validateIngredients()) isValid = false;
+        if (!validateSelect('category', 'Category')) isValid = false;
+        if (!validateSelect('cuisines', 'Cuisines')) isValid = false;
+        if (!validateTimeField('prepTime', 'Prep time')) isValid = false;
+        if (!validateTimeField('cookTime', 'Cook time')) isValid = false;
+        if (!validateTimeField('totalCookTime', 'Total cook time')) isValid = false;
+        if (!validateServings()) isValid = false;
+        if (!validateSelect('difficultyLevel', 'Difficulty level')) isValid = false;
+        if (!validateURL()) isValid = false;
+        
+        // Validate CKEditor fields
+        if (!validateCKEditor(overviewEditor, 'Overview', 'kt_docs_first_ckeditor_classic')) isValid = false;
+        if (!validateCKEditor(howToCookEditor, 'How to cook instructions', 'kt_docs_second_ckeditor_classic')) isValid = false;
+        
+        if (isValid) {
+            // Debug: Check ingredients data before submit
+            const ingredientsInputs = document.querySelectorAll('.ingredients-input');
+            console.log('Ingredients before submit:', Array.from(ingredientsInputs).map(input => input.value));
+            
+            // Ensure all ingredients have proper names for form submission
+            ingredientsInputs.forEach((input, index) => {
+                if (!input.name) {
+                    input.name = 'ingredients';
+                }
+            });
+            
+            // Show loading state
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding Recipe...';
+            submitBtn.disabled = true;
+            
+            // Show success notification (will be overridden by server response)
+            setTimeout(() => {
+                showToast('Recipe is being added...', 'info');
+            }, 100);
+            
+            // Submit the form
+            form.submit();
+        } else {
+            // Scroll to first error with a small delay to ensure all validation messages are rendered
+            setTimeout(() => {
+                scrollToFirstError();
+            }, 100);
+            
+            // Show error notification
+            showValidationNotification();
+        }
+    });
+    
+    function showValidationNotification() {
+        // Create and show a toast notification
+        const toast = document.createElement('div');
+        toast.className = 'alert alert-danger alert-dismissible fade show position-fixed';
+        toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        toast.innerHTML = `
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Validation Error!</strong> Please fix the highlighted fields and try again.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, 5000);
+    }
+
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        const alertClass = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-danger' : 'alert-info';
+        const iconClass = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+        
+        toast.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+        toast.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        toast.innerHTML = `
+            <i class="fas ${iconClass} me-2"></i>
+            <strong>${message}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, 3000);
+    }
+    
+    // Cancel button functionality
+    document.getElementById('cancel-btn').addEventListener('click', function() {
+        if (confirm('Are you sure you want to cancel? All entered data will be lost.')) {
+            window.location.href = '/recipe';
+        }
+    });
+});
+</script>
+
+<!-- Fix duplicate issues -->
+<script>
+// Completely disable global file upload script
+$(document).off('click', '.file-upload-browse');
+$(document).off('change', '.file-upload-default');
+
+// Wait for DOM and all scripts to load
+$(window).on('load', function() {
+    // Remove all existing file upload handlers with delay
+    setTimeout(function() {
+        $('.file-upload-browse').off();
+        $('.file-upload-default').off();
+        
+        // Add our custom handlers
+        setupFileUploads();
+        setupIngredientsRepeater();
+    }, 100);
+});
+
+function setupFileUploads() {
+    console.log('Setting up file uploads...');
+    
+    // Image upload with animation
+    $('input[name="image"]').next('.input-group').find('.file-upload-browse').off().on('click', function(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        console.log('Image upload clicked');
+        
+        // Add click animation
+        const $btn = $(this);
+        $btn.addClass('btn-clicked');
+        setTimeout(() => $btn.removeClass('btn-clicked'), 200);
+        
+        document.querySelector('input[name="image"]').click();
+        return false;
+    });
+    
+    // Video upload with animation
+    $('input[name="video"]').next('.input-group').find('.file-upload-browse').off().on('click', function(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        console.log('Video upload clicked');
+        
+        // Add click animation
+        const $btn = $(this);
+        $btn.addClass('btn-clicked');
+        setTimeout(() => $btn.removeClass('btn-clicked'), 200);
+        
+        document.querySelector('input[name="video"]').click();
+        return false;
+    });
+    
+    // Alternative approach - Vanilla JavaScript for gallery
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Setting up gallery with vanilla JavaScript...');
+        
+        // Find gallery input and button
+        const galleryInput = document.querySelector('input[name="gallery"]');
+        const galleryButtons = document.querySelectorAll('.file-upload-browse');
+        
+        console.log('Gallery input found:', !!galleryInput);
+        console.log('Upload buttons found:', galleryButtons.length);
+        
+        // Find the correct gallery button (should be the second one)
+        let galleryButton = null;
+        galleryButtons.forEach((btn, index) => {
+            const parent = btn.closest('.col-sm-6');
+            if (parent && parent.querySelector('input[name="gallery"]')) {
+                galleryButton = btn;
+                console.log('Gallery button found at index:', index);
+            }
+        });
+        
+        if (galleryButton && galleryInput) {
+            galleryButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Gallery button clicked (vanilla JS)!');
+                
+                // Add animation
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 150);
+                
+                galleryInput.click();
+            });
+            
+            // Handle file selection
+            galleryInput.addEventListener('change', function() {
+                const count = this.files.length;
+                console.log('Gallery files selected (vanilla):', count);
+                
+                if (count > 0) {
+                    const infoInput = galleryButton.closest('.col-sm-6').querySelector('.file-upload-info');
+                    if (infoInput) {
+                        infoInput.value = count + ' file(s) selected';
+                        infoInput.style.color = '#28a745';
+                        setTimeout(() => {
+                            infoInput.style.color = '';
+                        }, 2000);
+                    }
+                }
+            });
+        } else {
+            console.error('Gallery button or input not found!');
+        }
+    });
+    
+    // File change handlers with success animation
+    $('input[name="image"]').off('change').on('change', function() {
+        if (this.files.length > 0) {
+            const $info = $(this).next('.input-group').find('.file-upload-info');
+            $info.val(this.files[0].name).addClass('file-selected');
+            setTimeout(() => $info.removeClass('file-selected'), 1000);
+        }
+    });
+    
+    $('input[name="video"]').off('change').on('change', function() {
+        if (this.files.length > 0) {
+            const $info = $(this).next('.input-group').find('.file-upload-info');
+            $info.val(this.files[0].name).addClass('file-selected');
+            setTimeout(() => $info.removeClass('file-selected'), 1000);
+        }
+    });
+    
+    // Note: Gallery change handler is now handled by vanilla JavaScript above
+}
+
+function setupIngredientsRepeater() {
+    console.log('Setting up ingredients repeater...');
+    
+    // Remove all existing handlers
+    $('[data-repeater-create]').off();
+    $('[data-repeater-delete]').off();
+    
+    // Add ingredient with smooth CSS animation like edit recipe
+    $('[data-repeater-create]').on('click', function(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        
+        console.log('Add ingredient clicked');
+        
+        // Clone template
+        const template = $('[data-repeater-item]:first').clone();
+        
+        // Clear values and prepare for animation
+        template.find('input[name="ingredients"]').val('');
+        template.find('.is-invalid').removeClass('is-invalid');
+        
+        // Set initial animation state (like editRecipe)
+        template.css({
+            'opacity': '0',
+            'transform': 'translateY(-10px)',
+            'transition': 'all 0.3s ease'
+        });
+        
+        // Add to container
+        $('[data-repeater-list]').append(template);
+        
+        // Trigger entrance animation
+        setTimeout(() => {
+            template.css({
+                'opacity': '1',
+                'transform': 'translateY(0)'
+            });
+        }, 10);
+        
+        // Focus on new input after animation
+        setTimeout(() => {
+            const input = template.find('input[name="ingredients"]')[0];
+            if (input) {
+                input.focus();
+            }
+        }, 300);
+        
+        // Setup delete for new item with smooth animation
+        template.find('[data-repeater-delete]').off().on('click', function(e) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            
+            const container = $('[data-repeater-list]');
+            const ingredientItems = container.find('[data-repeater-item]');
+            
+            // Don't allow removing if only one ingredient remains
+            if (ingredientItems.length <= 1) {
+                alert('At least one ingredient is required.');
+                return;
+            }
+            
+            const item = $(this).closest('[data-repeater-item]');
+            
+            // Smooth exit animation (like editRecipe)
+            item.css({
+                'transition': 'all 0.3s ease',
+                'opacity': '0',
+                'transform': 'translateY(-10px)'
+            });
+            
+            // Remove after animation
+            setTimeout(() => {
+                item.remove();
+            }, 300);
+        });
+    });
+    
+    // Setup delete for existing items
+    $('[data-repeater-delete]').off().on('click', function(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        
+        const container = $('[data-repeater-list]');
+        const ingredientItems = container.find('[data-repeater-item]');
+        
+        // Don't allow removing if only one ingredient remains
+        if (ingredientItems.length <= 1) {
+            alert('At least one ingredient is required.');
+            return;
+        }
+        
+        const item = $(this).closest('[data-repeater-item]');
+        
+        // Smooth exit animation
+        item.css({
+            'transition': 'all 0.3s ease',
+            'opacity': '0',
+            'transform': 'translateY(-10px)'
+        });
+        
+        // Remove after animation
+        setTimeout(() => {
+            item.remove();
+        }, 300);
+    });
+}
+
+</script>
+
+<!-- Add CSS for beautiful animations -->
+<style>
+/* Enhanced animations for ingredients */
+[data-repeater-item] {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Enhanced shake animation */
+.enhanced-shake {
+    animation: enhancedShake 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes enhancedShake {
+    0%, 100% { 
+        transform: translateX(0) scale(1); 
+    }
+    10%, 30%, 50%, 70%, 90% { 
+        transform: translateX(-8px) scale(1.02); 
+        box-shadow: 0 4px 20px rgba(241, 65, 108, 0.3);
+    }
+    20%, 40%, 60%, 80% { 
+        transform: translateX(8px) scale(1.02); 
+        box-shadow: 0 4px 20px rgba(241, 65, 108, 0.3);
+    }
+    50% {
+        transform: translateX(-12px) scale(1.05);
+    }
+}
+
+/* Delete confirmation visual */
+.delete-confirm {
+    background: linear-gradient(45deg, rgba(241, 65, 108, 0.1), rgba(241, 65, 108, 0.05));
+    border-left: 4px solid #f1416c;
+    transform: scale(0.98);
+    transition: all 0.2s ease;
+}
+
+/* Glow effects */
+.glow-focus {
+    box-shadow: 0 0 20px rgba(0, 158, 247, 0.5), 0 0 40px rgba(0, 158, 247, 0.3) !important;
+    border-color: #009ef7 !important;
+    animation: glowPulse 1s ease-in-out;
+}
+
+.warning-glow {
+    box-shadow: 0 0 20px rgba(241, 65, 108, 0.5), 0 0 40px rgba(241, 65, 108, 0.3) !important;
+    border-color: #f1416c !important;
+    animation: warningPulse 0.8s ease-in-out;
+}
+
+@keyframes glowPulse {
+    0%, 100% { 
+        box-shadow: 0 0 20px rgba(0, 158, 247, 0.5), 0 0 40px rgba(0, 158, 247, 0.3);
+    }
+    50% { 
+        box-shadow: 0 0 30px rgba(0, 158, 247, 0.7), 0 0 60px rgba(0, 158, 247, 0.5);
+    }
+}
+
+@keyframes warningPulse {
+    0%, 100% { 
+        box-shadow: 0 0 20px rgba(241, 65, 108, 0.5), 0 0 40px rgba(241, 65, 108, 0.3);
+    }
+    50% { 
+        box-shadow: 0 0 30px rgba(241, 65, 108, 0.7), 0 0 60px rgba(241, 65, 108, 0.5);
+    }
+}
+
+/* Enhanced button animations */
+[data-repeater-create] {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-repeater-create]:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 158, 247, 0.3);
+}
+
+[data-repeater-create]:active {
+    transform: translateY(0) scale(0.98);
+    transition: all 0.1s ease;
+}
+
+/* Ripple effect for add button */
+[data-repeater-create]:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+}
+
+[data-repeater-create]:hover:before {
+    width: 100%;
+    height: 100%;
+}
+
+/* Delete button animations */
+[data-repeater-delete] {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+[data-repeater-delete]:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 6px 20px rgba(241, 65, 108, 0.4);
+}
+
+[data-repeater-delete]:active {
+    transform: scale(0.95) rotate(-5deg);
+}
+
+/* File upload button animations */
+.file-upload-browse {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.file-upload-browse:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.file-upload-browse:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Click animation for buttons */
+.btn-clicked {
+    transform: scale(0.95) !important;
+    transition: transform 0.1s ease !important;
+}
+
+/* File selection success animation */
+.file-selected {
+    background: linear-gradient(90deg, rgba(80, 205, 137, 0.1), rgba(80, 205, 137, 0.05));
+    border-color: #50cd89;
+    color: #50cd89;
+    animation: fileSuccess 1s ease-in-out;
+}
+
+@keyframes fileSuccess {
+    0% { 
+        background: rgba(80, 205, 137, 0.2);
+        transform: scale(1.02);
+    }
+    50% { 
+        background: rgba(80, 205, 137, 0.1);
+        box-shadow: 0 0 20px rgba(80, 205, 137, 0.3);
+    }
+    100% { 
+        background: rgba(80, 205, 137, 0.05);
+        transform: scale(1);
+    }
+}
+
+/* Input focus animations */
+.ingredients-input {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ingredients-input:focus {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 3px rgba(0, 158, 247, 0.1), 0 4px 20px rgba(0, 158, 247, 0.1);
+    border-color: #009ef7;
+}
+
+/* Loading spinner enhancement */
+.spinner-border-sm {
+    animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Success animation for form completion */
+.form-success {
+    animation: successGlow 0.6s ease-in-out;
+}
+
+@keyframes successGlow {
+    0% { box-shadow: 0 0 0 rgba(80, 205, 137, 0.4); }
+    50% { box-shadow: 0 0 20px rgba(80, 205, 137, 0.4); }
+    100% { box-shadow: 0 0 0 rgba(80, 205, 137, 0.4); }
+}
+
+/* Micro-interactions for better UX */
+.form-control:valid {
+    border-color: #50cd89;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:invalid:not(:placeholder-shown) {
+    border-color: #f1416c;
+    transition: border-color 0.3s ease;
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+    scroll-behavior: smooth;
+}
+
+/* Enhanced card appearance */
+.card {
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+</style>
+
+<!--begin::Success Modal-->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border: none; border-radius: 15px; overflow: hidden;">
+            <div class="modal-body text-center" style="background: linear-gradient(135deg, #50cd89 0%, #3ac47d 100%); color: white; padding: 3rem 2rem;">
+                <div class="mb-4">
+                    <i class="ki-duotone ki-check-circle fs-4x text-white" style="animation: bounceIn 1s ease-out;">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                    </i>
+                </div>
+                <h3 class="fw-bold mb-3">Recipe Added Successfully!</h3>
+                <p class="mb-4" style="opacity: 0.9;">Your delicious recipe has been published and notifications have been sent to all users. Thank you for sharing!</p>
+                <div class="d-flex gap-3 justify-content-center">
+                    <button type="button" class="btn btn-light btn-lg fw-bold" onclick="window.location.href='/recipe'">
+                        <i class="ki-duotone ki-eye me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                            <span class="path3"></span>
+                        </i>
+                        View All Recipes
+                    </button>
+                    <button type="button" class="btn btn-outline-light btn-lg fw-bold" onclick="window.location.href='/addRecipe'">
+                        <i class="ki-duotone ki-plus me-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        Add Another
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end::Success Modal-->
+
+<style>
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-color: white !important;
+    color: white !important;
+}
+</style>
+
+<!--begin::Footer-->
+<div id="kt_app_footer" class="app-footer align-items-center justify-content-center justify-content-md-between flex-column flex-md-row py-3">
+    <div class="text-dark order-2 order-md-1">
+        <span class="text-muted fw-semibold me-1"></span>
+        <a href="#" target="_blank" class="text-gray-800 text-hover-primary"></a>
+    </div>
+</div>
+<!--end::Footer-->
+
+</div>
+<!--end:::Main-->
+</div>
+<!--end::Wrapper-->
+</div>
+<!--end::Page-->
+</div>
+<!--end::App-->
+
+<!--begin::Scrolltop-->
+<div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
+    <i class="ki-duotone ki-arrow-up">
+        <span class="path1"></span>
+        <span class="path2"></span>
+    </i>
+</div>
+<!--end::Scrolltop-->
+
+<!-- partial:partials/footer -->
 <%- include('../layouts/footer.ejs') %>

@@ -7,6 +7,7 @@ import '/index.dart';
 import '/pages/home_pages/ai_recipe_search/ai_recipe_search_simple_widget.dart';
 import '/pages/ai_recipe_pages/my_ai_recipes/my_ai_recipes_widget.dart';
 import '/ai_recipe_debug_page.dart';
+import '/ai_recipe_generator/ai_recipe_generator_main.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 
 export 'package:go_router/go_router.dart';
@@ -55,9 +56,14 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => const MyAiRecipesWidget(),
         ),
         FFRoute(
-          name: 'AIRecipeDebug',
-          path: '/aiRecipeDebug',
+          name: 'AIRecipeMain',
+          path: '/aiRecipeMain',
           builder: (context, params) => const AIRecipeDebugPage(),
+        ),
+        FFRoute(
+          name: 'AIRecipeGenerator',
+          path: '/aiRecipeGenerator',
+          builder: (context, params) => const AIRecipeGeneratorEntry(),
         ),
         FFRoute(
           name: 'Splash_screen',

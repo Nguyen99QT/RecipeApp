@@ -296,7 +296,8 @@ var loadSendNotification = function loadSendNotification(req, res) {
 
 
 var sendNotification = function sendNotification(req, res) {
-  var loginData, title, description, notificationType, recipeId, FindTokens, registrationTokens, currentDate, options, formattedDate, notificationData, recipe, newNotification, notificationPayload, successMessage;
+  var loginData, title, description, notificationType, recipeId, FindTokens, registrationTokens, currentDate, options, formattedDate, notificationData, recipe, newNotification, notificationPayload, successMessage, _successMessage;
+
   return regeneratorRuntime.async(function sendNotification$(_context6) {
     while (1) {
       switch (_context6.prev = _context6.next) {
@@ -406,23 +407,46 @@ var sendNotification = function sendNotification(req, res) {
           return regeneratorRuntime.awrap(sendPushNotification(registrationTokens, notificationPayload.title, notificationPayload.body, notificationPayload.data || {}));
 
         case 37:
-          successMessage = notificationType === 'new_recipe' ? "New recipe notification sent successfully for \"".concat(notificationData.recipeName, "\"!") : 'General notification sent successfully!';
-          req.flash('success', successMessage);
+          // 🚀 REAL-TIME WEBSOCKET NOTIFICATION
+          if (global.notificationWS) {
+            console.log('📡 Sending real-time notification via WebSocket...'); // Broadcast to all connected users for real-time update
+
+            global.notificationWS.broadcastToAll({
+              id: newNotification._id,
+              title: title,
+              body: description.replace(/<[^>]*>/g, ''),
+              // Remove HTML tags
+              type: notificationType,
+              createdAt: newNotification.createdAt,
+              recipeId: recipeId || null,
+              recipeName: notificationData.recipeName || null
+            }); // Also broadcast that notification count has changed
+
+            global.notificationWS.broadcastNotificationCountChanged();
+            console.log("\uD83D\uDCE8 Real-time notification sent successfully");
+            successMessage = notificationType === 'new_recipe' ? "New recipe notification sent successfully for \"".concat(notificationData.recipeName, "\"!") : "General notification sent successfully!";
+            req.flash('success', successMessage);
+          } else {
+            console.log('⚠️ WebSocket service not available, using push notification only');
+            _successMessage = notificationType === 'new_recipe' ? "New recipe notification sent successfully for \"".concat(notificationData.recipeName, "\"!") : 'General notification sent successfully!';
+            req.flash('success', _successMessage);
+          }
+
           return _context6.abrupt("return", res.redirect(req.get("Referrer") || "/"));
 
-        case 42:
-          _context6.prev = 42;
+        case 41:
+          _context6.prev = 41;
           _context6.t0 = _context6["catch"](0);
           console.error("Error in sendNotification:", _context6.t0.message);
           req.flash('error', 'An error occurred while sending notification.');
           return _context6.abrupt("return", res.redirect(req.get("Referrer") || "/"));
 
-        case 47:
+        case 46:
         case "end":
           return _context6.stop();
       }
     }
-  }, null, null, [[0, 42]]);
+  }, null, null, [[0, 41]]);
 }; // Load notification history page
 
 
@@ -706,6 +730,20 @@ var toggleNotificationStatus = function toggleNotificationStatus(req, res) {
           }));
 
         case 17:
+          // Broadcast notification status update to all connected users via WebSocket
+          if (global.notificationWS) {
+            global.notificationWS.broadcastNotificationUpdated({
+              id: updatedNotification._id,
+              title: updatedNotification.title,
+              body: updatedNotification.message,
+              type: updatedNotification.type,
+              isEnabled: updatedNotification.isEnabled
+            }); // Also broadcast that notification count has changed (enable/disable affects count)
+
+            global.notificationWS.broadcastNotificationCountChanged();
+            console.log("\u270F\uFE0F Real-time notification status update broadcast sent for ID: ".concat(notificationId));
+          }
+
           action = isEnabled ? 'enabled' : 'disabled';
           return _context9.abrupt("return", res.status(200).json({
             success: true,
@@ -713,8 +751,8 @@ var toggleNotificationStatus = function toggleNotificationStatus(req, res) {
             notification: updatedNotification
           }));
 
-        case 21:
-          _context9.prev = 21;
+        case 22:
+          _context9.prev = 22;
           _context9.t0 = _context9["catch"](0);
           console.error('Error in toggleNotificationStatus:', _context9.t0);
           return _context9.abrupt("return", res.status(500).json({
@@ -722,12 +760,12 @@ var toggleNotificationStatus = function toggleNotificationStatus(req, res) {
             message: 'An error occurred while updating notification status'
           }));
 
-        case 25:
+        case 26:
         case "end":
           return _context9.stop();
       }
     }
-  }, null, null, [[0, 21]]);
+  }, null, null, [[0, 22]]);
 }; // Delete notification
 
 
@@ -768,13 +806,21 @@ var deleteNotification = function deleteNotification(req, res) {
           }));
 
         case 9:
+          // Broadcast notification deletion to all connected users via WebSocket
+          if (global.notificationWS) {
+            global.notificationWS.broadcastNotificationDeleted(notificationId); // Also broadcast that notification count has changed
+
+            global.notificationWS.broadcastNotificationCountChanged();
+            console.log("\uD83D\uDDD1\uFE0F Real-time notification deletion broadcast sent for ID: ".concat(notificationId));
+          }
+
           return _context10.abrupt("return", res.status(200).json({
             success: true,
             message: 'Notification deleted successfully'
           }));
 
-        case 12:
-          _context10.prev = 12;
+        case 13:
+          _context10.prev = 13;
           _context10.t0 = _context10["catch"](0);
           console.error('Error in deleteNotification:', _context10.t0);
           return _context10.abrupt("return", res.status(500).json({
@@ -782,12 +828,12 @@ var deleteNotification = function deleteNotification(req, res) {
             message: 'An error occurred while deleting notification'
           }));
 
-        case 16:
+        case 17:
         case "end":
           return _context10.stop();
       }
     }
-  }, null, null, [[0, 12]]);
+  }, null, null, [[0, 13]]);
 };
 
 module.exports = {

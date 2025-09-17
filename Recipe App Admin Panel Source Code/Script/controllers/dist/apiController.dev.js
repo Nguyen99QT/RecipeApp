@@ -43,7 +43,57 @@ var notificationModel = require("../model/notificationModel"); // Importing serv
 
 var combineRecipeReview = require("../services/combineRecipeReview");
 
-var sendOtpMail = require("../services/sendOtpMail"); // Check if user is already registered
+var sendOtpMail = require("../services/sendOtpMail"); // Strong password validation function
+
+
+var validateStrongPassword = function validateStrongPassword(password) {
+  // At least 8 characters, contains uppercase, lowercase, number, and special character
+  var minLength = 8;
+  var hasUpperCase = /[A-Z]/.test(password);
+  var hasLowerCase = /[a-z]/.test(password);
+  var hasNumbers = /\d/.test(password);
+  var hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+  if (password.length < minLength) {
+    return {
+      valid: false,
+      message: "Password must be at least 8 characters long"
+    };
+  }
+
+  if (!hasUpperCase) {
+    return {
+      valid: false,
+      message: "Password must contain at least one uppercase letter"
+    };
+  }
+
+  if (!hasLowerCase) {
+    return {
+      valid: false,
+      message: "Password must contain at least one lowercase letter"
+    };
+  }
+
+  if (!hasNumbers) {
+    return {
+      valid: false,
+      message: "Password must contain at least one number"
+    };
+  }
+
+  if (!hasSpecialChar) {
+    return {
+      valid: false,
+      message: "Password must contain at least one special character (!@#$%^&*(),.?\":{}|<>)"
+    };
+  }
+
+  return {
+    valid: true,
+    message: "Password is strong"
+  };
+}; // Check if user is already registered
 
 
 var CheckRegisterUser = function CheckRegisterUser(req, res) {
@@ -97,7 +147,7 @@ var CheckRegisterUser = function CheckRegisterUser(req, res) {
 
 
 var SignUp = function SignUp(req, res) {
-  var _req$body, firstname, lastname, email, country_code, phone, password, existingUser, hashedPassword, newUser, savedUser, otp, otpData, response;
+  var _req$body, firstname, lastname, email, country_code, phone, password, passwordValidation, existingUser, hashedPassword, newUser, savedUser, otp, otpData, response;
 
   return regeneratorRuntime.async(function SignUp$(_context2) {
     while (1) {
@@ -114,18 +164,32 @@ var SignUp = function SignUp(req, res) {
             country_code: country_code,
             phone: phone,
             password: '***'
-          }); // Check if user already exists
+          }); // Validate strong password
 
-          _context2.next = 7;
+          passwordValidation = validateStrongPassword(password);
+
+          if (passwordValidation.valid) {
+            _context2.next = 9;
+            break;
+          }
+
+          console.log('Password validation failed:', passwordValidation.message);
+          return _context2.abrupt("return", res.status(400).json({
+            status: false,
+            message: passwordValidation.message
+          }));
+
+        case 9:
+          _context2.next = 11;
           return regeneratorRuntime.awrap(userModel.findOne({
             email: email
           }));
 
-        case 7:
+        case 11:
           existingUser = _context2.sent;
 
           if (!existingUser) {
-            _context2.next = 11;
+            _context2.next = 15;
             break;
           }
 
@@ -135,7 +199,7 @@ var SignUp = function SignUp(req, res) {
             message: "User already exists with this email"
           }));
 
-        case 11:
+        case 15:
           // Hash password
           hashedPassword = sha256.x2(password); // Create new user
 
@@ -147,10 +211,10 @@ var SignUp = function SignUp(req, res) {
             phone: phone,
             password: hashedPassword
           });
-          _context2.next = 15;
+          _context2.next = 19;
           return regeneratorRuntime.awrap(newUser.save());
 
-        case 15:
+        case 19:
           savedUser = _context2.sent;
           console.log('User saved successfully:', savedUser._id); // Generate OTP - manual generation to ensure only digits
 
@@ -169,39 +233,39 @@ var SignUp = function SignUp(req, res) {
             email: email,
             otp: otp
           });
-          _context2.prev = 22;
-          _context2.next = 25;
+          _context2.prev = 26;
+          _context2.next = 29;
           return regeneratorRuntime.awrap(otpData.save());
 
-        case 25:
+        case 29:
           console.log('OTP saved successfully');
-          _context2.next = 32;
+          _context2.next = 36;
           break;
-
-        case 28:
-          _context2.prev = 28;
-          _context2.t0 = _context2["catch"](22);
-          console.log('Error saving OTP:', _context2.t0.message);
-          throw new Error('Failed to save OTP: ' + _context2.t0.message);
 
         case 32:
           _context2.prev = 32;
-          _context2.next = 35;
+          _context2.t0 = _context2["catch"](26);
+          console.log('Error saving OTP:', _context2.t0.message);
+          throw new Error('Failed to save OTP: ' + _context2.t0.message);
+
+        case 36:
+          _context2.prev = 36;
+          _context2.next = 39;
           return regeneratorRuntime.awrap(sendOtpMail(email, otp, firstname, lastname));
 
-        case 35:
+        case 39:
           console.log('OTP email sent successfully to:', email, 'OTP:', otp);
-          _context2.next = 42;
+          _context2.next = 46;
           break;
 
-        case 38:
-          _context2.prev = 38;
-          _context2.t1 = _context2["catch"](32);
+        case 42:
+          _context2.prev = 42;
+          _context2.t1 = _context2["catch"](36);
           console.log('Error sending OTP email:', _context2.t1.message); // Don't throw error here, user is created successfully
 
           console.log('User created but email failed to send');
 
-        case 42:
+        case 46:
           response = {
             status: true,
             message: "User registered successfully. OTP sent to email.",
@@ -211,8 +275,8 @@ var SignUp = function SignUp(req, res) {
           console.log('Response:', response);
           return _context2.abrupt("return", res.status(200).json(response));
 
-        case 48:
-          _context2.prev = 48;
+        case 52:
+          _context2.prev = 52;
           _context2.t2 = _context2["catch"](0);
           console.log('=== SIGNUP ERROR ===');
           console.log('Error message:', _context2.t2.message);
@@ -222,12 +286,12 @@ var SignUp = function SignUp(req, res) {
             message: _context2.t2.message || "Failed to register user"
           }));
 
-        case 54:
+        case 58:
         case "end":
           return _context2.stop();
       }
     }
-  }, null, null, [[0, 48], [22, 28], [32, 38]]);
+  }, null, null, [[0, 52], [26, 32], [36, 42]]);
 }; // Verify OTP
 
 
@@ -847,7 +911,7 @@ var ForgotPasswordVerification = function ForgotPasswordVerification(req, res) {
 
 
 var ResetPassword = function ResetPassword(req, res) {
-  var _req$body7, userId, email, otp, newPassword, confirmPassword, finalUserId, otpData, user, recentOtp, hashedPassword;
+  var _req$body7, userId, email, otp, newPassword, confirmPassword, passwordValidation, finalUserId, otpData, user, recentOtp, hashedPassword;
 
   return regeneratorRuntime.async(function ResetPassword$(_context9) {
     while (1) {
@@ -891,35 +955,39 @@ var ResetPassword = function ResetPassword(req, res) {
           }));
 
         case 10:
-          if (!(newPassword.length < 6)) {
-            _context9.next = 12;
+          // Validate strong password
+          passwordValidation = validateStrongPassword(newPassword);
+
+          if (passwordValidation.valid) {
+            _context9.next = 14;
             break;
           }
 
+          console.log('Password validation failed:', passwordValidation.message);
           return _context9.abrupt("return", res.status(400).json({
             status: false,
-            message: "Password must be at least 6 characters long"
+            message: passwordValidation.message
           }));
 
-        case 12:
+        case 14:
           finalUserId = userId;
 
           if (!(!finalUserId && email)) {
-            _context9.next = 23;
+            _context9.next = 25;
             break;
           }
 
           console.log('Finding user by email:', email);
-          _context9.next = 17;
+          _context9.next = 19;
           return regeneratorRuntime.awrap(userModel.findOne({
             email: email
           }));
 
-        case 17:
+        case 19:
           user = _context9.sent;
 
           if (user) {
-            _context9.next = 21;
+            _context9.next = 23;
             break;
           }
 
@@ -929,13 +997,13 @@ var ResetPassword = function ResetPassword(req, res) {
             message: "User not found"
           }));
 
-        case 21:
+        case 23:
           finalUserId = user._id;
           console.log('Found user ID:', finalUserId);
 
-        case 23:
+        case 25:
           if (finalUserId) {
-            _context9.next = 25;
+            _context9.next = 27;
             break;
           }
 
@@ -944,17 +1012,17 @@ var ResetPassword = function ResetPassword(req, res) {
             message: "Either userId or email is required"
           }));
 
-        case 25:
-          _context9.next = 27;
+        case 27:
+          _context9.next = 29;
           return regeneratorRuntime.awrap(ForgotPasswordOtpModel.findOne({
             userId: finalUserId
           }));
 
-        case 27:
+        case 29:
           recentOtp = _context9.sent;
 
           if (recentOtp) {
-            _context9.next = 31;
+            _context9.next = 33;
             break;
           }
 
@@ -964,31 +1032,31 @@ var ResetPassword = function ResetPassword(req, res) {
             message: "Please verify OTP first"
           }));
 
-        case 31:
+        case 33:
           hashedPassword = sha256.x2(newPassword); // Update password
 
-          _context9.next = 34;
+          _context9.next = 36;
           return regeneratorRuntime.awrap(userModel.findByIdAndUpdate(finalUserId, {
             password: hashedPassword
           }));
 
-        case 34:
+        case 36:
           console.log('Password updated for user:', finalUserId); // Delete all OTP records for this user
 
-          _context9.next = 37;
+          _context9.next = 39;
           return regeneratorRuntime.awrap(ForgotPasswordOtpModel.deleteMany({
             userId: finalUserId
           }));
 
-        case 37:
+        case 39:
           console.log('OTP records deleted for user:', finalUserId);
           return _context9.abrupt("return", res.status(200).json({
             status: true,
             message: "Password reset successfully"
           }));
 
-        case 41:
-          _context9.prev = 41;
+        case 43:
+          _context9.prev = 43;
           _context9.t0 = _context9["catch"](0);
           console.error('ResetPassword error:', _context9.t0.message);
           return _context9.abrupt("return", res.status(500).json({
@@ -996,12 +1064,12 @@ var ResetPassword = function ResetPassword(req, res) {
             message: "Internal server error"
           }));
 
-        case 45:
+        case 47:
         case "end":
           return _context9.stop();
       }
     }
-  }, null, null, [[0, 41]]);
+  }, null, null, [[0, 43]]);
 }; // Edit user profile
 
 
@@ -1153,7 +1221,7 @@ var UploadImage = function UploadImage(req, res) {
 
 
 var ChangePassword = function ChangePassword(req, res) {
-  var _req$body9, oldPassword, newPassword, userId, hashedOldPassword, user, hashedNewPassword;
+  var _req$body9, oldPassword, newPassword, userId, passwordValidation, hashedOldPassword, user, hashedNewPassword;
 
   return regeneratorRuntime.async(function ChangePassword$(_context13) {
     while (1) {
@@ -1161,19 +1229,34 @@ var ChangePassword = function ChangePassword(req, res) {
         case 0:
           _context13.prev = 0;
           _req$body9 = req.body, oldPassword = _req$body9.oldPassword, newPassword = _req$body9.newPassword;
-          userId = req.userId;
+          userId = req.userId; // Validate strong password
+
+          passwordValidation = validateStrongPassword(newPassword);
+
+          if (passwordValidation.valid) {
+            _context13.next = 7;
+            break;
+          }
+
+          console.log('Password validation failed:', passwordValidation.message);
+          return _context13.abrupt("return", res.status(400).json({
+            status: false,
+            message: passwordValidation.message
+          }));
+
+        case 7:
           hashedOldPassword = sha256.x2(oldPassword);
-          _context13.next = 6;
+          _context13.next = 10;
           return regeneratorRuntime.awrap(userModel.findOne({
             _id: userId,
             password: hashedOldPassword
           }));
 
-        case 6:
+        case 10:
           user = _context13.sent;
 
           if (user) {
-            _context13.next = 9;
+            _context13.next = 13;
             break;
           }
 
@@ -1182,21 +1265,21 @@ var ChangePassword = function ChangePassword(req, res) {
             message: "Current password is incorrect"
           }));
 
-        case 9:
+        case 13:
           hashedNewPassword = sha256.x2(newPassword);
-          _context13.next = 12;
+          _context13.next = 16;
           return regeneratorRuntime.awrap(userModel.findByIdAndUpdate(userId, {
             password: hashedNewPassword
           }));
 
-        case 12:
+        case 16:
           return _context13.abrupt("return", res.status(200).json({
             status: true,
             message: "Password changed successfully"
           }));
 
-        case 15:
-          _context13.prev = 15;
+        case 19:
+          _context13.prev = 19;
           _context13.t0 = _context13["catch"](0);
           console.log(_context13.t0.message);
           return _context13.abrupt("return", res.status(500).json({
@@ -1204,12 +1287,12 @@ var ChangePassword = function ChangePassword(req, res) {
             message: "Internal server error"
           }));
 
-        case 19:
+        case 23:
         case "end":
           return _context13.stop();
       }
     }
-  }, null, null, [[0, 15]]);
+  }, null, null, [[0, 19]]);
 }; // Delete user account
 
 
@@ -2176,7 +2259,7 @@ var GetPolicyAndTerms = function GetPolicyAndTerms(req, res) {
 
 
 var GetUnreadNotificationCount = function GetUnreadNotificationCount(req, res) {
-  var userId, notifications, unreadCount, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, notification, readByUser;
+  var userId, shouldLog, notifications, unreadCount, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, notification, readByUser;
 
   return regeneratorRuntime.async(function GetUnreadNotificationCount$(_context34) {
     while (1) {
@@ -2196,19 +2279,24 @@ var GetUnreadNotificationCount = function GetUnreadNotificationCount(req, res) {
           }));
 
         case 4:
-          console.log("[DEBUG] GetUnreadNotificationCount - userId: ".concat(userId)); // Get all enabled notifications
+          // Reduce debug logging to prevent spam - only log occasionally
+          shouldLog = Math.random() < 0.05; // Log only ~5% of requests
 
-          _context34.next = 7;
+          if (shouldLog) {
+            console.log("[DEBUG] GetUnreadNotificationCount - userId: ".concat(userId));
+          } // Get all enabled notifications
+
+
+          _context34.next = 8;
           return regeneratorRuntime.awrap(notificationModel.find({
             isEnabled: {
               $ne: false
             }
           }));
 
-        case 7:
+        case 8:
           notifications = _context34.sent;
-          console.log("[DEBUG] Found ".concat(notifications.length, " enabled notifications")); // Count unread notifications (those not in user's readNotifications array)
-
+          // Count unread notifications (those not in user's readNotifications array)
           unreadCount = 0;
           _iteratorNormalCompletion = true;
           _didIteratorError = false;
@@ -2258,7 +2346,11 @@ var GetUnreadNotificationCount = function GetUnreadNotificationCount(req, res) {
           return _context34.finish(21);
 
         case 29:
-          console.log("[DEBUG] User ".concat(userId, " has ").concat(unreadCount, " unread notifications"));
+          if (shouldLog) {
+            console.log("[DEBUG] Found ".concat(notifications.length, " enabled notifications"));
+            console.log("[DEBUG] User ".concat(userId, " has ").concat(unreadCount, " unread notifications"));
+          }
+
           res.status(200).json({
             status: true,
             data: {

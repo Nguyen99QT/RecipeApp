@@ -22,6 +22,44 @@ const notificationModel = require("../model/notificationModel");
 const combineRecipeReview = require("../services/combineRecipeReview");
 const sendOtpMail = require("../services/sendOtpMail");
 
+// Strong password validation function with comprehensive error messages
+const validateStrongPassword = (password) => {
+    if (!password) {
+        return { valid: false, message: "Password is required" };
+    }
+    
+    const missingRequirements = [];
+    
+    if (password.length < 8) {
+        missingRequirements.push('8+ chars');
+    }
+    
+    if (!/(?=.*[a-z])/.test(password)) {
+        missingRequirements.push('lowercase');
+    }
+    
+    if (!/(?=.*[A-Z])/.test(password)) {
+        missingRequirements.push('UPPERCASE');
+    }
+    
+    if (!/(?=.*[0-9])/.test(password)) {
+        missingRequirements.push('number');
+    }
+    
+    if (!/(?=.*[!@#$%^&*(),.?":{}|<>])/.test(password)) {
+        missingRequirements.push('special char');
+    }
+    
+    if (missingRequirements.length > 0) {
+        return { 
+            valid: false, 
+            message: `Missing: ${missingRequirements.join(', ')}` 
+        };
+    }
+    
+    return { valid: true, message: "Password is valid" };
+};
+
 // Check if user is already registered
 const CheckRegisterUser = async (req, res) => {
     try {
@@ -59,6 +97,16 @@ const SignUp = async (req, res) => {
         const { firstname, lastname, email, country_code, phone, password } = req.body;
         
         console.log('Extracted data:', { firstname, lastname, email, country_code, phone, password: '***' });
+        
+        // Validate strong password
+        const passwordValidation = validateStrongPassword(password);
+        if (!passwordValidation.valid) {
+            console.log('Password validation failed:', passwordValidation.message);
+            return res.status(400).json({
+                status: false,
+                message: passwordValidation.message
+            });
+        }
         
         // Check if user already exists
         const existingUser = await userModel.findOne({ email });
@@ -521,11 +569,13 @@ const ResetPassword = async (req, res) => {
             });
         }
         
-        // Validate password strength
-        if (newPassword.length < 6) {
+        // Validate strong password
+        const passwordValidation = validateStrongPassword(newPassword);
+        if (!passwordValidation.valid) {
+            console.log('Password validation failed:', passwordValidation.message);
             return res.status(400).json({
                 status: false,
-                message: "Password must be at least 6 characters long"
+                message: passwordValidation.message
             });
         }
         
@@ -681,10 +731,32 @@ const UploadImage = async (req, res) => {
 // Change password
 const ChangePassword = async (req, res) => {
     try {
-        const { oldPassword, newPassword } = req.body;
+        const { currentPassword, oldPassword, newPassword } = req.body;
         const userId = req.userId;
         
-        const hashedOldPassword = sha256.x2(oldPassword);
+        // Support both currentPassword and oldPassword field names for compatibility
+        const inputOldPassword = currentPassword || oldPassword;
+        
+        console.log('ChangePassword request:', { inputOldPassword, newPassword, userId });
+        
+        if (!inputOldPassword || !newPassword) {
+            return res.status(400).json({
+                status: false,
+                message: "Current password and new password are required"
+            });
+        }
+        
+        // Validate strong password
+        const passwordValidation = validateStrongPassword(newPassword);
+        if (!passwordValidation.valid) {
+            console.log('Password validation failed:', passwordValidation.message);
+            return res.status(400).json({
+                status: false,
+                message: passwordValidation.message
+            });
+        }
+        
+        const hashedOldPassword = sha256.x2(inputOldPassword);
         const user = await userModel.findOne({ _id: userId, password: hashedOldPassword });
         
         if (!user) {
@@ -704,7 +776,7 @@ const ChangePassword = async (req, res) => {
         });
         
     } catch (error) {
-        console.log(error.message);
+        console.log('ChangePassword error:', error.message);
         return res.status(500).json({
             status: false,
             message: "Internal server error"
@@ -1309,14 +1381,17 @@ const GetUnreadNotificationCount = async (req, res) => {
             });
         }
         
-        console.log(`[DEBUG] GetUnreadNotificationCount - userId: ${userId}`);
+        // Reduce debug logging to prevent spam - only log occasionally
+        const shouldLog = Math.random() < 0.05; // Log only ~5% of requests
+        
+        if (shouldLog) {
+            console.log(`[DEBUG] GetUnreadNotificationCount - userId: ${userId}`);
+        }
         
         // Get all enabled notifications
         const notifications = await notificationModel.find({ 
             isEnabled: { $ne: false } 
         });
-        
-        console.log(`[DEBUG] Found ${notifications.length} enabled notifications`);
         
         // Count unread notifications (those not in user's readNotifications array)
         let unreadCount = 0;
@@ -1330,7 +1405,10 @@ const GetUnreadNotificationCount = async (req, res) => {
             }
         }
         
-        console.log(`[DEBUG] User ${userId} has ${unreadCount} unread notifications`);
+        if (shouldLog) {
+            console.log(`[DEBUG] Found ${notifications.length} enabled notifications`);
+            console.log(`[DEBUG] User ${userId} has ${unreadCount} unread notifications`);
+        }
         
         res.status(200).json({
             status: true,

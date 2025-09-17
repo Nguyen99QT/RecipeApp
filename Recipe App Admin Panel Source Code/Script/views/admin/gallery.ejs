@@ -392,3 +392,231 @@
 
 <!-- partial:partials/header -->
 <%- include('../layouts/footer.ejs') %>
+
+<style>
+/* Gallery page specific styles */
+.file-upload-info.file-selected {
+    background-color: #e8f5e8;
+    border-color: #28a745;
+    transition: all 0.3s ease;
+}
+
+.btn.file-upload-browse:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.imageedit {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.imageedit:hover {
+    transform: scale(1.05);
+}
+
+.card.border-hover-primary:hover {
+    border-color: var(--bs-primary) !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Gallery page loaded, initializing file upload handlers...');
+    
+    // Setup file upload functionality for all upload buttons
+    setupFileUploads();
+    
+    // Setup modal message handler
+    setupModalHandler();
+    
+    // Setup form submission handlers with SweetAlert2
+    setupFormSubmissions();
+    
+    function setupFileUploads() {
+        // Handle all file upload browse buttons (both add and edit modals)
+        const uploadButtons = document.querySelectorAll('.file-upload-browse');
+        console.log('Found upload buttons:', uploadButtons.length);
+        
+        uploadButtons.forEach((button, index) => {
+            console.log(`Setting up button ${index}:`, button);
+            
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Upload button clicked:', button);
+                
+                // Find the corresponding file input
+                let fileInput = null;
+                
+                // Method 1: Look for file input in the same form
+                const form = button.closest('form');
+                if (form) {
+                    fileInput = form.querySelector('input[type="file"]');
+                    console.log('Found file input via form:', fileInput);
+                }
+                
+                // Method 2: Look for file input in the same modal
+                if (!fileInput) {
+                    const modal = button.closest('.modal');
+                    if (modal) {
+                        fileInput = modal.querySelector('input[type="file"]');
+                        console.log('Found file input via modal:', fileInput);
+                    }
+                }
+                
+                // Method 3: Look in parent container
+                if (!fileInput) {
+                    const container = button.closest('.modal-body') || button.closest('div');
+                    if (container) {
+                        fileInput = container.querySelector('input[type="file"]');
+                        console.log('Found file input via container:', fileInput);
+                    }
+                }
+                
+                if (fileInput) {
+                    console.log('Triggering file input click:', fileInput);
+                    fileInput.click();
+                } else {
+                    console.error('Could not find file input for button:', button);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Could not find file input. Please refresh the page and try again.',
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                }
+            });
+        });
+        
+        // Handle file input changes for both single and multiple files
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        console.log('Found file inputs:', fileInputs.length);
+        
+        fileInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                const files = this.files;
+                console.log('Files selected:', files.length);
+                
+                // Find the corresponding info input
+                let infoInput = null;
+                
+                // Look in the same form first
+                const form = input.closest('form');
+                if (form) {
+                    infoInput = form.querySelector('.file-upload-info');
+                }
+                
+                // Look in the same modal if not found in form
+                if (!infoInput) {
+                    const modal = input.closest('.modal');
+                    if (modal) {
+                        infoInput = modal.querySelector('.file-upload-info');
+                    }
+                }
+                
+                if (infoInput && files.length > 0) {
+                    let displayText = '';
+                    
+                    if (files.length === 1) {
+                        displayText = files[0].name;
+                    } else {
+                        displayText = files.length + ' files selected';
+                    }
+                    
+                    console.log('Updating info input with:', displayText);
+                    infoInput.value = displayText;
+                    infoInput.classList.add('file-selected');
+                    
+                    // Remove the selected class after animation
+                    setTimeout(() => {
+                        infoInput.classList.remove('file-selected');
+                    }, 2000);
+                } else if (infoInput) {
+                    // Reset to placeholder if no files
+                    const placeholder = input.hasAttribute('multiple') ? 
+                        'Choose multiple images (Ctrl + Right-click)' : 
+                        'Choose an image';
+                    infoInput.value = '';
+                    infoInput.placeholder = placeholder;
+                }
+            });
+        });
+    }
+    
+    function setupFormSubmissions() {
+        // Handle add image form submission
+        const addForm = document.querySelector('form[action="/add-image"]');
+        if (addForm) {
+            addForm.addEventListener('submit', function(e) {
+                const fileInput = this.querySelector('input[type="file"]');
+                if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'No Images Selected',
+                        text: 'Please select at least one image to upload.',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }
+                
+                // Show loading state
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Adding...';
+                }
+            });
+        }
+        
+        // Handle edit image form submissions
+        const editForms = document.querySelectorAll('form[action="/edit-image"]');
+        editForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const fileInput = this.querySelector('input[type="file"]');
+                if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'No Image Selected',
+                        text: 'Please select a new image to upload.',
+                        confirmButtonText: 'OK'
+                    });
+                    return false;
+                }
+                
+                // Show loading state
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Updating...';
+                }
+            });
+        });
+    }
+    
+    function setupModalHandler() {
+        // Handle no access modal messages
+        const noAccessModal = document.getElementById('kt_modal_no_access');
+        const modalMessage = document.getElementById('modal-message');
+        
+        if (noAccessModal && modalMessage) {
+            noAccessModal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const message = button.getAttribute('data-message');
+                if (message) {
+                    modalMessage.innerHTML = message;
+                }
+            });
+        }
+    }
+    
+    console.log('Gallery page initialization complete!');
+});
+</script>

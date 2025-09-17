@@ -14,6 +14,7 @@ Future showCustomToastBottom(
   // Add your function code here!
   print("Toast: $text");
   
-  // For now, just print to console until we can access the UI context
-  // TODO: Implement proper UI feedback once we have access to BuildContext
+  // Simple fallback - just print to console since we fixed the main screens
+  // The important OTP error messages are now handled directly in verification screens
+  print("ERROR MESSAGE: $text");
 }

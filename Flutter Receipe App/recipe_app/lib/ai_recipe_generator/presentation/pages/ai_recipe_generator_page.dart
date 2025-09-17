@@ -70,7 +70,7 @@ class _AIRecipeGeneratorPageContentState
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'AI RECIPE',
+          'AI Recipe Generator',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -97,7 +97,7 @@ class _AIRecipeGeneratorPageContentState
                   children: [
                     Icon(Icons.error, color: Colors.red),
                     SizedBox(width: 8),
-                    Text('AI Generator Error'),
+                    Text('Recipe Generation Failed'),
                   ],
                 ),
                 content: const SingleChildScrollView(
@@ -105,41 +105,25 @@ class _AIRecipeGeneratorPageContentState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Row(
-                        children: [
-                          Icon(Icons.photo_camera, color: Color(0xFFFF8C00)),
-                          SizedBox(width: 8),
-                          Text(
-                            'Ingredient Images',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        'Unable to generate recipe at this time.',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
-                      Text('• API key has been configured'),
-                      Text('• Images are selected and valid'),
-                      Text('• Please try again in a few minutes'),
+                      SizedBox(height: 12),
+                      Text('Please check:'),
+                      Text('• Your internet connection'),
+                      Text('• Image quality and clarity'),
+                      Text('• Try again in a few minutes'),
                     ],
                   ),
                 ),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Close'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      // Navigate to debug page
-                      Navigator.of(context).pushNamed('/ai_recipe_debug');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFF8C00),
-                    ),
-                    child: const Text('Test API',
-                        style: TextStyle(color: Colors.white)),
+                    child: const Text('Try Again'),
                   ),
                 ],
               ),
@@ -157,10 +141,6 @@ class _AIRecipeGeneratorPageContentState
                   const SizedBox(height: 20),
                   _buildImageSection(),
                   const SizedBox(height: 20),
-                  // Debug button for testing without images
-                  if (_selectedImages.isEmpty) ...[
-                    // ...removed debug/test feature...
-                  ],
                   _buildPreferencesSection(),
                   const SizedBox(height: 30),
                   _buildGenerateButton(state),

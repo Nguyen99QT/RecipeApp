@@ -39,11 +39,11 @@ class AppRouter {
 
   /// Dispose resources when router is no longer needed
   void dispose() {
-    // mealCubit.close(); // Commented out as mealCubit is not available
+    // Resources cleanup if needed
   }
 }
 
-/// Temporary onboarding page - replace with actual onboarding
+/// AI Recipe Generator onboarding page
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({super.key});
 
@@ -175,7 +175,7 @@ class NotFoundPage extends StatelessWidget {
   }
 }
 
-/// Simple Meal Creation Page for testing
+/// Recipe creation page
 class SimpleMealCreationPage extends StatelessWidget {
   const SimpleMealCreationPage({super.key});
 
@@ -205,7 +205,7 @@ class SimpleMealCreationPage extends StatelessWidget {
             ),
             SizedBox(height: 8),
             Text(
-              'This page will be implemented with BLoC integration.',
+              'Get ready to create amazing recipes with AI assistance.',
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.grey,

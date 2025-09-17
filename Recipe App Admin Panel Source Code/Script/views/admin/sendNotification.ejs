@@ -192,7 +192,15 @@
                               <% if (typeof recipes !== 'undefined' && recipes.length > 0) { %>
                                 <% recipes.forEach(recipe => { %>
                                   <option value="<%= recipe._id %>" 
-                                    <% if (typeof editNotification !== 'undefined' && editNotification && editNotification.recipeId && editNotification.recipeId._id === recipe._id) { %>selected<% } %>>
+                                    <% 
+                                    let isSelected = false;
+                                    if (typeof editNotification !== 'undefined' && editNotification && editNotification.recipeId) {
+                                      // Handle both populated (object) and non-populated (ObjectId) cases
+                                      let notificationRecipeId = editNotification.recipeId._id || editNotification.recipeId;
+                                      isSelected = notificationRecipeId.toString() === recipe._id.toString();
+                                    }
+                                    %>
+                                    <% if (isSelected) { %>selected<% } %>>
                                     <%= recipe.name %>
                                   </option>
                                 <% }); %>
@@ -295,6 +303,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const recipeSelection = document.getElementById('recipe_selection');
     const recipeSelect = document.getElementById('recipe_select');
     
+    // Check if we're in edit mode and preserve recipe selection
+    let preserveRecipeSelection = true;
+    
     // Function to toggle recipe selection visibility
     function toggleRecipeSelection() {
         const checkedRadio = document.querySelector('input[name="notification_type"]:checked');
@@ -304,17 +315,22 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             recipeSelection.style.display = 'none';
             recipeSelect.required = false;
-            if (!checkedRadio || checkedRadio.value !== 'new_recipe') {
+            // Only clear recipe selection if user manually changed type (not on initial load)
+            if (!preserveRecipeSelection && (!checkedRadio || checkedRadio.value !== 'new_recipe')) {
                 recipeSelect.value = '';
             }
         }
     }
     
-    // Initialize on page load (for edit mode)
+    // Initialize on page load
     toggleRecipeSelection();
     
     radioButtons.forEach(radio => {
-        radio.addEventListener('change', toggleRecipeSelection);
+        radio.addEventListener('change', function() {
+            // User manually changed type, allow clearing
+            preserveRecipeSelection = false;
+            toggleRecipeSelection();
+        });
     });
 });
 </script>

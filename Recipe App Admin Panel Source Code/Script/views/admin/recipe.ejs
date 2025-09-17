@@ -82,6 +82,41 @@
           <div id="kt_app_content" class="app-content flex-column-fluid">
             <!--begin::Content container-->
             <div id="kt_app_content_container" class="app-container container-fluid">
+              
+              <!-- Flash Messages -->
+              <% if (typeof messages !== 'undefined') { %>
+                <% if (messages.success) { %>
+                  <div class="alert alert-success alert-dismissible fade show" role="alert" style="border-left: 4px solid #50cd89;">
+                    <div class="d-flex align-items-center">
+                      <i class="ki-duotone ki-check-circle fs-2x text-success me-4">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                      <div>
+                        <h5 class="alert-heading mb-1">Success!</h5>
+                        <p class="mb-0"><%= messages.success %></p>
+                      </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                <% } %>
+                <% if (messages.error) { %>
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert" style="border-left: 4px solid #f1416c;">
+                    <div class="d-flex align-items-center">
+                      <i class="ki-duotone ki-cross-circle fs-2x text-danger me-4">
+                        <span class="path1"></span>
+                        <span class="path2"></span>
+                      </i>
+                      <div>
+                        <h5 class="alert-heading mb-1">Error!</h5>
+                        <p class="mb-0"><%= messages.error %></p>
+                      </div>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                <% } %>
+              <% } %>
+              
               <!--begin: intro-->
               <div class="card card-flush border">
                 <!--begin::Card header-->
@@ -117,7 +152,22 @@
                 <div class="card-body py-4">
 
                   <!-- flash message -->
-                  <% if(flash.error.length> 0){ %>
+                  <% if(flash.success && flash.success.length > 0){ %>
+                  <!--begin::Alert-->
+                  <div class="alert alert-dismissible bg-light-success d-flex align-items-center mb-10">
+                    <!--begin::Content-->
+                    <span class="fs-4 text-success fw-bold text-center ps-5"><%= flash.success %></span>
+                    <!--end::Content-->
+                    <!--begin::Close-->
+                    <button type="button" class="btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
+                      <i class="ki-duotone ki-cross fs-1 text-success fw-bold"><span class="path1"></span><span class="path2"></span></i>
+                    </button>
+                    <!--end::Close-->
+                  </div>
+                  <!--end::Alert-->
+                  <% } %>
+                  
+                  <% if(flash.error && flash.error.length > 0){ %>
                   <!--begin::Alert-->
                   <div class="alert alert-dismissible bg-light-danger d-flex align-items-center mb-10">
                     <!--begin::Content-->
@@ -324,6 +374,127 @@
   </i>
 </div>
 <!--end::Scrolltop-->
+
+<style>
+/* Enhanced Flash Message Styling */
+.alert {
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    animation: slideInDown 0.5s ease-out;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #50cd89 0%, #3ac47d 100%);
+    color: white;
+    border: none;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #f1416c 0%, #e02454 100%);
+    color: white;
+    border: none;
+}
+
+.alert .btn-close {
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+}
+
+.alert .btn-close:hover {
+    opacity: 1;
+}
+
+.alert .alert-heading {
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.alert i {
+    animation: bounceIn 0.8s ease-out 0.2s both;
+}
+
+@keyframes slideInDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Pulse animation for success icon */
+.alert-success i {
+    animation: bounceIn 0.8s ease-out 0.2s both, pulse 2s infinite 1s;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-hide success messages after 5 seconds
+    const successAlerts = document.querySelectorAll('.alert-success');
+    successAlerts.forEach(function(alert) {
+        setTimeout(function() {
+            const bsAlert = new bootstrap.Alert(alert);
+            alert.style.animation = 'slideInDown 0.5s ease-out reverse';
+            setTimeout(function() {
+                bsAlert.close();
+            }, 500);
+        }, 5000);
+    });
+    
+    // Auto-hide error messages after 8 seconds
+    const errorAlerts = document.querySelectorAll('.alert-danger');
+    errorAlerts.forEach(function(alert) {
+        setTimeout(function() {
+            const bsAlert = new bootstrap.Alert(alert);
+            alert.style.animation = 'slideInDown 0.5s ease-out reverse';
+            setTimeout(function() {
+                bsAlert.close();
+            }, 500);
+        }, 8000);
+    });
+    
+    // Add smooth closing animation
+    document.querySelectorAll('.alert .btn-close').forEach(function(closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            const alert = this.closest('.alert');
+            alert.style.animation = 'slideInDown 0.3s ease-out reverse';
+        });
+    });
+});
+</script>
 
 
 <!-- partial:partials/header -->

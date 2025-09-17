@@ -16,13 +16,26 @@ const addCuisines = async (req, res) => {
         // Extract data from the request
         const name = req.body.name;
 
+        // Check if cuisine name already exists (case insensitive)
+        const existingCuisine = await cuisinesModel.findOne({ 
+            name: { $regex: new RegExp(`^${name}$`, 'i') } 
+        });
+
+        if (existingCuisine) {
+            req.flash('error', `Cuisine "${name}" already exists! Please choose a different name.`);
+            return res.redirect('back');
+        }
+
         //save cuisines
         const newCuisines = await new cuisinesModel({ name }).save();
 
+        req.flash('success', `Cuisine "${name}" has been added successfully.`);
         return res.redirect('back');
 
     } catch (error) {
         console.log(error.message);
+        req.flash('error', 'An error occurred while adding the cuisine. Please try again.');
+        return res.redirect('back');
     }
 }
 
@@ -62,13 +75,32 @@ const editCuisines = async (req, res) => {
         const id = req.body.id;
         const name = req.body.name;
 
+        // Check if another cuisine with the same name already exists (excluding current cuisine)
+        const existingCuisine = await cuisinesModel.findOne({ 
+            name: { $regex: new RegExp(`^${name}$`, 'i') },
+            _id: { $ne: id }
+        });
+
+        if (existingCuisine) {
+            req.flash('error', `Cuisine "${name}" already exists! Please choose a different name.`);
+            return res.redirect('back');
+        }
+
         //update cuisines
         const updatedCuisines = await cuisinesModel.findOneAndUpdate({ _id: id }, { $set: { name } }, { new: true });
+
+        if (updatedCuisines) {
+            req.flash('success', `Cuisine has been updated to "${name}" successfully.`);
+        } else {
+            req.flash('error', 'Cuisine not found!');
+        }
 
         return res.redirect('back');
 
     } catch (error) {
         console.log(error.message);
+        req.flash('error', 'An error occurred while updating the cuisine. Please try again.');
+        return res.redirect('back');
     }
 }
 

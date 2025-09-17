@@ -33,6 +33,7 @@ const faqController = require("../controllers/faqController");
 const mailController = require("../controllers/mailController");
 const adsController = require("../controllers/adsController");
 const settingController = require("../controllers/settingController");
+const notificationController = require("../controllers/notificationController");
 
 //Routes For Login
 routes.get("/", isLogout, loginController.loadLogin);
@@ -114,6 +115,16 @@ routes.get("/review", isLogin, reviewController.loadReview);
 
 routes.get("/enable-review", isLogin, reviewController.isEnableReview);
 
+// Routes For Recipe Reviews (separate page)
+routes.get("/recipe-reviews", isLogin, reviewController.loadRecipeReviews);
+
+routes.post("/recipe-reviews/enable-disable/:id", isLogin, reviewController.isEnableReview);
+
+// Routes For App Feedback (separate page)  
+routes.get("/app-feedback", isLogin, reviewController.loadAppFeedback);
+
+routes.post("/app-feedback/enable-disable/:id", isLogin, reviewController.isEnableReview);
+
 // Routes For User
 routes.get("/user", isLogin, loginController.loadUser);
 
@@ -172,6 +183,16 @@ routes.get("/ai-recipes", isLogin, aiRecipeAdminController.loadAiRecipes);
 routes.get("/ai-recipe-detail", isLogin, aiRecipeAdminController.viewAiRecipe);
 routes.get("/delete-ai-recipe", isLogin, aiRecipeAdminController.deleteAiRecipe);
 routes.get("/ai-recipe-stats", isLogin, aiRecipeAdminController.getAiRecipeStats);
+
+// Routes For Notifications Management
+routes.get("/notifications", isLogin, notificationController.loadNotifications);
+routes.get("/notifications/create", isLogin, notificationController.loadCreateNotification);
+routes.post("/notifications/create", isLogin, notificationController.createNotification);
+routes.get("/notifications/edit/:id", isLogin, notificationController.loadEditNotification);
+routes.post("/notifications/edit/:id", isLogin, notificationController.updateNotification);
+routes.get("/notifications/toggle/:id", isLogin, notificationController.toggleNotification);
+routes.get("/notifications/delete/:id", isLogin, notificationController.deleteNotification);
+routes.get("/api/notification-stats", isLogin, notificationController.getNotificationStats);
 
 //Routes For Log Out
 routes.get("/logout", isLogin, loginController.logout);

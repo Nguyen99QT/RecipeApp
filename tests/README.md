@@ -117,7 +117,7 @@ flutter test test/test_language_detection.dart
 ```bash
 # Test environment variables
 TEST_DB_URI=mongodb://localhost:27017/recipeapp_test
-TEST_API_URL=http://localhost:8190
+TEST_API_URL=http://localhost:3000
 TEST_TIMEOUT=30000
 ```
 

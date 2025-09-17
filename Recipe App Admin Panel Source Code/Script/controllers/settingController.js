@@ -227,11 +227,41 @@ const sendNotification = async (req, res) => {
         // send notification
         await sendPushNotification(registrationTokens, notificationPayload.title, notificationPayload.body, notificationPayload.data || {});
 
-        const successMessage = notificationType === 'new_recipe' 
-            ? `New recipe notification sent successfully for "${notificationData.recipeName}"!`
-            : 'General notification sent successfully!';
+        // 🚀 REAL-TIME WEBSOCKET NOTIFICATION
+        if (global.notificationWS) {
+            console.log('📡 Sending real-time notification via WebSocket...');
             
-        req.flash('success', successMessage);
+            // Broadcast to all connected users for real-time update
+            global.notificationWS.broadcastToAll({
+                id: newNotification._id,
+                title: title,
+                body: description.replace(/<[^>]*>/g, ''), // Remove HTML tags
+                type: notificationType,
+                createdAt: newNotification.createdAt,
+                recipeId: recipeId || null,
+                recipeName: notificationData.recipeName || null
+            });
+            
+            // Also broadcast that notification count has changed
+            global.notificationWS.broadcastNotificationCountChanged();
+            
+            console.log(`📨 Real-time notification sent successfully`);
+            
+            const successMessage = notificationType === 'new_recipe' 
+                ? `New recipe notification sent successfully for "${notificationData.recipeName}"!`
+                : `General notification sent successfully!`;
+                
+            req.flash('success', successMessage);
+        } else {
+            console.log('⚠️ WebSocket service not available, using push notification only');
+            
+            const successMessage = notificationType === 'new_recipe' 
+                ? `New recipe notification sent successfully for "${notificationData.recipeName}"!`
+                : 'General notification sent successfully!';
+                
+            req.flash('success', successMessage);
+        }
+        
         return res.redirect(req.get("Referrer") || "/");
 
     } catch (error) {
@@ -410,6 +440,20 @@ const toggleNotificationStatus = async (req, res) => {
             });
         }
 
+        // Broadcast notification status update to all connected users via WebSocket
+        if (global.notificationWS) {
+            global.notificationWS.broadcastNotificationUpdated({
+                id: updatedNotification._id,
+                title: updatedNotification.title,
+                body: updatedNotification.message,
+                type: updatedNotification.type,
+                isEnabled: updatedNotification.isEnabled
+            });
+            // Also broadcast that notification count has changed (enable/disable affects count)
+            global.notificationWS.broadcastNotificationCountChanged();
+            console.log(`✏️ Real-time notification status update broadcast sent for ID: ${notificationId}`);
+        }
+
         const action = isEnabled ? 'enabled' : 'disabled';
         return res.status(200).json({ 
             success: true, 
@@ -447,6 +491,14 @@ const deleteNotification = async (req, res) => {
                 success: false, 
                 message: 'Notification not found' 
             });
+        }
+
+        // Broadcast notification deletion to all connected users via WebSocket
+        if (global.notificationWS) {
+            global.notificationWS.broadcastNotificationDeleted(notificationId);
+            // Also broadcast that notification count has changed
+            global.notificationWS.broadcastNotificationCountChanged();
+            console.log(`🗑️ Real-time notification deletion broadcast sent for ID: ${notificationId}`);
         }
 
         return res.status(200).json({ 

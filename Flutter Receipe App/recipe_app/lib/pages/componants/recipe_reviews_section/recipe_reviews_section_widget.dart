@@ -191,7 +191,7 @@ class _RecipeReviewsSectionWidgetState
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
                         child: Image.network(
-                          'http://localhost:8190/uploads/user/$avatar',
+                          'http://localhost:3000/uploads/user/$avatar',
                           width: 32.0,
                           height: 32.0,
                           fit: BoxFit.cover,

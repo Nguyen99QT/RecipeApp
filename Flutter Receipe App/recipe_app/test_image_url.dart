@@ -36,5 +36,5 @@ String buildImageUrl(String imagePath) {
   }
 
   // Otherwise, prepend the base image URL
-  return 'http://10.0.2.2:8190/uploads/images/$imagePath';
+  return 'http://10.0.2.2:3000/uploads/images/$imagePath';
 }

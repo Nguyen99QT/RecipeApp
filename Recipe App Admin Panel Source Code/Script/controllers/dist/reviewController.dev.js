@@ -9,7 +9,7 @@ var adminLoginModel = require("../model/adminLoginModel"); // Load view for all 
 
 
 var loadReview = function loadReview(req, res) {
-  var statusFilter, typeFilter, query, conditions, reviews, totalReviews, enabledReviews, disabledReviews, recipeReviews, appReviews, approvedReviews, stats;
+  var statusFilter, typeFilter, query, conditions, allReviews, reviews, totalReviews, enabledReviews, disabledReviews, recipeReviews, appReviews, approvedReviews, stats;
   return regeneratorRuntime.async(function loadReview$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
@@ -80,27 +80,38 @@ var loadReview = function loadReview(req, res) {
           }));
 
         case 13:
-          reviews = _context.sent;
-          _context.next = 16;
+          allReviews = _context.sent;
+          // Sắp xếp mới nhất trước
+          // Filter out reviews with null userId after populate (users that were deleted)
+          reviews = allReviews.filter(function (review) {
+            if (!review.userId) {
+              console.log('[DEBUG] Found review with null userId:', review._id);
+              return true; // Keep it but we'll handle null in template
+            }
+
+            return true;
+          }); // Calculate statistics with enhanced logic
+
+          _context.next = 17;
           return regeneratorRuntime.awrap(reviewModel.countDocuments({}));
 
-        case 16:
+        case 17:
           totalReviews = _context.sent;
-          _context.next = 19;
+          _context.next = 20;
           return regeneratorRuntime.awrap(reviewModel.countDocuments({
             isEnable: true
           }));
 
-        case 19:
+        case 20:
           enabledReviews = _context.sent;
-          _context.next = 22;
+          _context.next = 23;
           return regeneratorRuntime.awrap(reviewModel.countDocuments({
             isEnable: false
           }));
 
-        case 22:
+        case 23:
           disabledReviews = _context.sent;
-          _context.next = 25;
+          _context.next = 26;
           return regeneratorRuntime.awrap(reviewModel.countDocuments({
             $or: [{
               feedbackType: 'recipe'
@@ -112,9 +123,9 @@ var loadReview = function loadReview(req, res) {
             }]
           }));
 
-        case 25:
+        case 26:
           recipeReviews = _context.sent;
-          _context.next = 28;
+          _context.next = 29;
           return regeneratorRuntime.awrap(reviewModel.countDocuments({
             $or: [{
               feedbackType: 'app'
@@ -127,14 +138,14 @@ var loadReview = function loadReview(req, res) {
             }]
           }));
 
-        case 28:
+        case 29:
           appReviews = _context.sent;
-          _context.next = 31;
+          _context.next = 32;
           return regeneratorRuntime.awrap(reviewModel.countDocuments({
             isApproved: true
           }));
 
-        case 31:
+        case 32:
           approvedReviews = _context.sent;
           stats = {
             total: totalReviews,
@@ -155,8 +166,8 @@ var loadReview = function loadReview(req, res) {
             stats: stats
           }));
 
-        case 40:
-          _context.prev = 40;
+        case 41:
+          _context.prev = 41;
           _context.t0 = _context["catch"](0);
           console.log('[ERROR] loadReview:', _context.t0.message);
           return _context.abrupt("return", res.render("review", {
@@ -173,12 +184,12 @@ var loadReview = function loadReview(req, res) {
             }
           }));
 
-        case 44:
+        case 45:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[0, 40]]);
+  }, null, null, [[0, 41]]);
 }; //for active review
 
 

@@ -136,18 +136,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
         child: Scaffold(
           key: scaffoldKey,
           backgroundColor: FlutterFlowTheme.of(context).backgroundColor,
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              context.pushNamed('AIRecipeDebug');
-            },
-            backgroundColor: const Color(0xFFFF8C00),
-            child: const Icon(
-              Icons.auto_awesome,
-              color: Colors.white,
-              size: 28,
-            ),
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
           body: SafeArea(
             top: true,
             child: Column(

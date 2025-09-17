@@ -19,17 +19,38 @@ class ResetpasswordScreenModel
   String? Function(BuildContext, String?)? textController1Validator;
   String? _textController1Validator(BuildContext context, String? val) {
     if (val == null || val.isEmpty) {
-      return 'Please enter a new password';
+      return 'Please enter a valid new password';
     }
-    
-    if (val.length < 6) {
-      return 'Password must be at least 6 characters long';
-    }
-    
-    return null;
-  }
 
-  // State field(s) for TextField widget.
+    // Comprehensive password validation - collect all missing requirements
+    List<String> missingRequirements = [];
+    
+    if (val.length < 8) {
+      missingRequirements.add('8+ chars');
+    }
+    
+    if (!RegExp(r'(?=.*[a-z])').hasMatch(val)) {
+      missingRequirements.add('lowercase');
+    }
+    
+    if (!RegExp(r'(?=.*[A-Z])').hasMatch(val)) {
+      missingRequirements.add('UPPERCASE');
+    }
+    
+    if (!RegExp(r'(?=.*[0-9])').hasMatch(val)) {
+      missingRequirements.add('number');
+    }
+    
+    if (!RegExp(r'(?=.*[!@#$%^&*(),.?":{}|<>])').hasMatch(val)) {
+      missingRequirements.add('special char');
+    }
+    
+    if (missingRequirements.isNotEmpty) {
+      return 'Missing: ${missingRequirements.join(', ')}';
+    }
+
+    return null;
+  }  // State field(s) for TextField widget.
   FocusNode? textFieldFocusNode2;
   TextEditingController? textController2;
   late bool passwordVisibility2;

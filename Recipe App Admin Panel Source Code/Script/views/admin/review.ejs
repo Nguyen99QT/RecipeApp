@@ -183,7 +183,13 @@
                       <tr>
                         <td class="text-center"><%= i+1 %></td>
                         <td class="text-center pe-0">
-                          <span class="fw-bold text-dark"><%= reviews[i].userId.firstname  %>&nbsp;<%= reviews[i].userId.lastname  %></span>
+                          <span class="fw-bold text-dark">
+                            <% if (reviews[i].userId && reviews[i].userId.firstname) { %>
+                              <%= reviews[i].userId.firstname %>&nbsp;<%= reviews[i].userId.lastname %>
+                            <% } else { %>
+                              <span class="text-muted">Unknown User</span>
+                            <% } %>
+                          </span>
                         </td>
                         <td class="text-center pe-0">
                           <div class="d-flex flex-column align-items-center">

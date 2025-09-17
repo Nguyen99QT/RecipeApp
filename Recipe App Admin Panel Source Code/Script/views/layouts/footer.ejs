@@ -16,9 +16,9 @@
 
 <!--begin::Custom Javascript(used for this page only)-->
 <script src="assets/js/custom-file/listing.js"></script>
-<script src="assets/js/custom-file/ckEditor.js"></script>
 <script src="assets/js/custom-file/change-image.js"></script>
-<script src="assets/js/custom-file/file-upload.js"></script>
+<!-- Temporarily disabled to prevent conflicts with page-specific implementations -->
+<!-- <script src="assets/js/custom-file/file-upload.js"></script> -->
 <!--end::Custom Javascript-->
 
 <script type="text/javascript">
@@ -40,30 +40,38 @@
 </script>
 
 <script>
-  $('#kt_docs_repeater_basic').repeater({
-    initEmpty: false, 
+  // Repeater initialization disabled to prevent conflicts
+  // Each page handles its own repeater initialization
+  /*
+  $(document).ready(function() {
+    if ($('#kt_docs_repeater_basic').length && !$('#kt_docs_repeater_basic').data('repeater-initialized')) {
+      $('#kt_docs_repeater_basic').repeater({
+        initEmpty: false, 
 
-    defaultValues: {
-      'text-input': 'foo'
-    },
+        defaultValues: {
+          'text-input': 'foo'
+        },
 
-    show: function() {
-      $(this).slideDown();
+        show: function() {
+          $(this).slideDown();
 
-      // Re-init select2
-      $(this).find('[data-kt-repeater="select2"]').select2();
+          // Re-init select2
+          $(this).find('[data-kt-repeater="select2"]').select2();
 
-    },
+        },
 
-    hide: function(deleteElement) {
-      $(this).slideUp(deleteElement);
-    },
+        hide: function(deleteElement) {
+          $(this).slideUp(deleteElement);
+        },
 
-    ready: function() {
-      // Init select2
-      $('[data-kt-repeater="select2"]').select2();
+        ready: function() {
+          // Init select2
+          $('[data-kt-repeater="select2"]').select2();
+        }
+      });
     }
   });
+  */
 </script>
 
 <script>

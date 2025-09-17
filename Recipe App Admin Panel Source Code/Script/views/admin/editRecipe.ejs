@@ -189,49 +189,61 @@
                           <div class="col-sm-12">
                             <label class="form-label required">Ingredients</label>
                             <div class="row mb-10">
-                              <!--begin::Repeater-->
                               <div class="rounded border py-10">
-                                <div id="kt_docs_repeater_basic">
-                                  <!--begin::Form group-->
-                                  <div class="form-group">
-                                    <div data-repeater-list="ingredientslist">
-                                      <% if (recipe.ingredients && recipe.ingredients.length > 0) { %>
-                                        <% recipe.ingredients.forEach((item, index) => { %>
-                                      <div data-repeater-item>
-                                        <div class="form-group row px-5">
-                                          <div class="col-md-6 mb-8">
-                                            <input type="text" name="ingredients" class="form-control form-control-lg form-control-solid" value="<%= item %>" placeholder="Enter an ingredient name, e.g., 1 teaspoon salt" required />
-                                          </div>
-                                          <div class="col-md-1 mb-8">
-                                            <a href="javascript:;" data-repeater-delete class="btn btn-flex btn-light-danger">
-                                              <i class="ki-duotone ki-trash fs-3">
-                                                <span class="path1"></span>
-                                                <span class="path2"></span>
-                                                <span class="path3"></span>
-                                                <span class="path4"></span>
-                                                <span class="path5"></span>
-                                              </i>
-                                              Delete
-                                            </a>
-                                          </div>
-                                        </div>
+                                <div id="ingredients-container">
+                                  <!-- Dynamic ingredients will be added here -->
+                                  <% if (recipe.ingredients && recipe.ingredients.length > 0) { %>
+                                    <% recipe.ingredients.forEach((item, index) => { %>
+                                    <div class="ingredient-item form-group row px-5 mb-3">
+                                      <div class="col-md-10 mb-8">
+                                        <input type="text" name="ingredients" class="form-control form-control-lg form-control-solid ingredients-input" value="<%= item %>" placeholder="Enter an ingredient name, e.g., 1 teaspoon salt" required />
                                       </div>
-                                      <% }); %>
-                                      <% } %>
+                                      <div class="col-md-2 mb-8 d-flex align-items-center">
+                                        <button type="button" class="btn btn-light-danger btn-sm remove-ingredient" onclick="removeIngredient(this)">
+                                          <i class="ki-duotone ki-trash fs-3">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                            <span class="path3"></span>
+                                            <span class="path4"></span>
+                                            <span class="path5"></span>
+                                          </i>
+                                          Remove
+                                        </button>
+                                      </div>
                                     </div>
-                                  </div>
-                                  <!--end::Form group-->
-                                  <!--begin::Form group-->
-                                  <div class="form-group px-5">
-                                    <a href="javascript:;" data-repeater-create class="btn btn-flex btn-light-primary">
-                                      <i class="ki-duotone ki-plus fs-3"></i>
-                                      Add
-                                    </a>
-                                  </div>
-                                  <!--end::Form group-->
+                                    <% }) %>
+                                  <% } else { %>
+                                    <!-- Default first ingredient -->
+                                    <div class="ingredient-item form-group row px-5 mb-3">
+                                      <div class="col-md-10 mb-8">
+                                        <input type="text" name="ingredients" class="form-control form-control-lg form-control-solid ingredients-input" placeholder="Enter an ingredient name, e.g., 1 teaspoon salt" required />
+                                      </div>
+                                      <div class="col-md-2 mb-8 d-flex align-items-center">
+                                        <button type="button" class="btn btn-light-danger btn-sm remove-ingredient" onclick="removeIngredient(this)">
+                                          <i class="ki-duotone ki-trash fs-3">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                            <span class="path3"></span>
+                                            <span class="path4"></span>
+                                            <span class="path5"></span>
+                                          </i>
+                                          Remove
+                                        </button>
+                                      </div>
+                                    </div>
+                                  <% } %>
+                                </div>
+                                
+                                <div class="px-5">
+                                  <button type="button" class="btn btn-light-primary btn-sm" onclick="addIngredient()">
+                                    <i class="ki-duotone ki-plus fs-3">
+                                      <span class="path1"></span>
+                                      <span class="path2"></span>
+                                    </i>
+                                    Add Ingredient
+                                  </button>
                                 </div>
                               </div>
-                              <!--end::Repeater-->
                             </div>
                           </div>
                         </div>
@@ -322,7 +334,7 @@
                         <div class="row ">
                           <div class="col-sm-12">
                             <label class="form-label">Overview</label>
-                            <textarea name="overview" id="kt_docs_first_ckeditor_classic" required><%- recipe.overview %></textarea>
+                            <textarea name="overview" id="kt_docs_first_ckeditor_classic" class="form-control form-control-lg" style="min-height: 200px;" required><%- recipe.overview %></textarea>
                           </div>
                         </div>
                         <!--end::Input group-->
@@ -331,7 +343,7 @@
                          <div class="fv-row mb-2">
                           <div class="col-sm-12">
                             <label class="form-label required">How To Cook </label>
-                            <textarea class="form-control form-control-lg" id="kt_docs_second_ckeditor_classic" name="how_to_cook" placeholder="Describe the cooking process" ><%- recipe.how_to_cook %></textarea>
+                            <textarea class="form-control form-control-lg" id="kt_docs_second_ckeditor_classic" name="how_to_cook" placeholder="Describe the cooking process" style="min-height: 250px;" required><%- recipe.how_to_cook %></textarea>
                           </div>
                         </div>
                         <!--end::Input group-->
@@ -391,3 +403,228 @@
 
 <!-- partial:partials/header -->
 <%- include('../layouts/footer.ejs') %>
+
+<script>
+// Enhanced styling for textareas
+const style = document.createElement('style');
+style.textContent = `
+    /* Textarea styling before CKEditor loads */
+    #kt_docs_first_ckeditor_classic,
+    #kt_docs_second_ckeditor_classic {
+        border: 1px solid #d1d3e2;
+        border-radius: 0.42rem;
+        padding: 0.75rem;
+        font-family: inherit;
+        font-size: 1.1rem;
+        line-height: 1.5;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        background-color: #ffffff;
+        resize: vertical;
+    }
+    
+    #kt_docs_first_ckeditor_classic:focus,
+    #kt_docs_second_ckeditor_classic:focus {
+        border-color: #009EF7;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 158, 247, 0.25);
+    }
+    
+    /* CKEditor container styling */
+    .ck-editor__editable {
+        min-height: 200px !important;
+        border-radius: 0.42rem !important;
+    }
+    
+    .ck-editor__editable_inline {
+        border: 1px solid #d1d3e2 !important;
+    }
+    
+    .ck-editor__editable:focus {
+        border-color: #009EF7 !important;
+        box-shadow: 0 0 0 0.2rem rgba(0, 158, 247, 0.25) !important;
+    }
+    
+    /* Loading indicator */
+    .textarea-loading {
+        position: relative;
+    }
+    
+    .textarea-loading::before {
+        content: 'Loading editor...';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #7E8299;
+        font-size: 0.9rem;
+        pointer-events: none;
+        z-index: 1;
+    }
+`;
+document.head.appendChild(style);
+
+// Ingredients Management Functions
+function addIngredient() {
+    const container = document.getElementById('ingredients-container');
+    const newItem = document.createElement('div');
+    newItem.className = 'ingredient-item form-group row px-5 mb-3';
+    newItem.style.opacity = '0';
+    newItem.style.transform = 'translateY(-10px)';
+    
+    newItem.innerHTML = `
+        <div class="col-md-10 mb-8">
+            <input type="text" name="ingredients" class="form-control form-control-lg form-control-solid ingredients-input" placeholder="Enter an ingredient name, e.g., 1 teaspoon salt" required />
+        </div>
+        <div class="col-md-2 mb-8 d-flex align-items-center">
+            <button type="button" class="btn btn-light-danger btn-sm remove-ingredient" onclick="removeIngredient(this)">
+                <i class="ki-duotone ki-trash fs-3">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                    <span class="path4"></span>
+                    <span class="path5"></span>
+                </i>
+                Remove
+            </button>
+        </div>
+    `;
+    
+    container.appendChild(newItem);
+    
+    // Animate in
+    setTimeout(() => {
+        newItem.style.transition = 'all 0.3s ease';
+        newItem.style.opacity = '1';
+        newItem.style.transform = 'translateY(0)';
+    }, 10);
+    
+    // Focus on new input
+    setTimeout(() => {
+        const newInput = newItem.querySelector('input');
+        newInput.focus();
+    }, 300);
+}
+
+function removeIngredient(button) {
+    const container = document.getElementById('ingredients-container');
+    const ingredientItems = container.querySelectorAll('.ingredient-item');
+    
+    // Don't allow removing if only one ingredient remains
+    if (ingredientItems.length <= 1) {
+        alert('At least one ingredient is required.');
+        return;
+    }
+    
+    const item = button.closest('.ingredient-item');
+    
+    // Animate out
+    item.style.transition = 'all 0.3s ease';
+    item.style.opacity = '0';
+    item.style.transform = 'translateY(-10px)';
+    
+    setTimeout(() => {
+        item.remove();
+    }, 300);
+}
+
+// Form validation before submit
+document.addEventListener('DOMContentLoaded', function() {
+    // Add loading class to textareas
+    const overviewTextarea = document.querySelector('#kt_docs_first_ckeditor_classic');
+    const howToCookTextarea = document.querySelector('#kt_docs_second_ckeditor_classic');
+    
+    overviewTextarea.classList.add('textarea-loading');
+    howToCookTextarea.classList.add('textarea-loading');
+    
+    // Initialize CKEditor for Overview
+    ClassicEditor
+        .create(overviewTextarea, {
+            toolbar: {
+                items: [
+                    'heading', '|',
+                    'bold', 'italic', 'link', '|',
+                    'bulletedList', 'numberedList', '|',
+                    'indent', 'outdent', '|',
+                    'blockQuote', 'insertTable', '|',
+                    'undo', 'redo'
+                ]
+            },
+            language: 'en',
+            table: {
+                contentToolbar: [
+                    'tableColumn',
+                    'tableRow',
+                    'mergeTableCells'
+                ]
+            }
+        })
+        .then(editor => {
+            window.overviewEditor = editor;
+            overviewTextarea.classList.remove('textarea-loading');
+            console.log('Overview CKEditor initialized');
+        })
+        .catch(error => {
+            overviewTextarea.classList.remove('textarea-loading');
+            console.error('Overview CKEditor initialization failed:', error);
+            // Fallback: Make textarea look better
+            overviewTextarea.style.minHeight = '200px';
+            overviewTextarea.style.border = '1px solid #d1d3e2';
+        });
+
+    // Initialize CKEditor for How to Cook
+    ClassicEditor
+        .create(howToCookTextarea, {
+            toolbar: {
+                items: [
+                    'heading', '|',
+                    'bold', 'italic', 'link', '|',
+                    'bulletedList', 'numberedList', '|',
+                    'indent', 'outdent', '|',
+                    'blockQuote', 'insertTable', '|',
+                    'undo', 'redo'
+                ]
+            },
+            language: 'en',
+            table: {
+                contentToolbar: [
+                    'tableColumn',
+                    'tableRow',
+                    'mergeTableCells'
+                ]
+            }
+        })
+        .then(editor => {
+            window.howToCookEditor = editor;
+            howToCookTextarea.classList.remove('textarea-loading');
+            console.log('How to Cook CKEditor initialized');
+        })
+        .catch(error => {
+            howToCookTextarea.classList.remove('textarea-loading');
+            console.error('How to Cook CKEditor initialization failed:', error);
+            // Fallback: Make textarea look better
+            howToCookTextarea.style.minHeight = '250px';
+            howToCookTextarea.style.border = '1px solid #d1d3e2';
+        });
+
+    // Form validation
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const ingredientInputs = document.querySelectorAll('.ingredients-input');
+            let hasValidIngredients = false;
+            
+            ingredientInputs.forEach(input => {
+                if (input.value.trim() !== '') {
+                    hasValidIngredients = true;
+                }
+            });
+            
+            if (!hasValidIngredients) {
+                e.preventDefault();
+                alert('Please add at least one ingredient.');
+                return false;
+            }
+        });
+    }
+});
+</script>

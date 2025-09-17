@@ -42,7 +42,9 @@ var mailController = require("../controllers/mailController");
 
 var adsController = require("../controllers/adsController");
 
-var settingController = require("../controllers/settingController"); //Routes For Login
+var settingController = require("../controllers/settingController");
+
+var notificationController = require("../controllers/notificationController"); //Routes For Login
 
 
 routes.get("/", isLogout, loginController.loadLogin);
@@ -117,7 +119,21 @@ routes.post("/edit-faq", faqController.editFaq);
 routes.get('/delete-faq', faqController.deleteFaq); // Routes For Mail Config
 
 routes.get("/mail-config", isLogin, mailController.loadMailConfig);
-routes.post("/mail-config", mailController.mailConfig); //Routes For Log Out
+routes.post("/mail-config", mailController.mailConfig); // Routes For AI Recipes
+
+var aiRecipeAdminController = require("../controllers/aiRecipeAdminController");
+
+routes.get("/ai-recipes", isLogin, aiRecipeAdminController.loadAiRecipes);
+routes.get("/ai-recipe-detail", isLogin, aiRecipeAdminController.viewAiRecipe);
+routes.get("/delete-ai-recipe", isLogin, aiRecipeAdminController.deleteAiRecipe);
+routes.get("/ai-recipe-stats", isLogin, aiRecipeAdminController.getAiRecipeStats); // Routes For Notifications Management
+
+routes.get("/notifications", isLogin, notificationController.loadNotifications);
+routes.get("/notifications/create", isLogin, notificationController.loadCreateNotification);
+routes.post("/notifications/create", isLogin, notificationController.createNotification);
+routes.get("/notifications/toggle/:id", isLogin, notificationController.toggleNotification);
+routes.get("/notifications/delete/:id", isLogin, notificationController.deleteNotification);
+routes.get("/api/notification-stats", isLogin, notificationController.getNotificationStats); //Routes For Log Out
 
 routes.get("/logout", isLogin, loginController.logout); // Redirects unmatched routes to the root path
 

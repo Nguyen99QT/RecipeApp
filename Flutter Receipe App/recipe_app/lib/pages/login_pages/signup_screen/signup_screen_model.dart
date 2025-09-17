@@ -53,6 +53,33 @@ class SignupScreenModel extends FlutterFlowModel<SignupScreenWidget> {
       return 'Please enter a valid password';
     }
 
+    // Comprehensive password validation - collect all missing requirements
+    List<String> missingRequirements = [];
+    
+    if (val.length < 8) {
+      missingRequirements.add('8+ chars');
+    }
+    
+    if (!RegExp(r'[a-z]').hasMatch(val)) {
+      missingRequirements.add('lowercase');
+    }
+    
+    if (!RegExp(r'[A-Z]').hasMatch(val)) {
+      missingRequirements.add('UPPERCASE');
+    }
+    
+    if (!RegExp(r'[0-9]').hasMatch(val)) {
+      missingRequirements.add('number');
+    }
+    
+    if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(val)) {
+      missingRequirements.add('special char');
+    }
+    
+    if (missingRequirements.isNotEmpty) {
+      return 'Missing: ${missingRequirements.join(', ')}';
+    }
+
     return null;
   }
 

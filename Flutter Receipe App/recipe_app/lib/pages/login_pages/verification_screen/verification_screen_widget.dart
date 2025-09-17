@@ -310,10 +310,36 @@ class _VerificationScreenWidgetState extends State<VerificationScreenWidget> {
                               );
                             }
                           } else {
-                            await actions.showCustomToastBottom(
-                              RecipeAppGroup.verifyOtpApiCall.message(
-                                (_model.verifyOtpFunction?.jsonBody ?? ''),
-                              )!,
+                            // Show error message using SnackBar instead of custom toast
+                            final errorMessage = RecipeAppGroup.verifyOtpApiCall.message(
+                              (_model.verifyOtpFunction?.jsonBody ?? ''),
+                            ) ?? 'Invalid OTP. Please try again.';
+                            
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  errorMessage,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                backgroundColor: Colors.red.withOpacity(0.9),
+                                duration: const Duration(seconds: 4),
+                                behavior: SnackBarBehavior.floating,
+                                margin: const EdgeInsets.all(16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                action: SnackBarAction(
+                                  label: 'OK',
+                                  textColor: Colors.white,
+                                  onPressed: () {
+                                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                  },
+                                ),
+                              ),
                             );
                           }
 
