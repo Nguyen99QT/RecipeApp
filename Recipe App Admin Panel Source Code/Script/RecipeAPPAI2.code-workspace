@@ -1,0 +1,24 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../Flutter Receipe App/recipe_app"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"java.import.gradle.enabled": false,
+		"java.import.maven.enabled": true,
+		"java.compile.nullAnalysis.mode": "automatic",
+		"java.sources.organizeImports.starThreshold": 99,
+		"java.sources.organizeImports.staticStarThreshold": 99,
+		"java.project.sourcePaths": [
+			"backend/src/main/java"
+		],
+		"java.project.outputPath": "backend/target/classes"
+	}
+}

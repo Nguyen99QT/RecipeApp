@@ -80,4 +80,4 @@ const recipeSchema = new mongoose.Schema({
 );
 
 
-module.exports = new mongoose.model("recipes", recipeSchema);
+module.exports = mongoose.model("recipes", recipeSchema);

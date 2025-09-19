@@ -18,4 +18,4 @@ const favouriteRecipeSchema = new mongoose.Schema({
     }
 );
 
-module.exports = new mongoose.model("favouriteRecipes", favouriteRecipeSchema);
+module.exports = mongoose.model("favouriteRecipes", favouriteRecipeSchema);

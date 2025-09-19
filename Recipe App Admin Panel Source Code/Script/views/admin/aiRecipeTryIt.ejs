@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Recipe Generator - Try It</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .drag-drop-area {
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .drag-drop-area:hover {
+            background: #e3f2fd;
+            border-color: #0056b3;
+        }
+        
+        .drag-drop-area.drag-over {
+            background: #e3f2fd;
+            border-color: #28a745;
+            transform: scale(1.02);
+        }
+        
+        .preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .preview-item {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+        
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .remove-image {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .recipe-result {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            color: white;
+            margin-top: 30px;
+        }
+        
+        .recipe-header {
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .recipe-section {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            padding: 12px 15px;
+        }
+        
+        .btn {
+            border-radius: 8px;
+            padding: 12px 25px;
+            font-weight: 600;
+        }
+        
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <%- include('../layouts/sidebar') %>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <%- include('../layouts/header') %>
+
+            <!-- Content -->
+            <div class="content">
+                <div class="container-fluid">
+                    <!-- Page Title -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h1 class="h3 mb-0">
+                                    <i class="fas fa-robot text-primary me-2"></i>
+                                    AI Recipe Generator - Try It
+                                </h1>
+                                <div class="d-flex gap-2">
+                                    <a href="/saved-ai-recipes" class="btn btn-outline-primary">
+                                        <i class="fas fa-heart"></i> View Saved Recipes
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flash Messages -->
+                    <% if (success && success.length > 0) { %>
+                        <div class="alert alert-success alert-dismissible fade show">
+                            <i class="fas fa-check-circle me-2"></i><%= success %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <% if (error && error.length > 0) { %>
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <i class="fas fa-exclamation-circle me-2"></i><%= error %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <div class="row">
+                        <!-- Recipe Generation Form -->
+                        <div class="col-12">
+                            <div class="card shadow">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-magic me-2"></i>
+                                        Generate Recipe from Food Images
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="aiRecipeForm" enctype="multipart/form-data">
+                                        <!-- Image Upload Section -->
+                                        <div class="mb-4">
+                                            <label class="form-label fw-bold">
+                                                <i class="fas fa-images me-2"></i>
+                                                Upload Food Images (Required)
+                                            </label>
+                                            <div class="drag-drop-area" id="dragDropArea">
+                                                <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                                                <h5>Drag & Drop Images Here</h5>
+                                                <p class="text-muted">or click to select files</p>
+                                                <p class="text-sm text-muted">
+                                                    <i class="fas fa-info-circle me-1"></i>
+                                                    Support: JPG, PNG, GIF | Max: 5 images, 5MB each
+                                                </p>
+                                                <input type="file" id="fileInput" name="recipeImages" multiple accept="image/*" style="display: none;">
+                                            </div>
+                                            <div class="preview-container" id="previewContainer"></div>
+                                        </div>
+
+                                        <!-- Recipe Preferences -->
+                                        <div class="row mb-4">
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-bold">Additional Instructions (Optional)</label>
+                                                <textarea class="form-control" id="prompt" name="prompt" rows="3" 
+                                                    placeholder="Describe any specific cooking preferences, ingredients to focus on, or style you want..."></textarea>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">Cuisine Type</label>
+                                                        <select class="form-select" id="cuisine" name="cuisine">
+                                                            <option value="">Any Cuisine</option>
+                                                            <option value="Italian">Italian</option>
+                                                            <option value="Asian">Asian</option>
+                                                            <option value="Mexican">Mexican</option>
+                                                            <option value="American">American</option>
+                                                            <option value="Mediterranean">Mediterranean</option>
+                                                            <option value="Indian">Indian</option>
+                                                            <option value="French">French</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">Difficulty</label>
+                                                        <select class="form-select" id="difficulty" name="difficulty">
+                                                            <option value="Easy">Easy</option>
+                                                            <option value="Medium" selected>Medium</option>
+                                                            <option value="Hard">Hard</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-3">
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">Servings</label>
+                                                        <select class="form-select" id="servings" name="servings">
+                                                            <option value="1">1 person</option>
+                                                            <option value="2">2 people</option>
+                                                            <option value="4" selected>4 people</option>
+                                                            <option value="6">6 people</option>
+                                                            <option value="8">8 people</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="form-label fw-bold">Max Prep Time</label>
+                                                        <select class="form-select" id="maxPrepTime" name="maxPrepTime">
+                                                            <option value="15">15 minutes</option>
+                                                            <option value="30" selected>30 minutes</option>
+                                                            <option value="45">45 minutes</option>
+                                                            <option value="60">1 hour</option>
+                                                            <option value="90">1.5 hours</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Dietary Restrictions -->
+                                        <div class="row mb-4">
+                                            <div class="col-12">
+                                                <label class="form-label fw-bold">Dietary Restrictions (Optional)</label>
+                                                <input type="text" class="form-control" id="dietaryRestrictions" name="dietaryRestrictions" 
+                                                    placeholder="e.g., Vegetarian, Gluten-free, Dairy-free, Nut-free...">
+                                            </div>
+                                        </div>
+
+                                        <!-- Generate Button -->
+                                        <div class="text-center">
+                                            <button type="submit" class="btn btn-primary btn-lg" id="generateBtn">
+                                                <i class="fas fa-magic me-2"></i>
+                                                Generate AI Recipe
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                    <!-- Loading State -->
+                                    <div class="loading-spinner" id="loadingSpinner">
+                                        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <h5 class="mt-3">AI is analyzing your images...</h5>
+                                        <p class="text-muted">This may take 10-30 seconds depending on image complexity</p>
+                                    </div>
+
+                                    <!-- Recipe Result -->
+                                    <div id="recipeResult" style="display: none;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        let selectedFiles = [];
+
+        // Drag and drop functionality
+        const dragDropArea = document.getElementById('dragDropArea');
+        const fileInput = document.getElementById('fileInput');
+        const previewContainer = document.getElementById('previewContainer');
+
+        dragDropArea.addEventListener('click', () => fileInput.click());
+
+        dragDropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dragDropArea.classList.add('drag-over');
+        });
+
+        dragDropArea.addEventListener('dragleave', () => {
+            dragDropArea.classList.remove('drag-over');
+        });
+
+        dragDropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dragDropArea.classList.remove('drag-over');
+            const files = Array.from(e.dataTransfer.files);
+            handleFiles(files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            handleFiles(files);
+        });
+
+        function handleFiles(files) {
+            const imageFiles = files.filter(file => file.type.startsWith('image/'));
+            
+            if (selectedFiles.length + imageFiles.length > 5) {
+                alert('Maximum 5 images allowed');
+                return;
+            }
+
+            imageFiles.forEach(file => {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert(`File ${file.name} is too large. Maximum 5MB per image.`);
+                    return;
+                }
+                selectedFiles.push(file);
+                createPreview(file);
+            });
+
+            updateFileInput();
+        }
+
+        function createPreview(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const previewDiv = document.createElement('div');
+                previewDiv.className = 'preview-item';
+                previewDiv.innerHTML = `
+                    <img src="${e.target.result}" alt="Preview" class="preview-image">
+                    <button type="button" class="remove-image" onclick="removeImage(${selectedFiles.length - 1})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                previewContainer.appendChild(previewDiv);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeImage(index) {
+            selectedFiles.splice(index, 1);
+            previewContainer.innerHTML = '';
+            selectedFiles.forEach(file => createPreview(file));
+            updateFileInput();
+        }
+
+        function updateFileInput() {
+            const dataTransfer = new DataTransfer();
+            selectedFiles.forEach(file => dataTransfer.items.add(file));
+            fileInput.files = dataTransfer.files;
+        }
+
+        // Form submission
+        document.getElementById('aiRecipeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (selectedFiles.length === 0) {
+                alert('Please upload at least one image');
+                return;
+            }
+
+            const formData = new FormData();
+            const form = e.target;
+
+            // Add files
+            selectedFiles.forEach(file => {
+                formData.append('recipeImages', file);
+            });
+
+            // Add form fields
+            formData.append('prompt', form.prompt.value);
+            formData.append('cuisine', form.cuisine.value);
+            formData.append('difficulty', form.difficulty.value);
+            formData.append('servings', form.servings.value);
+            formData.append('maxPrepTime', form.maxPrepTime.value);
+            formData.append('dietaryRestrictions', form.dietaryRestrictions.value);
+
+            // Show loading state
+            document.getElementById('generateBtn').disabled = true;
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('recipeResult').style.display = 'none';
+
+            try {
+                const response = await fetch('/ai-recipe-try-it/generate', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    displayRecipe(result.recipe);
+                } else {
+                    throw new Error(result.error || 'Failed to generate recipe');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error generating recipe: ' + error.message);
+            } finally {
+                document.getElementById('generateBtn').disabled = false;
+                document.getElementById('loadingSpinner').style.display = 'none';
+            }
+        });
+
+        function displayRecipe(recipe) {
+            const resultDiv = document.getElementById('recipeResult');
+            
+            resultDiv.innerHTML = `
+                <div class="recipe-result">
+                    <div class="recipe-header">
+                        <h2><i class="fas fa-utensils me-2"></i>${recipe.title}</h2>
+                        <p class="lead">${recipe.description}</p>
+                        <div class="row text-center">
+                            <div class="col-6 col-md-3">
+                                <strong><i class="fas fa-clock me-1"></i>${recipe.prepTime || 0} min</strong><br>
+                                <small>Prep Time</small>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <strong><i class="fas fa-fire me-1"></i>${recipe.cookTime || 0} min</strong><br>
+                                <small>Cook Time</small>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <strong><i class="fas fa-users me-1"></i>${recipe.servings}</strong><br>
+                                <small>Servings</small>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <strong><i class="fas fa-signal me-1"></i>${recipe.difficulty}</strong><br>
+                                <small>Difficulty</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="recipe-section">
+                                <h4><i class="fas fa-list me-2"></i>Ingredients</h4>
+                                <ul class="list-unstyled">
+                                    ${recipe.ingredients.map(ingredient => `<li><i class="fas fa-check text-success me-2"></i>${ingredient}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="recipe-section">
+                                <h4><i class="fas fa-clipboard-list me-2"></i>Instructions</h4>
+                                <ol>
+                                    ${recipe.instructions.map(instruction => `<li class="mb-2">${instruction}</li>`).join('')}
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${recipe.notes ? `
+                        <div class="recipe-section">
+                            <h4><i class="fas fa-lightbulb me-2"></i>Tips & Notes</h4>
+                            <p>${recipe.notes}</p>
+                        </div>
+                    ` : ''}
+
+                    ${recipe.tags && recipe.tags.length > 0 ? `
+                        <div class="recipe-section">
+                            <h4><i class="fas fa-tags me-2"></i>Tags</h4>
+                            ${recipe.tags.map(tag => `<span class="badge bg-light text-dark me-2">${tag}</span>`).join('')}
+                        </div>
+                    ` : ''}
+
+                    <div class="text-center mt-4">
+                        <button class="btn btn-warning btn-lg me-3" onclick="generateAnother()">
+                            <i class="fas fa-redo me-2"></i>Generate Another Recipe
+                        </button>
+                        <button class="btn btn-success btn-lg" onclick="window.print()">
+                            <i class="fas fa-print me-2"></i>Print Recipe
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateAnother() {
+            // Reset form
+            document.getElementById('aiRecipeForm').reset();
+            selectedFiles = [];
+            previewContainer.innerHTML = '';
+            document.getElementById('recipeResult').style.display = 'none';
+            
+            // Scroll back to top
+            document.getElementById('dragDropArea').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+
+</html>
