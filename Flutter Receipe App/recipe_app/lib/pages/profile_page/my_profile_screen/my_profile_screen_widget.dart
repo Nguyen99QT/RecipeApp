@@ -472,7 +472,7 @@ class _MyProfileScreenWidgetState extends State<MyProfileScreenWidget> {
                                                 ),
                                           ),
                                           Text(
-                                            '+${RecipeAppGroup.getUserApiCall.countryCode(
+                                            '${RecipeAppGroup.getUserApiCall.countryCode(
                                               listViewGetUserApiResponse
                                                   .jsonBody,
                                             )} ${RecipeAppGroup.getUserApiCall.phone(

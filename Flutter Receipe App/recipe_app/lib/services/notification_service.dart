@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '/flutter_flow/flutter_flow_util.dart';
+import '/utils/network_utils.dart';
 
 class NotificationService {
   static NotificationService? _instance;
@@ -24,12 +25,19 @@ class NotificationService {
       // Disconnect existing connection if any
       await disconnect();
       
+      print('[DEBUG] ===== NOTIFICATION SERVICE CONNECT =====');
       print('[DEBUG] NotificationService: Connecting to WebSocket...');
+      print('[DEBUG] UserId: "$userId"');
+      print('[DEBUG] Token available: ${token?.isNotEmpty ?? false}');
       
       // Create socket connection 
-      // Use localhost for testing on same machine, 10.0.2.2 for Android emulator
-      const serverUrl = 'http://192.168.101.34:3000'; // Use actual IP from previous detection
+      // Use same URL as API calls for consistency
+      final cachedIp = NetworkUtils.getCachedIp();
+      final serverUrl = cachedIp != null 
+          ? 'http://$cachedIp:3000'
+          : 'http://10.0.2.2:3000'; // Fallback to emulator IP
       print('[DEBUG] NotificationService: Connecting to $serverUrl');
+      print('[DEBUG] Using cached IP: $cachedIp');
       
       _socket = IO.io(
         serverUrl,
@@ -45,6 +53,7 @@ class NotificationService {
       _setupEventHandlers();
       
       // Connect to server
+      print('[DEBUG] NotificationService: Attempting connection...');
       _socket!.connect();
       
     } catch (e) {
@@ -57,16 +66,20 @@ class NotificationService {
     
     // Connection established
     _socket!.on('connect', (data) {
+      print('[DEBUG] ===== WEBSOCKET CONNECTED =====');
       print('[DEBUG] NotificationService: Connected to WebSocket server');
+      print('[DEBUG] Connection data: $data');
       _isConnected = true;
       onConnectionStatusChanged?.call(true);
       
       // Authenticate with server
+      print('[DEBUG] Starting authentication...');
       _authenticate();
     });
     
     // Connection error
     _socket!.on('connect_error', (error) {
+      print('[ERROR] ===== WEBSOCKET CONNECTION ERROR =====');
       print('[ERROR] NotificationService: Connection error - $error');
       print('[ERROR] NotificationService: Error type: ${error.runtimeType}');
       print('[ERROR] NotificationService: Error details: ${error.toString()}');
@@ -76,6 +89,7 @@ class NotificationService {
     
     // Disconnection
     _socket!.on('disconnect', (reason) {
+      print('[DEBUG] ===== WEBSOCKET DISCONNECTED =====');
       print('[DEBUG] NotificationService: Disconnected - $reason');
       _isConnected = false;
       onConnectionStatusChanged?.call(false);
@@ -96,23 +110,28 @@ class NotificationService {
     _socket!.on('new_notification', (data) {
       print('[DEBUG] ===== WebSocket EVENT: new_notification =====');
       print('[DEBUG] NotificationService: New notification received - $data');
+      print('[DEBUG] Data type: ${data.runtimeType}');
+      print('[DEBUG] Data content: ${data.toString()}');
       _handleNewNotification(data);
     });
     
     // Notification deleted
     _socket!.on('notification_deleted', (data) {
+      print('[DEBUG] ===== WebSocket EVENT: notification_deleted =====');
       print('[DEBUG] NotificationService: Notification deleted - $data');
       _handleNotificationDeleted(data);
     });
     
     // Notification updated/status changed
     _socket!.on('notification_updated', (data) {
+      print('[DEBUG] ===== WebSocket EVENT: notification_updated =====');
       print('[DEBUG] NotificationService: Notification updated - $data');
       _handleNotificationUpdated(data);
     });
     
     // Notification count changed - refresh count
     _socket!.on('notification_count_changed', (data) {
+      print('[DEBUG] ===== WebSocket EVENT: notification_count_changed =====');
       print('[DEBUG] NotificationService: Notification count changed - $data');
       _handleNotificationCountChanged(data);
     });
@@ -125,6 +144,7 @@ class NotificationService {
   
   void _authenticate() {
     if (_socket == null || _currentUserId == null) {
+      print('[ERROR] ===== AUTHENTICATION FAILED =====');
       print('[ERROR] NotificationService: Cannot authenticate - socket: ${_socket != null}, userId: $_currentUserId');
       return;
     }
@@ -136,9 +156,11 @@ class NotificationService {
       // 'token': FFAppState().authToken,
     };
     
+    print('[DEBUG] ===== STARTING AUTHENTICATION =====');
     print('[DEBUG] NotificationService: Authenticating with server...');
     print('[DEBUG] NotificationService: Auth data: $authData');
     _socket!.emit('authenticate', authData);
+    print('[DEBUG] NotificationService: Authentication request sent');
   }
   
   void _handleNewNotification(dynamic data) {

@@ -98,6 +98,31 @@ const SignUp = async (req, res) => {
         
         console.log('Extracted data:', { firstname, lastname, email, country_code, phone, password: '***' });
         
+        // Clean and validate country_code for signup
+        let cleanCountryCode = country_code;
+        if (cleanCountryCode && typeof cleanCountryCode === 'string') {
+            // Remove multiple + signs and ensure only one at the beginning
+            cleanCountryCode = cleanCountryCode.replace(/^\++/, '+').replace(/\++/g, '+');
+            // Ensure it starts with +
+            if (!cleanCountryCode.startsWith('+')) {
+                cleanCountryCode = '+' + cleanCountryCode;
+            }
+        }
+        
+        // Clean phone number - remove any country code prefix if it's included
+        let cleanPhone = phone;
+        if (cleanPhone && cleanCountryCode) {
+            const countryCodeNum = cleanCountryCode.replace('+', '');
+            // Remove country code from phone if it's prefixed
+            if (cleanPhone.startsWith(countryCodeNum)) {
+                cleanPhone = cleanPhone.substring(countryCodeNum.length);
+            }
+            // Remove any remaining + signs from phone
+            cleanPhone = cleanPhone.replace(/\+/g, '');
+        }
+        
+        console.log('[DEBUG] Cleaned signup data:', { cleanCountryCode, cleanPhone });
+        
         // Validate strong password
         const passwordValidation = validateStrongPassword(password);
         if (!passwordValidation.valid) {
@@ -121,13 +146,13 @@ const SignUp = async (req, res) => {
         // Hash password
         const hashedPassword = sha256.x2(password);
         
-        // Create new user
+        // Create new user with cleaned data
         const newUser = new userModel({
             firstname,
             lastname,
             email,
-            country_code,
-            phone,
+            country_code: cleanCountryCode,
+            phone: cleanPhone,
             password: hashedPassword
         });
         
@@ -646,11 +671,54 @@ const UserEdit = async (req, res) => {
         const { firstname, lastname, phone, country_code } = req.body;
         const userId = req.userId;
         
+        console.log('[DEBUG] UserEdit request:', { 
+            firstname, 
+            lastname, 
+            phone, 
+            country_code, 
+            userId 
+        });
+        
+        // Clean and validate country_code - remove duplicate + signs
+        let cleanCountryCode = country_code;
+        if (cleanCountryCode && typeof cleanCountryCode === 'string') {
+            // Remove multiple + signs and ensure only one at the beginning
+            cleanCountryCode = cleanCountryCode.replace(/^\++/, '+').replace(/\++/g, '+');
+            // Ensure it starts with +
+            if (!cleanCountryCode.startsWith('+')) {
+                cleanCountryCode = '+' + cleanCountryCode;
+            }
+        }
+        
+        // Clean phone number - remove any country code prefix if it's included
+        let cleanPhone = phone;
+        if (cleanPhone && cleanCountryCode) {
+            const countryCodeNum = cleanCountryCode.replace('+', '');
+            // Remove country code from phone if it's prefixed
+            if (cleanPhone.startsWith(countryCodeNum)) {
+                cleanPhone = cleanPhone.substring(countryCodeNum.length);
+            }
+            // Remove any remaining + signs from phone
+            cleanPhone = cleanPhone.replace(/\+/g, '');
+        }
+        
+        console.log('[DEBUG] Cleaned data:', { 
+            cleanCountryCode, 
+            cleanPhone 
+        });
+        
         const updatedUser = await userModel.findByIdAndUpdate(
             userId,
-            { firstname, lastname, phone, country_code },
+            { 
+                firstname, 
+                lastname, 
+                phone: cleanPhone, 
+                country_code: cleanCountryCode 
+            },
             { new: true }
         ).select('-password');
+        
+        console.log('[DEBUG] Profile updated successfully for user:', userId);
         
         return res.status(200).json({
             status: true,
@@ -659,7 +727,7 @@ const UserEdit = async (req, res) => {
         });
         
     } catch (error) {
-        console.log(error.message);
+        console.log('[ERROR] UserEdit:', error.message);
         return res.status(500).json({
             status: false,
             message: "Internal server error"

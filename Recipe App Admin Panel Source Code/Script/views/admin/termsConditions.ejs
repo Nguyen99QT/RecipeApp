@@ -124,7 +124,7 @@
 
                   <!--begin::Input group--->
                   <div class=" mb-10">
-                    <textarea name="terms_and_conditions" id="kt_docs_first_ckeditor_classic"><%- setting && setting.termsAndConditions ? setting.termsAndConditions : "" %></textarea>
+                    <textarea name="terms_and_conditions" id="kt_docs_first_ckeditor_classic" style="min-height: 400px;"><%- setting && setting.termsAndConditions ? setting.termsAndConditions : "" %></textarea>
                   </div>
                   <!--end::Input group--->
 
@@ -163,6 +163,45 @@
   <!--end::Page-->
 </div>
 <!--end::App-->
+
+<!--begin::Custom Javascript-->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize CKEditor for Terms and Conditions
+    ClassicEditor
+        .create(document.querySelector('#kt_docs_first_ckeditor_classic'), {
+            toolbar: {
+                items: [
+                    'heading', '|',
+                    'bold', 'italic', 'link', '|',
+                    'bulletedList', 'numberedList', '|',
+                    'insertTable', '|',
+                    'undo', 'redo'
+                ]
+            },
+            language: 'en',
+            table: {
+                contentToolbar: [
+                    'tableColumn',
+                    'tableRow',
+                    'mergeTableCells'
+                ]
+            }
+        })
+        .then(editor => {
+            console.log('Terms and Conditions CKEditor initialized');
+            // Set minimum height for better appearance
+            const editorElement = editor.ui.view.editable.element;
+            if (editorElement) {
+                editorElement.style.minHeight = '400px';
+            }
+        })
+        .catch(error => {
+            console.error('CKEditor initialization failed:', error);
+        });
+});
+</script>
+<!--end::Custom Javascript-->
 
 <!--begin::Scrolltop-->
 <div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
