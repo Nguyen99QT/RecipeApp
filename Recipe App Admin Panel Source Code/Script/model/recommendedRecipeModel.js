@@ -27,4 +27,4 @@ const recommendedRecipeSchema = new mongoose.Schema({
 );
 
 
-module.exports = new mongoose.model("recommendedRecipe", recommendedRecipeSchema);
+module.exports = mongoose.model("recommendedRecipe", recommendedRecipeSchema);
