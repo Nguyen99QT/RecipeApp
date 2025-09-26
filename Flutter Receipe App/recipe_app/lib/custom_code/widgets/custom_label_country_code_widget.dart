@@ -230,14 +230,20 @@ class _CustomLabelCountryCodeWidgetState
       },
       invalidNumberMessage: "Please enter valid phone number",
       onChanged: (value) {
+        print('[DEBUG] Phone number changed: ${value.completeNumber}');
+        print('[DEBUG] Country code: ${value.countryCode}');
+        print('[DEBUG] Phone number only: ${value.number}');
+        
         FFAppState().update(() {
           FFAppState().phone = value.number;
           FFAppState().countryCode = value.countryCode;
         });
-        print('Phone number: ${value.completeNumber}');
       },
       autovalidateMode: AutovalidateMode.onUserInteraction,
       onCountryChanged: (value) {
+        print('[DEBUG] Country code changed to: ${value.dialCode}');
+        print('[DEBUG] Country name: ${value.code}');
+        
         FFAppState().update(() {
           FFAppState().countryCode = value.dialCode.toString();
           FFAppState().countryName = value.code.toString(); // Store country code (e.g., 'VN')

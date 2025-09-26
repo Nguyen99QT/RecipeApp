@@ -13,4 +13,4 @@ const cuisinesSchema = new mongoose.Schema({
     }
 );
 
-module.exports = new mongoose.model("cuisines", cuisinesSchema);
+module.exports = mongoose.model("cuisines", cuisinesSchema);

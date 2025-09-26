@@ -149,6 +149,31 @@
                               </span>
                             </div>
                             <div class="invalid-feedback" id="image-error"></div>
+                            
+                            <!-- Image Preview Section -->
+                            <div id="imagePreviewContainer" class="mt-4" style="display: none;">
+                              <label class="form-label">Selected Image Preview:</label>
+                              <div class="card card-flush shadow-sm">
+                                <div class="card-body p-4">
+                                  <div class="text-center">
+                                    <img id="imagePreview" src="" alt="Selected Image" class="img-fluid rounded" style="max-height: 200px; max-width: 100%; object-fit: cover; border: 2px solid #e4e6ef;">
+                                    <div class="mt-3">
+                                      <button type="button" class="btn btn-sm btn-light-danger" onclick="window.removeImagePreview()">
+                                        <i class="ki-duotone ki-trash fs-5">
+                                          <span class="path1"></span>
+                                          <span class="path2"></span>
+                                          <span class="path3"></span>
+                                          <span class="path4"></span>
+                                          <span class="path5"></span>
+                                        </i>
+                                        Remove Image
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- End Image Preview Section -->
                           </div>
                         </div>
                         <!--end::Input group-->
@@ -299,6 +324,33 @@
                                 <button class="file-upload-browse btn btn-primary buttonedit" type="button">Upload</button>
                               </span>
                             </div>
+                
+                            </div>
+                            
+                            <!-- Gallery Preview Section -->
+                            <div id="galleryPreviewContainer" class="mt-4" style="display: none;">
+                              <label class="form-label">Selected Gallery Images:</label>
+                              <div class="card card-flush shadow-sm">
+                                <div class="card-body p-4">
+                                  <div id="galleryPreviewGrid" class="row g-3">
+                                    <!-- Gallery preview images will be inserted here -->
+                                  </div>
+                                  <div class="text-center mt-3">
+                                    <button type="button" class="btn btn-sm btn-light-danger" onclick="removeAllGalleryImages()">
+                                      <i class="ki-duotone ki-trash fs-5">
+                                        <span class="path1"></span>
+                                        <span class="path2"></span>
+                                        <span class="path3"></span>
+                                        <span class="path4"></span>
+                                        <span class="path5"></span>
+                                      </i>
+                                      Remove All Images
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- End Gallery Preview Section -->
                           </div>
                         </div>
                         <!--end::Input group-->
@@ -512,6 +564,262 @@ document.addEventListener('DOMContentLoaded', function() {
     let overviewEditor, howToCookEditor;
     let editorsInitialized = false;
     
+    // ===== SCRIPT LOADING CHECK =====
+    console.log('🚀 ADD RECIPE SCRIPT LOADED!');
+    console.log('📅 Timestamp:', new Date().toISOString());
+    console.log('🌐 jQuery available:', typeof $ !== 'undefined');
+    console.log('📝 Document ready state:', document.readyState);
+    
+    // ===== GLOBAL TEST FUNCTIONS (Available immediately) =====
+    window.consoleTest = function() {
+        console.log('📝 Console test button clicked!');
+        alert('📝 Console Test Working! Check console for log.');
+    };
+    
+    // Gallery Preview Functions
+    
+    window.debugGalleryElements = function() {
+        console.log('=== DEBUGGING GALLERY ELEMENTS ===');
+        
+        const galleryInput = document.getElementById('galleryInput');
+        const galleryContainer = document.getElementById('galleryPreviewContainer');
+        const galleryGrid = document.getElementById('galleryPreviewGrid');
+        const galleryButton = document.querySelector('input[name="gallery"]')?.nextElementSibling?.querySelector('.file-upload-browse');
+        
+        console.log('Gallery Input:', galleryInput);
+        console.log('Gallery Container:', galleryContainer);
+        console.log('Gallery Grid:', galleryGrid);
+        console.log('Gallery Button:', galleryButton);
+        
+        if (galleryInput) {
+            console.log('Gallery Input Files:', galleryInput.files.length);
+            console.log('Gallery Input Value:', galleryInput.value);
+        }
+        
+        if (galleryContainer) {
+            console.log('Container Display:', galleryContainer.style.display);
+            console.log('Container Opacity:', galleryContainer.style.opacity);
+        }
+        
+        if (galleryGrid) {
+            console.log('Grid HTML:', galleryGrid.innerHTML);
+            console.log('Grid Children:', galleryGrid.children.length);
+        }
+        
+        alert('🔍 Debug completed! Check console for detailed information.');
+        console.log('=== END DEBUG ===');
+    };
+    
+    // ===== GALLERY PREVIEW FUNCTIONS (Global) =====
+    // Add debounce protection to prevent multiple calls
+    let isProcessingGallery = false;
+    
+    window.displayGalleryPreview = function(files) {
+        console.log('=== displayGalleryPreview START ===');
+        console.log('displayGalleryPreview called with', files ? files.length : 0, 'files');
+        
+        // Prevent multiple simultaneous calls
+        if (isProcessingGallery) {
+            console.log('⚠️ Gallery preview already processing, skipping...');
+            return;
+        }
+        
+        isProcessingGallery = true;
+        
+        const galleryPreviewContainer = document.getElementById('galleryPreviewContainer');
+        const galleryPreviewGrid = document.getElementById('galleryPreviewGrid');
+        
+        console.log('Container element:', galleryPreviewContainer);
+        console.log('Grid element:', galleryPreviewGrid);
+        
+        if (!galleryPreviewContainer || !galleryPreviewGrid) {
+            console.error('Gallery preview elements not found!');
+            console.error('Container exists:', !!galleryPreviewContainer);
+            console.error('Grid exists:', !!galleryPreviewGrid);
+            isProcessingGallery = false;
+            return;
+        }
+        
+        // Clear existing previews
+        console.log('Clearing existing previews...');
+        galleryPreviewGrid.innerHTML = '';
+        
+        // Show container immediately for debugging
+        console.log('Showing container...');
+        galleryPreviewContainer.style.display = 'block';
+        galleryPreviewContainer.style.opacity = '1';
+        galleryPreviewContainer.style.visibility = 'visible';
+        
+        if (!files || files.length === 0) {
+            console.log('No files to process');
+            galleryPreviewGrid.innerHTML = '<div class="col-12 text-center"><p class="text-muted">No images selected</p></div>';
+            isProcessingGallery = false;
+            return;
+        }
+        
+        let loadedCount = 0;
+        const totalFiles = files.length;
+        console.log('Processing', totalFiles, 'files...');
+        
+        // Process each file
+        Array.from(files).forEach((file, index) => {
+            console.log('Processing file', index + 1, ':', file.name, 'Type:', file.type, 'Size:', file.size);
+            
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                console.warn('Skipping non-image file:', file.name);
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                console.log('File', index + 1, 'loaded successfully, data length:', e.target.result.length);
+                
+                try {
+                    const colDiv = document.createElement('div');
+                    colDiv.className = 'col-md-3 col-sm-4 col-6 mb-3';
+                    colDiv.innerHTML = `
+                        <div class="gallery-preview-item position-relative border rounded p-2">
+                            <img src="${e.target.result}" alt="Gallery Image ${index + 1}" 
+                                 class="img-fluid rounded shadow-sm" 
+                                 style="width: 100%; height: 120px; object-fit: cover; border: 2px solid #e4e6ef; cursor: pointer;"
+                                 onclick="this.style.transform = this.style.transform ? '' : 'scale(1.1)'; setTimeout(() => this.style.transform = '', 200);">
+                            <button type="button" class="btn btn-sm btn-danger position-absolute" 
+                                    onclick="window.removeGalleryImage(${index})" 
+                                    style="top: 8px; right: 8px; padding: 2px 6px; font-size: 12px; z-index: 10; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">
+                                ×
+                            </button>
+                            <div class="text-center mt-2">
+                                <small class="text-muted fw-bold">Image ${index + 1}</small>
+                                <br>
+                                <small class="text-muted">${file.name.substring(0, 15)}${file.name.length > 15 ? '...' : ''}</small>
+                            </div>
+                        </div>
+                    `;
+                    
+                    galleryPreviewGrid.appendChild(colDiv);
+                    console.log('Added preview for file', index + 1, 'to grid');
+                    
+                    loadedCount++;
+                    console.log('Loaded', loadedCount, 'of', totalFiles, 'files');
+                    
+                    // Final animation when all files are loaded
+                    if (loadedCount === totalFiles) {
+                        console.log('All files loaded, applying final styling...');
+                        galleryPreviewContainer.style.transition = 'all 0.3s ease-in-out';
+                        galleryPreviewContainer.style.transform = 'scale(1)';
+                        console.log('Gallery preview completed successfully!');
+                    }
+                } catch (error) {
+                    console.error('Error creating preview element for file', index + 1, ':', error);
+                }
+            };
+            
+            reader.onerror = function(e) {
+                console.error('Error reading file', index + 1, ':', e);
+                console.error('File details:', {
+                    name: file.name,
+                    size: file.size,
+                    type: file.type
+                });
+            };
+            
+            reader.onloadstart = function() {
+                console.log('Started reading file', index + 1);
+            };
+            
+            reader.onprogress = function(e) {
+                if (e.lengthComputable) {
+                    const progress = (e.loaded / e.total) * 100;
+                    console.log('Reading file', index + 1, 'progress:', progress.toFixed(2) + '%');
+                }
+            };
+            
+            try {
+                reader.readAsDataURL(file);
+            } catch (error) {
+                console.error('Error starting file read for file', index + 1, ':', error);
+            }
+        });
+        
+        console.log('=== displayGalleryPreview END ===');
+        
+        // Reset processing flag
+        setTimeout(() => {
+            isProcessingGallery = false;
+        }, 100);
+    };
+    
+    window.hideGalleryPreview = function() {
+        const galleryPreviewContainer = document.getElementById('galleryPreviewContainer');
+        if (galleryPreviewContainer) {
+            galleryPreviewContainer.style.display = 'none';
+        }
+    };
+    
+    window.removeGalleryImage = function(index) {
+        const galleryInput = document.getElementById('galleryInput');
+        const galleryDisplay = galleryInput.nextElementSibling.querySelector('.file-upload-info');
+        
+        // Create new FileList without the removed file
+        const dt = new DataTransfer();
+        const files = Array.from(galleryInput.files);
+        
+        files.forEach((file, i) => {
+            if (i !== index) {
+                dt.items.add(file);
+            }
+        });
+        
+        galleryInput.files = dt.files;
+        
+        // Update display
+        if (galleryInput.files.length > 0) {
+            galleryDisplay.value = galleryInput.files.length + ' file(s) selected';
+            window.displayGalleryPreview(galleryInput.files);
+        } else {
+            galleryDisplay.value = '';
+            window.hideGalleryPreview();
+        }
+    };
+    
+    window.removeAllGalleryImages = function() {
+        const galleryInput = document.getElementById('galleryInput');
+        const galleryDisplay = galleryInput.nextElementSibling.querySelector('.file-upload-info');
+        
+        // Clear the file input
+        galleryInput.value = '';
+        galleryDisplay.value = '';
+        
+        // Hide the preview
+        window.hideGalleryPreview();
+    };
+    
+    console.log('✅ Gallery functions added to global scope:', {
+        displayGalleryPreview: typeof window.displayGalleryPreview,
+        hideGalleryPreview: typeof window.hideGalleryPreview,
+        removeGalleryImage: typeof window.removeGalleryImage,
+        removeAllGalleryImages: typeof window.removeAllGalleryImages
+    });
+    // ===== PREVENT CKEDITOR DUPLICATE MODULES =====
+    
+    // Clear any existing CKEditor instances to prevent conflicts
+    if (typeof window.ckeditorInstances !== 'undefined') {
+        for (let instance of window.ckeditorInstances) {
+            try {
+                if (instance && instance.destroy) {
+                    instance.destroy();
+                }
+            } catch (e) {
+                console.warn('Error destroying CKEditor instance:', e);
+            }
+        }
+        window.ckeditorInstances = [];
+    } else {
+        window.ckeditorInstances = [];
+    }
+    
     // Prevent default CKEditor initialization
     if (typeof KTAppCKEditorInit !== 'undefined') {
         // Override the existing init function to prevent conflict
@@ -558,8 +866,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         if (editorsInitialized) {
+            console.log('CKEditors already initialized, skipping...');
             return; // Prevent multiple initializations
         }
+        
+        // Additional check for duplicate module prevention
+        if (typeof window._ckeditorModuleLoaded !== 'undefined') {
+            console.log('CKEditor module already loaded in this session');
+            return;
+        }
+        window._ckeditorModuleLoaded = true;
         
         editorsInitialized = true;
         console.log('Starting custom CKEditor initialization...');
@@ -586,13 +902,14 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(editor => {
                 overviewEditor = editor;
+                window.ckeditorInstances.push(editor); // Track instance
                 hideLading('overview-loading');
                 console.log('Overview editor initialized successfully');
                 
                 // Set minimum height
                 const editorElement = editor.ui.view.editable.element;
                 if (editorElement) {
-                    editorElement.style.minHeight = '150px';
+                    editorElement.style.minHeight = '300px'; // Increased from 150px to 300px
                 }
             })
             .catch(error => {
@@ -627,13 +944,14 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(editor => {
                 howToCookEditor = editor;
+                window.ckeditorInstances.push(editor); // Track instance
                 hideLading('howto-loading');
                 console.log('How to cook editor initialized successfully');
                 
                 // Set minimum height
                 const editorElement = editor.ui.view.editable.element;
                 if (editorElement) {
-                    editorElement.style.minHeight = '200px';
+                    editorElement.style.minHeight = '350px'; // Increased from 200px to 350px
                 }
             })
             .catch(error => {
@@ -836,6 +1154,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!imageInput.files || imageInput.files.length === 0) {
             showError('image', 'Recipe image is required');
+            hideImagePreview();
             return false;
         }
         
@@ -844,59 +1163,189 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!allowedTypes.includes(file.type)) {
             showError('image', 'Please select a valid image file (JPEG, JPG, or PNG)');
+            hideImagePreview();
             return false;
         }
         
         const maxSize = 5 * 1024 * 1024; // 5MB
         if (file.size > maxSize) {
             showError('image', 'Image size must not exceed 5MB');
+            hideImagePreview();
             return false;
         }
+        
+        // Display image preview
+        displayImagePreview(file);
         
         showSuccess('image');
         return true;
     }
     
+    function displayImagePreview(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imagePreview = document.getElementById('imagePreview');
+            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+            
+            imagePreview.src = e.target.result;
+            imagePreviewContainer.style.display = 'block';
+            
+            // Add smooth fade-in animation
+            imagePreviewContainer.style.opacity = '0';
+            setTimeout(() => {
+                imagePreviewContainer.style.transition = 'opacity 0.3s ease-in-out';
+                imagePreviewContainer.style.opacity = '1';
+            }, 10);
+        };
+        reader.readAsDataURL(file);
+    }
+    
+    window.hideImagePreview = function() {
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        if (imagePreviewContainer) {
+            imagePreviewContainer.style.display = 'none';
+        }
+    };
+    
+    window.removeImagePreview = function() {
+        const imageInput = document.getElementById('imageInput');
+        const imageDisplay = document.getElementById('image-display');
+        
+        // Clear the file input
+        imageInput.value = '';
+        imageDisplay.value = '';
+        
+        // Hide the preview
+        window.hideImagePreview();
+        
+        // Clear any validation states
+        const imageField = document.getElementById('imageInput');
+        const errorDiv = document.getElementById('image-error');
+        
+        if (imageField) {
+            imageField.classList.remove('is-invalid', 'is-valid');
+            imageField.removeAttribute('data-has-error');
+        }
+        if (errorDiv) {
+            errorDiv.style.display = 'none';
+            errorDiv.classList.remove('d-block');
+        }
+    }
+    
+    function hideGalleryPreview() {
+        const galleryPreviewContainer = document.getElementById('galleryPreviewContainer');
+        galleryPreviewContainer.style.display = 'none';
+    }
+    
+    function removeGalleryImage(index) {
+        const galleryInput = document.getElementById('galleryInput');
+        const galleryDisplay = galleryInput.nextElementSibling.querySelector('.file-upload-info');
+        
+        // Create new FileList without the removed file
+        const dt = new DataTransfer();
+        const files = Array.from(galleryInput.files);
+        
+        files.forEach((file, i) => {
+            if (i !== index) {
+                dt.items.add(file);
+            }
+        });
+        
+        galleryInput.files = dt.files;
+        
+        // Update display
+        if (galleryInput.files.length > 0) {
+            galleryDisplay.value = galleryInput.files.length + ' file(s) selected';
+            window.displayGalleryPreview(galleryInput.files);
+        } else {
+            galleryDisplay.value = '';
+            window.hideGalleryPreview();
+        }
+    }
+    
+    function removeAllGalleryImages() {
+        const galleryInput = document.getElementById('galleryInput');
+        const galleryDisplay = galleryInput.nextElementSibling.querySelector('.file-upload-info');
+        
+        // Clear the file input
+        galleryInput.value = '';
+        galleryDisplay.value = '';
+        
+        // Hide the preview
+        window.hideGalleryPreview();
+    }
+    
+    
     function validateIngredients() {
         const ingredientInputs = document.querySelectorAll('.ingredients-input');
         let hasValidIngredient = false;
+        let ingredientValues = [];
+        let duplicates = [];
+        let hasError = false;
         
+        // Clear previous error states
         ingredientInputs.forEach(input => {
-            if (input.value.trim()) {
+            input.classList.remove('is-invalid', 'duplicate-ingredient');
+            input.removeAttribute('data-has-error');
+        });
+        
+        // Check for empty and duplicate ingredients
+        ingredientInputs.forEach((input, index) => {
+            const value = input.value.trim().toLowerCase();
+            
+            if (value) {
                 hasValidIngredient = true;
+                
+                // Check for duplicates
+                if (ingredientValues.includes(value)) {
+                    if (!duplicates.includes(value)) {
+                        duplicates.push(value);
+                    }
+                    input.classList.add('is-invalid', 'duplicate-ingredient');
+                    input.setAttribute('data-has-error', 'true');
+                    hasError = true;
+                } else {
+                    ingredientValues.push(value);
+                }
             }
         });
         
-        if (!hasValidIngredient) {
-            const ingredientsError = document.getElementById('ingredients-error');
-            if (ingredientsError) {
-                ingredientsError.textContent = 'At least one ingredient is required';
-                ingredientsError.style.display = 'block';
-            }
-            
-            // Mark first ingredient input for scrolling
-            const firstIngredient = document.querySelector('.ingredients-input');
-            if (firstIngredient) {
-                firstIngredient.setAttribute('data-has-error', 'true');
-                firstIngredient.classList.add('is-invalid');
-            }
-            
-            return false;
-        }
-        
-        // Clear error state
+        // Handle validation errors
         const ingredientsError = document.getElementById('ingredients-error');
         if (ingredientsError) {
-            ingredientsError.style.display = 'none';
+            if (!hasValidIngredient) {
+                ingredientsError.textContent = 'At least one ingredient is required';
+                ingredientsError.style.display = 'block';
+                hasError = true;
+                
+                // Mark first ingredient input for scrolling
+                const firstIngredient = document.querySelector('.ingredients-input');
+                if (firstIngredient) {
+                    firstIngredient.setAttribute('data-has-error', 'true');
+                    firstIngredient.classList.add('is-invalid');
+                }
+            } else if (duplicates.length > 0) {
+                ingredientsError.innerHTML = `
+                    <strong>Duplicate ingredients found:</strong><br>
+                    ${duplicates.map(dup => `• ${dup.charAt(0).toUpperCase() + dup.slice(1)}`).join('<br>')}
+                    <br><small class="text-muted">Please remove or modify duplicate ingredients.</small>
+                `;
+                ingredientsError.style.display = 'block';
+                hasError = true;
+                
+                // Mark all duplicate ingredients for highlighting
+                ingredientInputs.forEach(input => {
+                    if (input.classList.contains('duplicate-ingredient')) {
+                        input.setAttribute('data-has-error', 'true');
+                    }
+                });
+            } else {
+                ingredientsError.style.display = 'none';
+                ingredientsError.textContent = '';
+            }
         }
         
-        // Remove error marking from all ingredient inputs
-        ingredientInputs.forEach(input => {
-            input.removeAttribute('data-has-error');
-            input.classList.remove('is-invalid');
-        });
-        
-        return true;
+        return !hasError;
     }
     
     function validateSelect(fieldId, fieldName) {
@@ -1232,15 +1681,64 @@ $(document).off('change', '.file-upload-default');
 
 // Wait for DOM and all scripts to load
 $(window).on('load', function() {
+    console.log('=== WINDOW LOADED - STARTING SETUP ===');
+    
     // Remove all existing file upload handlers with delay
     setTimeout(function() {
+        console.log('=== REMOVING OLD HANDLERS ===');
         $('.file-upload-browse').off();
         $('.file-upload-default').off();
         
+        console.log('=== SETTING UP NEW HANDLERS ===');
         // Add our custom handlers
         setupFileUploads();
         setupIngredientsRepeater();
+        
+        console.log('=== SETUP COMPLETED ===');
     }, 100);
+});
+
+// Also add immediate setup for gallery
+$(document).ready(function() {
+    console.log('=== DOCUMENT READY - IMMEDIATE GALLERY SETUP ===');
+    
+    // Immediate gallery setup
+    setTimeout(function() {
+        const galleryInput = document.getElementById('galleryInput');
+        console.log('Gallery input found on ready:', !!galleryInput);
+        
+        if (galleryInput) {
+            // Force add change listener
+            galleryInput.addEventListener('change', function(e) {
+                console.log('=== IMMEDIATE GALLERY CHANGE ===');
+                console.log('Files selected:', this.files.length);
+                
+                if (this.files.length > 0) {
+                    // Update info text
+                    const infoInput = this.nextElementSibling.querySelector('.file-upload-info');
+                    if (infoInput) {
+                        infoInput.value = this.files.length + ' file(s) selected';
+                    }
+                    
+                    // Show preview
+                    console.log('Calling displayGalleryPreview from immediate handler...');
+                    window.displayGalleryPreview(this.files);
+                } else {
+                    window.hideGalleryPreview();
+                }
+            });
+            
+            console.log('Immediate gallery handler added');
+        }
+        
+        // Test gallery elements
+        const container = document.getElementById('galleryPreviewContainer');
+        const grid = document.getElementById('galleryPreviewGrid');
+        console.log('Gallery elements check:');
+        console.log('- Container:', !!container);
+        console.log('- Grid:', !!grid);
+        
+    }, 200);
 });
 
 function setupFileUploads() {
@@ -1276,60 +1774,19 @@ function setupFileUploads() {
         return false;
     });
     
-    // Alternative approach - Vanilla JavaScript for gallery
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('Setting up gallery with vanilla JavaScript...');
+    // Gallery upload with animation
+    $('input[name="gallery"]').next('.input-group').find('.file-upload-browse').off().on('click', function(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        console.log('Gallery upload clicked');
         
-        // Find gallery input and button
-        const galleryInput = document.querySelector('input[name="gallery"]');
-        const galleryButtons = document.querySelectorAll('.file-upload-browse');
+        // Add click animation
+        const $btn = $(this);
+        $btn.addClass('btn-clicked');
+        setTimeout(() => $btn.removeClass('btn-clicked'), 200);
         
-        console.log('Gallery input found:', !!galleryInput);
-        console.log('Upload buttons found:', galleryButtons.length);
-        
-        // Find the correct gallery button (should be the second one)
-        let galleryButton = null;
-        galleryButtons.forEach((btn, index) => {
-            const parent = btn.closest('.col-sm-6');
-            if (parent && parent.querySelector('input[name="gallery"]')) {
-                galleryButton = btn;
-                console.log('Gallery button found at index:', index);
-            }
-        });
-        
-        if (galleryButton && galleryInput) {
-            galleryButton.addEventListener('click', function(e) {
-                e.preventDefault();
-                console.log('Gallery button clicked (vanilla JS)!');
-                
-                // Add animation
-                this.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    this.style.transform = 'scale(1)';
-                }, 150);
-                
-                galleryInput.click();
-            });
-            
-            // Handle file selection
-            galleryInput.addEventListener('change', function() {
-                const count = this.files.length;
-                console.log('Gallery files selected (vanilla):', count);
-                
-                if (count > 0) {
-                    const infoInput = galleryButton.closest('.col-sm-6').querySelector('.file-upload-info');
-                    if (infoInput) {
-                        infoInput.value = count + ' file(s) selected';
-                        infoInput.style.color = '#28a745';
-                        setTimeout(() => {
-                            infoInput.style.color = '';
-                        }, 2000);
-                    }
-                }
-            });
-        } else {
-            console.error('Gallery button or input not found!');
-        }
+        document.querySelector('input[name="gallery"]').click();
+        return false;
     });
     
     // File change handlers with success animation
@@ -1340,7 +1797,7 @@ function setupFileUploads() {
             setTimeout(() => $info.removeClass('file-selected'), 1000);
         }
     });
-    
+
     $('input[name="video"]').off('change').on('change', function() {
         if (this.files.length > 0) {
             const $info = $(this).next('.input-group').find('.file-upload-info');
@@ -1349,7 +1806,7 @@ function setupFileUploads() {
         }
     });
     
-    // Note: Gallery change handler is now handled by vanilla JavaScript above
+    // Backup event handler using vanilla JavaScript
 }
 
 function setupIngredientsRepeater() {
@@ -1638,6 +2095,33 @@ function setupIngredientsRepeater() {
     border-color: #009ef7;
 }
 
+/* Duplicate ingredient styling */
+.duplicate-ingredient {
+    border-color: #dc3545 !important;
+    background-color: #fff5f5 !important;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2) !important;
+    animation: shake 0.5s ease-in-out;
+}
+
+.duplicate-ingredient:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1), 0 4px 20px rgba(220, 53, 69, 0.1) !important;
+    background-color: #fff5f5 !important;
+}
+
+/* Shake animation for duplicates */
+@keyframes shake {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 70%, 90% {
+        transform: translateX(-3px);
+    }
+    40%, 60% {
+        transform: translateX(3px);
+    }
+}
+
 /* Loading spinner enhancement */
 .spinner-border-sm {
     animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
@@ -1687,6 +2171,57 @@ function setupIngredientsRepeater() {
 
 .card:hover {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Gallery Preview Styles */
+#galleryPreviewContainer {
+    opacity: 1 !important;
+}
+
+.gallery-preview-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+.gallery-preview-item:hover {
+    transform: translateY(-2px);
+}
+
+.gallery-preview-item img {
+    transition: all 0.3s ease;
+}
+
+.gallery-preview-item img:hover {
+    transform: scale(1.05);
+}
+
+.gallery-preview-item .btn-danger {
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.gallery-preview-item .btn-danger:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Debug styles for troubleshooting */
+#galleryPreviewGrid {
+    min-height: 50px;
+    background-color: rgba(0,0,0,0.02);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+#galleryPreviewGrid:empty::before {
+    content: "Gallery preview will appear here...";
+    color: #999;
+    font-style: italic;
+    display: block;
+    text-align: center;
+    padding: 20px;
 }
 </style>
 
@@ -1754,6 +2289,32 @@ function setupIngredientsRepeater() {
     color: white !important;
 }
 </style>
+
+<script>
+// ===== CKEDITOR CLEANUP ON PAGE UNLOAD =====
+window.addEventListener('beforeunload', function() {
+    if (typeof window.ckeditorInstances !== 'undefined') {
+        for (let instance of window.ckeditorInstances) {
+            try {
+                if (instance && instance.destroy) {
+                    instance.destroy();
+                }
+            } catch (e) {
+                console.warn('Error destroying CKEditor instance on unload:', e);
+            }
+        }
+        window.ckeditorInstances = [];
+    }
+});
+
+// Cleanup on page visibility change (when switching tabs)
+document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+        // Page is hidden, save state but don't destroy
+        console.log('Page hidden, CKEditor instances preserved');
+    }
+});
+</script>
 
 <!--begin::Footer-->
 <div id="kt_app_footer" class="app-footer align-items-center justify-content-center justify-content-md-between flex-column flex-md-row py-3">

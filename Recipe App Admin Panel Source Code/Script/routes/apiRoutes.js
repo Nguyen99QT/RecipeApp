@@ -115,4 +115,19 @@ routes.post("/getUserAiRecipes", checkAuthorization, aiRecipeController.getUserA
 routes.post("/deleteAiRecipe", checkAuthorization, aiRecipeController.deleteAiRecipe);
 routes.post("/updateAiRecipe", checkAuthorization, aiRecipeController.updateAiRecipe);
 
+//Routes For Saved AI Recipes (từ Flutter app)
+const savedAiRecipeController = require("../controllers/savedAiRecipeController");
+routes.post("/syncSavedAiRecipes", checkAuthorization, savedAiRecipeController.syncSavedAiRecipes);
+routes.post("/getSavedAiRecipes", checkAuthorization, savedAiRecipeController.getSavedAiRecipes);
+routes.post("/deleteSavedAiRecipe", checkAuthorization, savedAiRecipeController.deleteSavedAiRecipe);
+
+// Add endpoint for Flutter app sync (simpler endpoint name)
+routes.post("/saved-ai-recipes", savedAiRecipeController.saveSingleAiRecipe);
+
+// Get saved recipes for Flutter app (no auth for testing)
+routes.post("/flutter-saved-ai-recipes", savedAiRecipeController.getFlutterSavedAiRecipes);
+
+// Test endpoint without auth for development/testing
+routes.post("/testSyncSavedAiRecipes", savedAiRecipeController.syncSavedAiRecipes);
+
 module.exports = routes;

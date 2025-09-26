@@ -109,7 +109,7 @@ class _SavedAIRecipesPageContentState
           } else if (state is AIRecipeError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Lỗi: ${state.message}'),
+                content: Text('Error: ${state.message}'),
                 backgroundColor: Colors.red,
               ),
             );
@@ -307,12 +307,12 @@ class _SavedAIRecipesPageContentState
                 children: [
                   _buildInfoChip(
                     Icons.people,
-                    '${recipe.servings} người',
+                    '${recipe.servings} people',
                   ),
                   const SizedBox(width: 8),
                   _buildInfoChip(
                     Icons.schedule,
-                    '${recipe.preparationTime + recipe.cookingTime} phút',
+                    '${recipe.preparationTime + recipe.cookingTime} mins',
                   ),
                   const SizedBox(width: 8),
                   _buildInfoChip(
@@ -403,11 +403,11 @@ class _SavedAIRecipesPageContentState
     final difference = now.difference(date);
 
     if (difference.inDays == 0) {
-      return 'hôm nay';
+      return 'today';
     } else if (difference.inDays == 1) {
-      return 'hôm qua';
+      return 'yesterday';
     } else if (difference.inDays < 7) {
-      return '${difference.inDays} ngày trước';
+      return '${difference.inDays} days ago';
     } else {
       return '${date.day}/${date.month}/${date.year}';
     }

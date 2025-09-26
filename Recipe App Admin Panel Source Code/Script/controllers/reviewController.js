@@ -136,15 +136,32 @@ const isEnableReview = async (req, res) => {
 
         if (loginData && loginData.is_admin === 1) {
 
-            // Extract data from the request
-            const id = req.query.id;
+            // Extract data from the request - check both params and query
+            const id = req.params.id || req.query.id;
 
-            // Find current images
-            const currentReview = await reviewModel.findById({ _id: id });
+            // Validate ObjectId
+            if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+                console.log('[ERROR] Invalid ObjectId:', id);
+                req.flash('error', 'Invalid review ID provided');
+                return res.redirect('back');
+            }
+
+            // Find current review
+            const currentReview = await reviewModel.findById(id);
+
+            if (!currentReview) {
+                console.log('[ERROR] Review not found with ID:', id);
+                req.flash('error', 'Review not found');
+                return res.redirect('back');
+            }
 
             // update status
-            await reviewModel.findByIdAndUpdate({ _id: id }, { $set: { isEnable: currentReview.isEnable === false ? true : false } }, { new: true });
+            await reviewModel.findByIdAndUpdate(id, { 
+                $set: { isEnable: currentReview.isEnable === false ? true : false } 
+            }, { new: true });
 
+            console.log('[SUCCESS] Review status updated:', id);
+            req.flash('success', 'Review status updated successfully');
             return res.redirect('back');
 
         }
@@ -155,7 +172,9 @@ const isEnableReview = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error.message);
+        console.log('[ERROR] isEnableReview:', error.message);
+        req.flash('error', 'Error updating review status');
+        return res.redirect('back');
     }
 }
 

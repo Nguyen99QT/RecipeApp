@@ -38,6 +38,10 @@ app.use(flashmiddleware.setflash);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Configure view engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 // Add CORS support for Flutter app
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -52,7 +56,15 @@ app.use((req, res, next) => {
     }
 });
 
-// Configure body-parser for handling form data
+// Configure static files
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
+app.use('/css', express.static(path.join(__dirname, 'public/assets/css')));
+app.use('/js', express.static(path.join(__dirname, 'public/assets/js')));
+app.use('/plugins', express.static(path.join(__dirname, 'public/assets/plugins')));
+app.use('/media', express.static(path.join(__dirname, 'public/assets/media')));
+
+// Configure uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes for the API section (MUST be before admin routes)

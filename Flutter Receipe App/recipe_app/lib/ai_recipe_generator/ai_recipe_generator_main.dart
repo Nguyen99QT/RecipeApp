@@ -15,6 +15,8 @@ import 'domain/repositories/ai_recipe_repository.dart';
 import 'domain/usecases/generate_recipe_usecase.dart';
 import 'domain/usecases/save_ai_recipe_usecase.dart';
 import 'domain/usecases/get_saved_ai_recipes_usecase.dart';
+import 'domain/usecases/get_all_saved_ai_recipes_usecase.dart';
+import 'domain/usecases/get_user_saved_ai_recipes_usecase.dart';
 
 // Presentation layer imports
 import 'presentation/blocs/ai_recipe_bloc.dart';
@@ -40,6 +42,8 @@ class AIRecipeGeneratorDI {
   GenerateRecipeUseCase? _generateRecipeUseCase;
   SaveAIRecipeUseCase? _saveAIRecipeUseCase;
   GetSavedAIRecipesUseCase? _getSavedAIRecipesUseCase;
+  GetAllSavedAIRecipesUseCase? _getAllSavedAIRecipesUseCase;
+  GetUserSavedAIRecipesUseCase? _getUserSavedAIRecipesUseCase;
 
   // BLoC
   AIRecipeBloc? _aiRecipeBloc;
@@ -72,6 +76,8 @@ class AIRecipeGeneratorDI {
     _generateRecipeUseCase ??= GenerateRecipeUseCase(_repository!);
     _saveAIRecipeUseCase ??= SaveAIRecipeUseCase(_repository!);
     _getSavedAIRecipesUseCase ??= GetSavedAIRecipesUseCase(_repository!);
+    _getAllSavedAIRecipesUseCase ??= GetAllSavedAIRecipesUseCase(_repository!);
+    _getUserSavedAIRecipesUseCase ??= GetUserSavedAIRecipesUseCase(_repository!);
 
     // BLoC will be created when needed in getter
     print('✅ AIRecipeGeneratorDI initialized successfully');
@@ -85,6 +91,8 @@ class AIRecipeGeneratorDI {
         generateRecipeUseCase: _generateRecipeUseCase!,
         saveAIRecipeUseCase: _saveAIRecipeUseCase!,
         getSavedAIRecipesUseCase: _getSavedAIRecipesUseCase!,
+        getAllSavedAIRecipesUseCase: _getAllSavedAIRecipesUseCase!,
+        getUserSavedAIRecipesUseCase: _getUserSavedAIRecipesUseCase!,
       );
     }
     return _aiRecipeBloc!;
@@ -137,7 +145,7 @@ class AIRecipeGeneratorProvider extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Lỗi khởi tạo AI Recipe Generator',
+                    'Error initializing AI Recipe Generator',
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.grey[700],
@@ -253,7 +261,7 @@ class AIRecipeGeneratorNavigation {
     return OutlinedButton.icon(
       onPressed: () => openSavedRecipes(context, geminiApiKey: geminiApiKey),
       icon: const Icon(Icons.bookmark),
-      label: const Text('Công Thức AI Đã Lưu'),
+      label: const Text('Saved AI Recipes'),
       style: OutlinedButton.styleFrom(
         foregroundColor: const Color(0xFFFF8C00),
         side: const BorderSide(color: Color(0xFFFF8C00)),

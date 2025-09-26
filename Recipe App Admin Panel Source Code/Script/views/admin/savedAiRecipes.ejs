@@ -1,0 +1,526 @@
+<!-- partial:partials/header -->
+<%- include('../layouts/header.ejs') %>
+
+<!--begin::App-->
+<div class="d-flex flex-column flex-root app-root" id="kt_app_root">
+
+  <!--begin::Page-->
+  <div class="app-page flex-column flex-column-fluid" id="kt_app_page">
+    <!--begin::navbar-->
+    <div id="kt_app_header" class="app-header d-flex flex-column flex-stack">
+      <!--begin::navbar main-->
+      <%- include('../layouts/navbar.ejs') %>
+      <!--end::navbar main-->
+      <!--begin::Separator-->
+      <div class="app-header-separator"></div>
+      <!--end::Separator-->
+    </div>
+    <!--end::navbar-->
+
+    <!--begin::Wrapper-->
+    <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
+      <!--begin::Sidebar-->
+      <div id="kt_app_sidebar" class="app-sidebar flex-column" data-kt-drawer="true" data-kt-drawer-name="app-sidebar" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="250px" data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_app_sidebar_mobile_toggle">
+        <!--begin::Main-->
+        <%- include('../layouts/sidebar.ejs') %>
+        <!--end::Main-->
+      </div>
+      <!--end::Sidebar-->
+
+      <!--begin::Main-->
+      <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+        <!--begin::Content wrapper-->
+        <div class="d-flex flex-column flex-column-fluid">
+
+          <!--begin::Content-->
+          <div id="kt_app_content" class="app-content flex-column-fluid">
+            <!--begin::Content container-->
+            <div id="kt_app_content_container" class="app-container container-fluid">
+        <div class="main-content">
+            <!-- Header -->
+            <%- include('../layouts/header') %>
+
+            <!-- Content -->
+            <div class="content">
+                <div class="container-fluid">
+                    <!-- Page Title -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h1 class="h3 mb-0">
+                                    <i class="fas fa-heart text-danger me-2"></i>
+                                    Saved AI Recipes
+                                </h1>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-info" onclick="loadStats()">
+                                        <i class="fas fa-chart-line"></i> Statistics
+                                    </button>
+                                    <button class="btn btn-success" onclick="exportData()">
+                                        <i class="fas fa-file-export"></i> Export Data
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="row mb-4" id="statsCards" style="display: none;">
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="card bg-primary text-white h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="card-title">Total Saved</h6>
+                                            <h2 id="totalSaved" class="mb-0">-</h2>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fas fa-heart fa-2x opacity-75"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="card bg-success text-white h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="card-title">Today</h6>
+                                            <h2 id="todaySaved" class="mb-0">-</h2>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fas fa-calendar-day fa-2x opacity-75"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-user-friends me-2"></i>Top AI Recipe Savers
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="topSavers" class="small"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flash Messages -->
+                    <% if(typeof message !== 'undefined' && message.length > 0) { %>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i><%= message %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <% if(typeof error !== 'undefined' && error.length > 0) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i><%= error %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <% } %>
+
+                    <!-- Quick Stats -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col-md-3 mb-3 mb-md-0">
+                                            <div class="border-end border-md-end-0 border-bottom border-md-bottom-0 pe-3 pb-3 pb-md-0">
+                                                <h4 class="text-primary mb-1"><%= stats.total %></h4>
+                                                <small class="text-muted">Total saved recipes</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3 mb-md-0">
+                                            <div class="border-end border-md-end-0 border-bottom border-md-bottom-0 pe-3 pb-3 pb-md-0">
+                                                <h4 class="text-success mb-1"><%= stats.today %></h4>
+                                                <small class="text-muted">Today</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3 mb-md-0">
+                                            <div class="border-end border-md-end-0 border-bottom border-md-bottom-0 pe-3 pb-3 pb-md-0">
+                                                <h4 class="text-warning mb-1"><%= stats.thisWeek %></h4>
+                                                <small class="text-muted">This week</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div>
+                                                <h4 class="text-info mb-1"><%= stats.thisMonth %></h4>
+                                                <small class="text-muted">This month</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search and Filters -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <form method="GET" action="/saved-ai-recipes" class="row g-3">
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" name="search" placeholder="Search by name, description, ingredients..." value="<%= search %>">
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-select" name="userId">
+                                        <option value="">All users</option>
+                                        <% usersWithRecipes.forEach(function(user) { %>
+                                            <option value="<%= user.userId %>" <%= userId === user.userId.toString() ? 'selected' : '' %>>
+                                                <%= user.userName %> (<%= user.recipeCount %>)
+                                            </option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-select" name="cuisine">
+                                        <option value="">All cuisines</option>
+                                        <% cuisines.forEach(function(cuisineItem) { %>
+                                            <option value="<%= cuisineItem %>" <%= cuisine === cuisineItem ? 'selected' : '' %>><%= cuisineItem %></option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-select" name="difficulty">
+                                        <option value="">All difficulty</option>
+                                        <% difficulties.forEach(function(difficultyItem) { %>
+                                            <option value="<%= difficultyItem %>" <%= difficulty === difficultyItem ? 'selected' : '' %>><%= difficultyItem %></option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                <div class="col-md-1">
+                                    <select class="form-select" name="sort">
+                                        <option value="savedAt" <%= sortBy === 'savedAt' ? 'selected' : '' %>>Saved date</option>
+                                        <option value="title" <%= sortBy === 'title' ? 'selected' : '' %>>Recipe name</option>
+                                        <option value="cuisine" <%= sortBy === 'cuisine' ? 'selected' : '' %>>Cuisine</option>
+                                        <option value="difficulty" <%= sortBy === 'difficulty' ? 'selected' : '' %>>Difficulty</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-1">
+                                    <select class="form-select" name="order">
+                                        <option value="desc" <%= sortOrder === 'desc' ? 'selected' : '' %>>Descending</option>
+                                        <option value="asc" <%= sortOrder === 'asc' ? 'selected' : '' %>>Ascending</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Recipes Table -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-list me-2"></i>Saved AI Recipes List 
+                                <span class="badge bg-secondary ms-2"><%= totalCount %></span>
+                            </h5>
+                            <div class="d-flex gap-2">
+                                <select class="form-select form-select-sm" style="width: auto;" onchange="changePageSize(this.value)">
+                                    <option value="10" <%= limit === 10 ? 'selected' : '' %>>10 / page</option>
+                                    <option value="25" <%= limit === 25 ? 'selected' : '' %>>25 / page</option>
+                                    <option value="50" <%= limit === 50 ? 'selected' : '' %>>50 / page</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Recipe Name</th>
+                                            <th>User</th>
+                                            <th>Cuisine</th>
+                                            <th>Difficulty</th>
+                                            <th>Time</th>
+                                            <th>Saved Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (savedAiRecipes.length > 0) { %>
+                                            <% savedAiRecipes.forEach(function(recipe, index) { %>
+                                                <tr>
+                                                    <td>
+                                                        <strong><%= recipe.title %></strong>
+                                                        <br>
+                                                        <small class="text-muted"><%= recipe.description.substring(0, 50) %>...</small>
+                                                    </td>
+                                                    <td>
+                                                        <% if(recipe.userId) { %>
+                                                            <div class="d-flex align-items-center">
+                                                                <% if(recipe.userId.avatar) { %>
+                                                                    <img src="<%= IMAGE_URL + recipe.userId.avatar %>" class="rounded-circle me-2" style="width: 30px; height: 30px;" alt="User">
+                                                                <% } else { %>
+                                                                    <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 30px; height: 30px;">
+                                                                        <i class="fas fa-user text-white small"></i>
+                                                                    </div>
+                                                                <% } %>
+                                                                <div>
+                                                                    <small><%= recipe.userId.firstname %> <%= recipe.userId.lastname %></small>
+                                                                    <br>
+                                                                    <small class="text-muted"><%= recipe.userEmail %></small>
+                                                                </div>
+                                                            </div>
+                                                        <% } else { %>
+                                                            <small class="text-muted">N/A</small>
+                                                        <% } %>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-info text-dark"><%= recipe.cuisine %></span>
+                                                    </td>
+                                                    <td>
+                                                        <% if(recipe.difficulty === 'Dễ') { %>
+                                                            <span class="badge bg-success"><%= recipe.difficulty %></span>
+                                                        <% } else if(recipe.difficulty === 'Trung bình') { %>
+                                                            <span class="badge bg-warning text-dark"><%= recipe.difficulty %></span>
+                                                        <% } else { %>
+                                                            <span class="badge bg-danger"><%= recipe.difficulty %></span>
+                                                        <% } %>
+                                                    </td>
+                                                    <td>
+                                                        <small>
+                                                            <i class="fas fa-clock me-1"></i><%= recipe.preparationTime + recipe.cookingTime %> mins
+                                                            <br>
+                                                            <i class="fas fa-users me-1"></i><%= recipe.servings %> servings
+                                                        </small>
+                                                    </td>
+                                                    <td>
+                                                        <small><%= new Date(recipe.savedAt).toLocaleDateString('en-US') %></small>
+                                                    </td>
+                                                    <td>
+                                                        <div class="btn-group" role="group">
+                                                            <a href="/saved-ai-recipe-detail?id=<%= recipe._id %>" class="btn btn-sm btn-outline-primary" title="View details">
+                                                                <i class="fas fa-eye"></i>
+                                                            </a>
+                                                            <a href="/delete-saved-ai-recipe?id=<%= recipe._id %>" class="btn btn-sm btn-outline-danger" title="Delete" onclick="return confirm('Are you sure you want to delete this recipe?')">
+                                                                <i class="fas fa-trash-alt"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="8" class="text-center py-4">
+                                                    <i class="fas fa-utensils fa-3x text-muted mb-3"></i>
+                                                    <p class="text-muted">No AI recipes have been saved by users yet.</p>
+                                                </td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Pagination -->
+                        <% if (totalPages > 1) { %>
+                            <div class="card-footer">
+                                <nav>
+                                    <ul class="pagination mb-0 justify-content-center">
+                                        <% if (currentPage > 1) { %>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page=<%= currentPage - 1 %>&search=<%= search %>&userId=<%= userId %>&cuisine=<%= cuisine %>&difficulty=<%= difficulty %>&sort=<%= sortBy %>&order=<%= sortOrder %>&limit=<%= limit %>">
+                                                    <i class="fas fa-chevron-left"></i>
+                                                </a>
+                                            </li>
+                                        <% } %>
+
+                                        <% 
+                                        let startPage = Math.max(1, currentPage - 2);
+                                        let endPage = Math.min(totalPages, currentPage + 2);
+                                        %>
+
+                                        <% if (startPage > 1) { %>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page=1&search=<%= search %>&userId=<%= userId %>&cuisine=<%= cuisine %>&difficulty=<%= difficulty %>&sort=<%= sortBy %>&order=<%= sortOrder %>&limit=<%= limit %>">1</a>
+                                            </li>
+                                            <% if (startPage > 2) { %>
+                                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                                            <% } %>
+                                        <% } %>
+
+                                        <% for (let i = startPage; i <= endPage; i++) { %>
+                                            <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                                                <a class="page-link" href="?page=<%= i %>&search=<%= search %>&userId=<%= userId %>&cuisine=<%= cuisine %>&difficulty=<%= difficulty %>&sort=<%= sortBy %>&order=<%= sortOrder %>&limit=<%= limit %>"><%= i %></a>
+                                            </li>
+                                        <% } %>
+
+                                        <% if (endPage < totalPages) { %>
+                                            <% if (endPage < totalPages - 1) { %>
+                                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                                            <% } %>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page=<%= totalPages %>&search=<%= search %>&userId=<%= userId %>&cuisine=<%= cuisine %>&difficulty=<%= difficulty %>&sort=<%= sortBy %>&order=<%= sortOrder %>&limit=<%= limit %>"><%= totalPages %></a>
+                                            </li>
+                                        <% } %>
+
+                                        <% if (currentPage < totalPages) { %>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page=<%= currentPage + 1 %>&search=<%= search %>&userId=<%= userId %>&cuisine=<%= cuisine %>&difficulty=<%= difficulty %>&sort=<%= sortBy %>&order=<%= sortOrder %>&limit=<%= limit %>">
+                                                    <i class="fas fa-chevron-right"></i>
+                                                </a>
+                                            </li>
+                                        <% } %>
+                                    </ul>
+                                </nav>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Load statistics
+        async function loadStats() {
+            const statsCards = document.getElementById('statsCards');
+            const isVisible = statsCards.style.display !== 'none';
+            
+            if (isVisible) {
+                statsCards.style.display = 'none';
+                return;
+            }
+
+            try {
+                const response = await fetch('/saved-ai-recipe-stats');
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('totalSaved').textContent = result.data.totalSavedRecipes;
+                    document.getElementById('todaySaved').textContent = result.data.todaySavedRecipes;
+                    
+                    const topSaversDiv = document.getElementById('topSavers');
+                    if (result.data.topSavers.length > 0) {
+                        topSaversDiv.innerHTML = result.data.topSavers.map(user => 
+                            `<div class="d-flex justify-content-between align-items-center mb-1">
+                                <span>${user.name}</span>
+                                <span class="badge bg-primary">${user.count}</span>
+                            </div>`
+                        ).join('');
+                    } else {
+                        topSaversDiv.innerHTML = '<em class="text-muted">Chưa có dữ liệu</em>';
+                    }
+                    
+                    statsCards.style.display = 'block';
+                } else {
+                    alert('Không thể tải thống kê: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+                alert('Có lỗi xảy ra khi tải thống kê');
+            }
+        }
+
+        // Export data
+        async function exportData() {
+            try {
+                const response = await fetch('/export-saved-ai-recipes');
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Convert to CSV and download
+                    const csvContent = convertToCSV(result.data);
+                    downloadCSV(csvContent, result.filename);
+                } else {
+                    alert('Không thể xuất dữ liệu: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error exporting data:', error);
+                alert('Có lỗi xảy ra khi xuất dữ liệu');
+            }
+        }
+
+        // Convert array to CSV
+        function convertToCSV(data) {
+            if (data.length === 0) return '';
+            
+            const headers = Object.keys(data[0]);
+            const csvHeaders = headers.join(',');
+            
+            const csvRows = data.map(row => 
+                headers.map(header => {
+                    const value = row[header] || '';
+                    return `"${value.toString().replace(/"/g, '""')}"`;
+                }).join(',')
+            );
+            
+            return [csvHeaders, ...csvRows].join('\n');
+        }
+
+        // Download CSV file
+        function downloadCSV(csvContent, filename) {
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        // Change page size
+        function changePageSize(newLimit) {
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('limit', newLimit);
+            currentUrl.searchParams.set('page', '1'); // Reset to first page
+            window.location.href = currentUrl.toString();
+        }
+    </script>
+
+            <!--end::Content container-->
+          </div>
+          <!--end::Content-->
+        </div>
+        <!--end::Content wrapper-->
+      </div>
+      <!--end::Main-->
+    </div>
+    <!--end::Wrapper-->
+  </div>
+  <!--end::Page-->
+</div>
+<!--end::App-->
+
+<!--begin::Javascript-->
+<script>var hostUrl = "assets/";</script>
+<!--begin::Global Javascript Bundle(mandatory for all pages)-->
+<script src="assets/plugins/global/plugins.bundle.js"></script>
+<script src="assets/js/scripts.bundle.js"></script>
+<!--end::Global Javascript Bundle-->
+
+<!--begin::Vendors Javascript(used for this page only)-->
+<script src="assets/plugins/custom/datatables/datatables.bundle.js"></script>
+<!--end::Vendors Javascript-->
+
+<!--begin::Custom Javascript(used for this page only)-->
+<script src="assets/js/custom/apps/projects/list/list.js"></script>
+<script src="assets/js/custom/apps/projects/users/users.js"></script>
+<script src="assets/js/widgets.bundle.js"></script>
+<script src="assets/js/custom/widgets.js"></script>
+<script src="assets/js/custom/apps/chat/chat.js"></script>
+<script src="assets/js/custom/utilities/modals/upgrade-plan.js"></script>
+<script src="assets/js/custom/utilities/modals/create-campaign.js"></script>
+<script src="assets/js/custom/utilities/modals/users-search.js"></script>
+<!--end::Custom Javascript-->
+
+</body>
+</html>

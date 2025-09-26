@@ -184,6 +184,19 @@ routes.get("/ai-recipe-detail", isLogin, aiRecipeAdminController.viewAiRecipe);
 routes.get("/delete-ai-recipe", isLogin, aiRecipeAdminController.deleteAiRecipe);
 routes.get("/ai-recipe-stats", isLogin, aiRecipeAdminController.getAiRecipeStats);
 
+// Routes For Saved AI Recipes
+const savedAiRecipeAdminController = require("../controllers/savedAiRecipeAdminController");
+routes.get("/saved-ai-recipes", isLogin, savedAiRecipeAdminController.loadSavedAiRecipes);
+routes.get("/saved-ai-recipe-detail", isLogin, savedAiRecipeAdminController.viewSavedAiRecipe);
+routes.get("/delete-saved-ai-recipe", isLogin, savedAiRecipeAdminController.deleteSavedAiRecipe);
+routes.get("/saved-ai-recipe-stats", isLogin, savedAiRecipeAdminController.getSavedAiRecipeStats);
+routes.get("/export-saved-ai-recipes", isLogin, savedAiRecipeAdminController.exportSavedAiRecipes);
+
+// Routes For AI Recipe Try-It (Demo/Testing)
+const aiRecipeTryItController = require("../controllers/aiRecipeTryItController");
+routes.get("/ai-recipe-try-it", isLogin, aiRecipeTryItController.showTryItPage);
+routes.post("/ai-recipe-try-it/generate", isLogin, aiRecipeTryItController.getUploadMiddleware(), aiRecipeTryItController.generateRecipe);
+
 // Routes For Notifications Management
 routes.get("/notifications", isLogin, notificationController.loadNotifications);
 routes.get("/notifications/create", isLogin, notificationController.loadCreateNotification);

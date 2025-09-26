@@ -33,8 +33,78 @@ class CustomLabelCountryCodeEditWidget extends StatefulWidget {
 
 class _CustomLabelCountryCodeEditWidgetState
     extends State<CustomLabelCountryCodeEditWidget> {
+  
+  String _getCleanCountryCode() {
+    // Clean and extract country code from the provided code
+    if (widget.code != null && widget.code!.isNotEmpty) {
+      String cleanCode = widget.code!.trim();
+      
+      // Extract country code - handle formats like "+84", "84", "+84 123456789"
+      if (cleanCode.contains(' ')) {
+        cleanCode = cleanCode.split(' ')[0]; // Get the part before space
+      }
+      
+      // Remove + if present and validate
+      cleanCode = cleanCode.replaceAll('+', '');
+      
+      // Check if it's a valid country code (2-4 digits)
+      if (RegExp(r'^\d{1,4}$').hasMatch(cleanCode)) {
+        return cleanCode;
+      }
+    }
+    
+    // Default to Vietnam if no valid code provided
+    return '84';
+  }
+  
+  String _getCountryISOCode() {
+    // Map phone country codes to ISO codes for IntlPhoneField
+    Map<String, String> phoneToISO = {
+      '84': 'VN', // Vietnam
+      '1': 'US',   // United States
+      '44': 'GB',  // United Kingdom
+      '86': 'CN',  // China
+      '91': 'IN',  // India
+      '81': 'JP',  // Japan
+      '82': 'KR',  // South Korea
+      '66': 'TH',  // Thailand
+      '60': 'MY',  // Malaysia
+      '65': 'SG',  // Singapore
+      '62': 'ID',  // Indonesia
+      '63': 'PH',  // Philippines
+    };
+    
+    String phoneCode = _getCleanCountryCode();
+    String isoCode = phoneToISO[phoneCode] ?? 'VN'; // Default to Vietnam
+    
+    print('[DEBUG] Phone code: $phoneCode -> ISO code: $isoCode');
+    return isoCode;
+  }
+  
   @override
   Widget build(BuildContext context) {
+    // Get clean country code and ISO code
+    String countryCode = _getCleanCountryCode();
+    String isoCode = _getCountryISOCode();
+    
+    // Prepare initial phone value (remove country code if present)
+    String? initialPhone = widget.initialValue;
+    if (initialPhone != null && initialPhone.isNotEmpty) {
+      // Remove country code from initial value if it's prefixed
+      if (initialPhone.startsWith(countryCode)) {
+        initialPhone = initialPhone.substring(countryCode.length);
+      }
+      // Remove any + signs
+      initialPhone = initialPhone.replaceAll('+', '');
+    }
+    
+    print('[DEBUG] CustomLabelCountryCodeEditWidget:');
+    print('[DEBUG] Original code: ${widget.code}');
+    print('[DEBUG] Clean country code: $countryCode');
+    print('[DEBUG] ISO code: $isoCode');
+    print('[DEBUG] Original initial value: ${widget.initialValue}');
+    print('[DEBUG] Clean initial phone: $initialPhone');
+    
     return IntlPhoneField(
       showCountryFlag: false,
       autofocus: false,
@@ -60,30 +130,12 @@ class _CustomLabelCountryCodeEditWidgetState
           ),
       dropdownDecoration:
           BoxDecoration(borderRadius: BorderRadius.circular(10)),
-      initialValue: widget.initialValue,
+      initialValue: initialPhone,
       flagsButtonMargin: EdgeInsets.only(left: 16),
       keyboardType: TextInputType.phone,
       cursorColor: FlutterFlowTheme.of(context).primaryText,
       inputFormatters: [FilteringTextInputFormatter.allow(RegExp('[0-9]'))],
       decoration: InputDecoration(
-        // labelText: "Phone number",
-        // labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
-        //       fontFamily: 'SF Pro Display',
-        //       color: FlutterFlowTheme.of(context).grey400,
-        //       fontSize: 13,
-        //       useGoogleFonts: false,
-        //     ),
-        alignLabelWithHint: false,
-        //    label: Text(
-        //      "Phone number",
-        //   style: FlutterFlowTheme.of(context).labelMedium.override(
-        //       fontFamily: 'SF Pro Display',
-        //         color: FlutterFlowTheme.of(context).black40,
-        //        fontSize: 14,
-        //        useGoogleFonts: false,
-        //          lineHeight: 1.2,
-        //        ),
-        //      ),
         hintText: 'Enter your phone number',
         hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
               fontFamily: 'SF Pro Display',
@@ -93,8 +145,6 @@ class _CustomLabelCountryCodeEditWidgetState
               useGoogleFonts: false,
             ),
         counterText: '',
-
-        // errorText: 'Please enter valid number ',
         errorStyle: FlutterFlowTheme.of(context).bodyMedium.override(
               fontFamily: 'SF Pro Display',
               color: FlutterFlowTheme.of(context).errorColor,
@@ -102,7 +152,6 @@ class _CustomLabelCountryCodeEditWidgetState
               letterSpacing: 0.0,
               useGoogleFonts: false,
             ),
-        // contentPadding: EdgeInsets.only(top: 16, bottom: 16, left: 16),
         contentPadding: EdgeInsetsDirectional.fromSTEB(16.0, 15.0, 16.0, 15.0),
         errorBorder: OutlineInputBorder(
           borderSide: BorderSide(
@@ -138,18 +187,31 @@ class _CustomLabelCountryCodeEditWidgetState
             borderSide: BorderSide(
                 color: FlutterFlowTheme.of(context).black20, width: 1)),
       ),
-      initialCountryCode: widget.code!,
+      initialCountryCode: isoCode, // Use ISO code instead of phone code
       validator: (num) {
-        return "Please enter valid number ";
+        if (num == null || num.number.isEmpty) {
+          return "Please enter phone number";
+        }
+        if (num.number.length < 8) {
+          return "Phone number too short";
+        }
+        return null;
       },
       invalidNumberMessage: "Please enter valid phone number",
       onChanged: (value) {
+        print('[DEBUG] Phone changed: ${value.completeNumber}');
+        print('[DEBUG] Country code: ${value.countryCode}');
+        print('[DEBUG] Phone number: ${value.number}');
+        
         FFAppState().update(() {
           FFAppState().phone = value.number;
+          FFAppState().countryCodeEdit = value.countryCode;
         });
       },
       autovalidateMode: AutovalidateMode.onUserInteraction,
       onCountryChanged: (value) {
+        print('[DEBUG] Country changed: ${value.dialCode}');
+        
         FFAppState().update(() {
           FFAppState().countryCodeEdit = value.dialCode.toString();
         });

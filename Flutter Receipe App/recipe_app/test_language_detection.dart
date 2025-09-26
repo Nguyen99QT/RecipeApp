@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 void main() {
   // Test Vietnamese language detection

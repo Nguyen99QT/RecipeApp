@@ -1,8 +1,11 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import '../../domain/entities/ai_meal.dart';
 import '../../domain/entities/ai_recipe_request.dart';
 import '../../domain/repositories/ai_recipe_repository.dart';
 import '../datasources/ai_recipe_remote_datasource.dart';
 import '../datasources/ai_recipe_local_datasource.dart';
+import '/flutter_flow/flutter_flow_util.dart';
 
 class AIRecipeRepositoryImpl implements AIRecipeRepository {
   final AIRecipeRemoteDataSource remoteDataSource;
@@ -37,6 +40,109 @@ class AIRecipeRepositoryImpl implements AIRecipeRepository {
       return await localDataSource.getSavedAIRecipes();
     } catch (e) {
       throw Exception('Không thể tải danh sách công thức: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<List<AIMeal>> getSavedAIRecipesFromBackend(String userId) async {
+    try {
+      print('🔍 Loading recipes from backend for userId: $userId');
+      
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:3000/api/flutter-saved-ai-recipes'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({'userId': userId}),
+      );
+
+      print('📊 Backend response status: ${response.statusCode}');
+      print('📥 Backend response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['success'] == true) {
+          final List<dynamic> recipesJson = data['savedAiRecipes'] ?? [];
+          print('📋 Found ${recipesJson.length} recipes for user $userId');
+          return recipesJson.map((json) => _convertBackendToAIMeal(json)).toList();
+        }
+      }
+      
+      return [];
+    } catch (e) {
+      print('❌ Error loading recipes from backend: $e');
+      return [];
+    }
+  }
+
+  // Helper method to convert backend format to AIMeal
+  AIMeal _convertBackendToAIMeal(Map<String, dynamic> json) {
+    return AIMeal(
+      id: json['id'] ?? json['_id']?.toString() ?? '',
+      title: json['title'] ?? '',
+      description: json['description'] ?? '',
+      ingredients: List<String>.from(json['ingredients'] ?? []),
+      instructions: List<String>.from(json['instructions'] ?? []),
+      cuisine: json['cuisine'] ?? '',
+      preparationTime: json['preparationTime'] ?? 30,
+      cookingTime: json['cookingTime'] ?? 30,
+      servings: json['servings'] ?? 4,
+      difficulty: json['difficulty'] ?? 'Medium',
+      tags: List<String>.from(json['tags'] ?? []),
+      imageUrl: json['imageUrl'],
+      estimatedCalories: json['estimatedCalories']?.toDouble(),
+      createdAt: json['recipeCreatedAt'] != null 
+          ? DateTime.parse(json['recipeCreatedAt'])
+          : (json['createdAt'] != null 
+              ? DateTime.parse(json['createdAt'])
+              : DateTime.now()),
+    );
+  }
+
+  @override
+  Future<List<AIMeal>> getAllSavedAIRecipes() async {
+    try {
+      // Get current user ID
+      final appState = FFAppState();
+      final String userId = appState.userId;
+      
+      print('👤 Current userId from app state: "$userId"');
+      print('🔍 Loading all saved AI recipes for user: $userId');
+
+      // Get local recipes
+      final localRecipes = await localDataSource.getSavedAIRecipes();
+      print('📱 Found ${localRecipes.length} local recipes');
+      
+      // Get backend recipes
+      List<AIMeal> backendRecipes = [];
+      if (userId.isNotEmpty) {
+        backendRecipes = await getSavedAIRecipesFromBackend(userId);
+        print('🌐 Found ${backendRecipes.length} backend recipes');
+      } else {
+        print('⚠️ UserId is empty, skipping backend request');
+      }
+
+      // Merge and deduplicate recipes by ID
+      final Map<String, AIMeal> mergedRecipes = {};
+      
+      // Add local recipes first
+      for (final recipe in localRecipes) {
+        mergedRecipes[recipe.id] = recipe;
+      }
+      
+      // Add backend recipes (will overwrite local if same ID)
+      for (final recipe in backendRecipes) {
+        mergedRecipes[recipe.id] = recipe;
+      }
+      
+      // Return sorted by creation date (newest first)
+      final allRecipes = mergedRecipes.values.toList();
+      allRecipes.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      
+      print('✅ Total merged recipes: ${allRecipes.length}');
+      return allRecipes;
+    } catch (e) {
+      // If backend fails, just return local recipes
+      print('❌ Error merging recipes: $e');
+      return await localDataSource.getSavedAIRecipes();
     }
   }
 

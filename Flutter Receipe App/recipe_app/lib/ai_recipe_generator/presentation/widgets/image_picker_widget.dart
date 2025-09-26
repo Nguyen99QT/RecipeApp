@@ -216,7 +216,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Lỗi khi chọn ảnh: ${e.toString()}'),
+            content: Text('Error selecting image: ${e.toString()}'),
             backgroundColor: Colors.red,
           ),
         );

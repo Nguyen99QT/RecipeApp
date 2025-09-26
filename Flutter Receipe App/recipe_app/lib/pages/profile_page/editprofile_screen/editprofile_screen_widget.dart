@@ -752,7 +752,7 @@ class _EditprofileScreenWidgetState extends State<EditprofileScreenWidget> {
                                         containerGetUserApiResponse.jsonBody,
                                       ),
                                       code: functions.getCountryCodeInit(
-                                          '+${RecipeAppGroup.getUserApiCall.countryCode(
+                                          '${RecipeAppGroup.getUserApiCall.countryCode(
                                         containerGetUserApiResponse.jsonBody,
                                       )} ${RecipeAppGroup.getUserApiCall.phone(
                                         containerGetUserApiResponse.jsonBody,

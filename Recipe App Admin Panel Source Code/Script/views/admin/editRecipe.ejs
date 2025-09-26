@@ -567,7 +567,7 @@ document.addEventListener('DOMContentLoaded', function() {
             overviewTextarea.classList.remove('textarea-loading');
             console.error('Overview CKEditor initialization failed:', error);
             // Fallback: Make textarea look better
-            overviewTextarea.style.minHeight = '200px';
+            overviewTextarea.style.minHeight = '300px'; // Increased from 200px
             overviewTextarea.style.border = '1px solid #d1d3e2';
         });
 
@@ -602,7 +602,7 @@ document.addEventListener('DOMContentLoaded', function() {
             howToCookTextarea.classList.remove('textarea-loading');
             console.error('How to Cook CKEditor initialization failed:', error);
             // Fallback: Make textarea look better
-            howToCookTextarea.style.minHeight = '250px';
+            howToCookTextarea.style.minHeight = '350px'; // Increased from 250px
             howToCookTextarea.style.border = '1px solid #d1d3e2';
         });
 

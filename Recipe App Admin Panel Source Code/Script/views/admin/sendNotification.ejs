@@ -332,6 +332,31 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleRecipeSelection();
         });
     });
+    
+    // Initialize CKEditor for notification message
+    ClassicEditor
+        .create(document.querySelector('#kt_docs_first_ckeditor_classic'), {
+            toolbar: {
+                items: [
+                    'heading', '|',
+                    'bold', 'italic', 'link', '|',
+                    'bulletedList', 'numberedList', '|',
+                    'undo', 'redo'
+                ]
+            },
+            language: 'en'
+        })
+        .then(editor => {
+            console.log('Notification CKEditor initialized');
+            // Set minimum height for better appearance
+            const editorElement = editor.ui.view.editable.element;
+            if (editorElement) {
+                editorElement.style.minHeight = '250px';
+            }
+        })
+        .catch(error => {
+            console.error('CKEditor initialization failed:', error);
+        });
 });
 </script>
 

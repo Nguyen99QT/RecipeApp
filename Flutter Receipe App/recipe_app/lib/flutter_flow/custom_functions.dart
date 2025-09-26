@@ -450,10 +450,34 @@ String getCountryCodeInit(String phoneNumber) {
     '+263': 'ZW', // Zimbabwe
   };
 
+  print('[DEBUG] getCountryCodeInit called with: $phoneNumber');
+  
+  if (phoneNumber.isEmpty) {
+    print('[DEBUG] Phone number is empty, returning VN');
+    return 'VN';
+  }
+  
+  // Clean input - remove extra + signs
+  String cleanInput = phoneNumber.trim();
+  cleanInput = cleanInput.replaceAll(RegExp(r'\++'), '+'); // Replace multiple + with single +
+  
   // Extract the prefix from the phone number
-  String prefix = phoneNumber.startsWith('+') ? phoneNumber.split(' ')[0] : '';
-
+  String prefix = '';
+  if (cleanInput.startsWith('+')) {
+    prefix = cleanInput.split(' ')[0];
+  } else {
+    // If no + at beginning, try to add it
+    if (cleanInput.isNotEmpty && RegExp(r'^\d').hasMatch(cleanInput)) {
+      prefix = '+' + cleanInput.split(' ')[0];
+    }
+  }
+  
+  print('[DEBUG] Extracted prefix: $prefix');
+  
   // Look up the country code
-  return countryCodeMap[prefix] ?? 'Unknown';
+  String result = countryCodeMap[prefix] ?? 'VN'; // Default to VN instead of Unknown
+  print('[DEBUG] Country code result: $result');
+  
+  return result;
 }
 

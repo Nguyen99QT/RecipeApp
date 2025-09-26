@@ -156,7 +156,16 @@
                           </td>
                           <td class="pe-0 fw-bolder text-gray-800"><%= user[i].firstname %> <%= user[i].lastname %></td>
                           <td class="pe-0"><%= user[i].email %> </td>
-                          <td class="pe-0 fw-bolder text-gray-800">+<%= user[i].country_code %> <%= user[i].phone %></td>
+                          <td class="pe-0 fw-bolder text-gray-800">
+                            <% 
+                              let displayCountryCode = user[i].country_code;
+                              // Add + if not present, but don't duplicate it
+                              if (displayCountryCode && !displayCountryCode.startsWith('+')) {
+                                displayCountryCode = '+' + displayCountryCode;
+                              }
+                            %>
+                            <%= displayCountryCode %> <%= user[i].phone %>
+                          </td>
                           <td class="pe-0">
                             <!--begin::Switch-->
                             <div class="d-flex justify-content-center py-5" data-bs-toggle="modal" data-bs-target="#kt_modal_Enable/Disable_user<%= i %>">

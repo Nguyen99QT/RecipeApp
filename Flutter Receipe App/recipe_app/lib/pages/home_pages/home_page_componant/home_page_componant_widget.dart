@@ -13,6 +13,7 @@ import '/ai_recipe_debug_page.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'dart:async';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -64,9 +65,16 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       safeSetState(() {});
       // Auto-detect network instead of manual IP
+      print('[DEBUG] ===== HOME PAGE COMPONENT INIT =====');
       print('[DEBUG] Starting network detection...');
       final ip = await NetworkUtils.getLocalIpAddress();
       print('[DEBUG] Detected IP: $ip');
+      
+      print('[DEBUG] ===== CHECKING USER LOGIN STATUS =====');
+      print('[DEBUG] isLogin: ${FFAppState().isLogin}');
+      print('[DEBUG] token: ${FFAppState().token.substring(0, math.min(20, FFAppState().token.length))}...');
+      print('[DEBUG] userId: ${FFAppState().userId}');
+      
       await _loadUnreadNotificationCount();
       
       // Initialize real-time notifications
@@ -136,9 +144,10 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
         return;
       }
 
-      print('[DEBUG] Initializing real-time notifications...');
+      print('[DEBUG] ===== INITIALIZING REAL-TIME NOTIFICATIONS =====');
       print('[DEBUG] User ID: "${FFAppState().userId}"');
       print('[DEBUG] Token available: ${FFAppState().token.isNotEmpty}');
+      print('[DEBUG] Token (first 10 chars): ${FFAppState().token.substring(0, math.min(10, FFAppState().token.length))}...');
       
       // Connect to WebSocket for real-time notifications
       await NotificationService.instance.connect(
@@ -148,7 +157,8 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
 
       // Set callback for new notifications
       NotificationService.instance.onNewNotification = (notificationData) {
-        print('[DEBUG] Real-time notification received: $notificationData');
+        print('[DEBUG] ===== REAL-TIME NOTIFICATION RECEIVED =====');
+        print('[DEBUG] Notification data: $notificationData');
         
         // Check if this is a count change request
         if (notificationData['refresh_count'] == true) {
@@ -171,6 +181,7 @@ class _HomePageComponantWidgetState extends State<HomePageComponantWidget>
 
       // Set callback for connection status changes
       NotificationService.instance.onConnectionStatusChanged = (isConnected) {
+        print('[DEBUG] ===== WEBSOCKET CONNECTION STATUS CHANGED =====');
         print('[DEBUG] WebSocket connection status: $isConnected');
         
         // No longer need polling - WebSocket will handle all count updates

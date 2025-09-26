@@ -18,6 +18,29 @@ class FilterBottomsheetWidget extends StatefulWidget {
 
 class _FilterBottomsheetWidgetState extends State<FilterBottomsheetWidget> {
   late FilterBottomsheetModel _model;
+  UniqueKey _refreshKey = UniqueKey();
+  bool _isRefreshing = false;
+
+  void _refreshData() {
+    // Clear caches and refresh data
+    FFAppState().clearGetAllCategoryCacheCache();
+    FFAppState().clearCuisinesCcheCache();
+    
+    // Set refreshing state
+    setState(() {
+      _isRefreshing = true;
+      _refreshKey = UniqueKey();
+    });
+    
+    // Reset refreshing state after a short delay
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        setState(() {
+          _isRefreshing = false;
+        });
+      }
+    });
+  }
 
   @override
   void setState(VoidCallback callback) {
@@ -29,6 +52,9 @@ class _FilterBottomsheetWidgetState extends State<FilterBottomsheetWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => FilterBottomsheetModel());
+
+    // Automatically refresh data when filter opens
+    _refreshData();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
@@ -83,12 +109,38 @@ class _FilterBottomsheetWidgetState extends State<FilterBottomsheetWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      width: 44.0,
-                      height: 44.0,
-                      decoration: BoxDecoration(
-                        color: FlutterFlowTheme.of(context).backgroundColor,
-                        shape: BoxShape.circle,
+                    InkWell(
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () async {
+                        _refreshData();
+                      },
+                      child: Container(
+                        width: 44.0,
+                        height: 44.0,
+                        decoration: BoxDecoration(
+                          color: FlutterFlowTheme.of(context).lightGrey,
+                          shape: BoxShape.circle,
+                        ),
+                        alignment: const AlignmentDirectional(0.0, 0.0),
+                        child: _isRefreshing 
+                          ? SizedBox(
+                              width: 20.0,
+                              height: 20.0,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.0,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  FlutterFlowTheme.of(context).primaryTheme,
+                                ),
+                              ),
+                            )
+                          : Icon(
+                              Icons.refresh,
+                              size: 24.0,
+                              color: FlutterFlowTheme.of(context).primaryTheme,
+                            ),
                       ),
                     ),
                     Text(
@@ -151,10 +203,8 @@ class _FilterBottomsheetWidgetState extends State<FilterBottomsheetWidget> {
                   children: [
                     if (true /* Warning: Trying to access variable not yet defined. */)
                       FutureBuilder<ApiCallResponse>(
-                        future: FFAppState().getAllCategoryCache(
-                          requestFn: () =>
-                              RecipeAppGroup.getAllCategoryApiCall.call(),
-                        ),
+                        key: ValueKey('categories_${_refreshKey.toString()}'),
+                        future: RecipeAppGroup.getAllCategoryApiCall.call(),
                         builder: (context, snapshot) {
                           // Customize what your widget looks like when it's loading.
                           if (!snapshot.hasData) {
@@ -170,6 +220,33 @@ class _FilterBottomsheetWidgetState extends State<FilterBottomsheetWidget> {
                               ),
                             );
                           }
+                          
+                          // Handle error state
+                          if (snapshot.hasError) {
+                            return Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.error_outline,
+                                    size: 48,
+                                    color: Colors.red[400],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Error loading categories',
+                                    style: TextStyle(color: Colors.red[400]),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  ElevatedButton(
+                                    onPressed: _refreshData,
+                                    child: const Text('Retry'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                          
                           final columnGetAllCategoryApiResponse =
                               snapshot.data!;
 
@@ -331,10 +408,8 @@ class _FilterBottomsheetWidgetState extends State<FilterBottomsheetWidget> {
                       ),
                     if (true /* Warning: Trying to access variable not yet defined. */)
                       FutureBuilder<ApiCallResponse>(
-                        future: FFAppState().cuisinesCche(
-                          requestFn: () =>
-                              RecipeAppGroup.getAllCuisinesApiCall.call(),
-                        ),
+                        key: ValueKey('cuisines_${_refreshKey.toString()}'),
+                        future: RecipeAppGroup.getAllCuisinesApiCall.call(),
                         builder: (context, snapshot) {
                           // Customize what your widget looks like when it's loading.
                           if (!snapshot.hasData) {
@@ -350,6 +425,33 @@ class _FilterBottomsheetWidgetState extends State<FilterBottomsheetWidget> {
                               ),
                             );
                           }
+                          
+                          // Handle error state
+                          if (snapshot.hasError) {
+                            return Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.error_outline,
+                                    size: 48,
+                                    color: Colors.red[400],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Error loading cuisines',
+                                    style: TextStyle(color: Colors.red[400]),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  ElevatedButton(
+                                    onPressed: _refreshData,
+                                    child: const Text('Retry'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                          
                           final columnGetAllCuisinesApiResponse =
                               snapshot.data!;
 
@@ -614,10 +716,15 @@ class _FilterBottomsheetWidgetState extends State<FilterBottomsheetWidget> {
                     Expanded(
                       child: FFButtonWidget(
                         onPressed: () async {
+                          // Clear filter state
                           FFAppState().filterVariable = false;
                           FFAppState().categoryId = '';
                           FFAppState().cuisinesId = [];
                           FFAppState().update(() {});
+                          
+                          // Clear filter cache and refresh data
+                          FFAppState().clearFilterCacheCache();
+                          _refreshData();
                         },
                         text: 'Clear',
                         options: FFButtonOptions(
@@ -649,6 +756,7 @@ class _FilterBottomsheetWidgetState extends State<FilterBottomsheetWidget> {
                     Expanded(
                       child: FFButtonWidget(
                         onPressed: () async {
+                          // Apply filter
                           await RecipeAppGroup.filterRecipeApiCall.call(
                             categoryId: FFAppState().categoryId,
                             cuisinesIdList: FFAppState().cuisinesId,
@@ -657,7 +765,11 @@ class _FilterBottomsheetWidgetState extends State<FilterBottomsheetWidget> {
 
                           FFAppState().filterVariable = true;
                           FFAppState().update(() {});
+                          
+                          // Clear filter cache to ensure fresh data on next open
                           FFAppState().clearFilterCacheCache();
+                          
+                          // Close filter bottomsheet
                           context.safePop();
                         },
                         text: 'Apply',
