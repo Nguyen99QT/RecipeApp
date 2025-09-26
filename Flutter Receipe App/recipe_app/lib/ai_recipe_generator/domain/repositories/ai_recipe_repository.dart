@@ -10,6 +10,8 @@ abstract class AIRecipeRepository {
 
   /// Lấy danh sách công thức AI đã lưu
   Future<List<AIMeal>> getSavedAIRecipes();
+  Future<List<AIMeal>> getSavedAIRecipesFromBackend(String userId);
+  Future<List<AIMeal>> getAllSavedAIRecipes(); // Merge local + backend
 
   /// Xóa công thức AI
   Future<void> deleteAIRecipe(String recipeId);

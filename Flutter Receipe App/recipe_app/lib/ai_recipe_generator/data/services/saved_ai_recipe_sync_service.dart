@@ -6,7 +6,7 @@ import '../../domain/entities/ai_meal.dart';
 
 class SavedAiRecipeSyncService {
   static const String _baseUrl =
-      'http://10.0.2.2:8190/api'; // Android emulator localhost
+      'http://10.0.2.2:3000/api'; // Updated to port 3000
   static const String _recipesKey = 'ai_recipes';
 
   /// Sync saved AI recipes from local storage to backend

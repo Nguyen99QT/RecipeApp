@@ -359,7 +359,7 @@ async function insertMobileAppAiRecipes() {
         console.log(`   • All synced from Flutter mobile app`);
         console.log('');
         console.log('🌐 Admin Panel URL:');
-        console.log('   • View saved recipes: http://localhost:8190/saved-ai-recipes');
+        console.log('   • View saved recipes: http://localhost:3000/saved-ai-recipes');
         console.log('');
         console.log('🎉 Ready to view in admin panel!');
         

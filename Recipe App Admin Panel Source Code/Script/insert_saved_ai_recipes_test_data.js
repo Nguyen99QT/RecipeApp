@@ -288,7 +288,7 @@ async function insertTestData() {
         console.log(`\n📊 Summary:`);
         console.log(`   • Total saved AI recipes: ${totalSaved}`);
         console.log(`   • Total users: ${totalUsers}`);
-        console.log(`   • Admin panel URL: http://localhost:8190/saved-ai-recipes`);
+        console.log(`   • Admin panel URL: http://localhost:3000/saved-ai-recipes`);
         
     } catch (error) {
         console.error('Error inserting test data:', error);

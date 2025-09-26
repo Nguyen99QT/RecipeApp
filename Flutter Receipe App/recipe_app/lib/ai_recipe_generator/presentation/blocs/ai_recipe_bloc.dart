@@ -1,10 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../../domain/entities/ai_meal.dart';
 import '../../domain/entities/ai_recipe_request.dart';
 import '../../domain/usecases/generate_recipe_usecase.dart';
 import '../../domain/usecases/save_ai_recipe_usecase.dart';
 import '../../domain/usecases/get_saved_ai_recipes_usecase.dart';
+import '../../domain/usecases/get_all_saved_ai_recipes_usecase.dart';
+import '../../domain/usecases/get_user_saved_ai_recipes_usecase.dart';
+import '/flutter_flow/flutter_flow_util.dart';
 
 // Events
 abstract class AIRecipeEvent extends Equatable {
@@ -115,11 +120,15 @@ class AIRecipeBloc extends Bloc<AIRecipeEvent, AIRecipeState> {
   final GenerateRecipeUseCase generateRecipeUseCase;
   final SaveAIRecipeUseCase saveAIRecipeUseCase;
   final GetSavedAIRecipesUseCase getSavedAIRecipesUseCase;
+  final GetAllSavedAIRecipesUseCase getAllSavedAIRecipesUseCase;
+  final GetUserSavedAIRecipesUseCase getUserSavedAIRecipesUseCase;
 
   AIRecipeBloc({
     required this.generateRecipeUseCase,
     required this.saveAIRecipeUseCase,
     required this.getSavedAIRecipesUseCase,
+    required this.getAllSavedAIRecipesUseCase,
+    required this.getUserSavedAIRecipesUseCase,
   }) : super(const AIRecipeInitial()) {
     print('🏗️ AIRecipeBloc: Constructor called');
     on<GenerateRecipeEvent>(_onGenerateRecipe);
@@ -159,6 +168,9 @@ class AIRecipeBloc extends Bloc<AIRecipeEvent, AIRecipeState> {
 
       await saveAIRecipeUseCase(event.meal);
 
+      // Auto-sync to backend after successful local save
+      await _syncToBackend(event.meal);
+
       emit(AIRecipeSaved(event.meal));
     } catch (e) {
       emit(AIRecipeError(e.toString()));
@@ -172,7 +184,8 @@ class AIRecipeBloc extends Bloc<AIRecipeEvent, AIRecipeState> {
     try {
       emit(const AIRecipeLoading());
 
-      final recipes = await getSavedAIRecipesUseCase();
+      // Use getUserSavedAIRecipesUseCase để chỉ lấy recipes của user đang đăng nhập
+      final recipes = await getUserSavedAIRecipesUseCase();
 
       emit(SavedRecipesLoaded(recipes));
     } catch (e) {
@@ -198,5 +211,58 @@ class AIRecipeBloc extends Bloc<AIRecipeEvent, AIRecipeState> {
     Emitter<AIRecipeState> emit,
   ) async {
     emit(const AIRecipeInitial());
+  }
+
+  // Helper method to sync recipe to backend
+  Future<void> _syncToBackend(AIMeal meal) async {
+    try {
+      // Get real user info from app state
+      final appState = FFAppState();
+      final String realUserId = appState.userId.isNotEmpty ? appState.userId : 'test_user_flutter';
+      final dynamic userDetail = appState.userDetail;
+      final String realUserEmail = userDetail != null && userDetail['email'] != null 
+          ? userDetail['email'].toString() 
+          : 'test@example.com';
+      
+      // Create sync payload with real user data
+      final Map<String, dynamic> payload = {
+        'title': meal.title,
+        'description': meal.description,
+        'instructions': meal.instructions,
+        'ingredients': meal.ingredients,
+        'userId': realUserId,
+        'userEmail': realUserEmail,
+        'preparationTime': meal.preparationTime.toString(),
+        'cookingTime': meal.cookingTime.toString(),
+        'cuisine': meal.cuisine,
+        'tags': meal.tags,
+        'difficulty': meal.difficulty,
+        'servings': meal.servings.toString(),
+        'estimatedCalories': meal.estimatedCalories?.toString() ?? '',
+        'imageUrl': meal.imageUrl ?? '',
+        'createdAt': DateTime.now().toIso8601String(),
+      };
+
+      print('🔄 Syncing AI recipe to backend with user: $realUserId');
+      print('📝 Payload data: ${json.encode(payload)}');
+      
+      // Send to backend API
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:3000/api/saved-ai-recipes'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(payload),
+      );
+
+      print('📊 Response status: ${response.statusCode}');
+      print('📥 Response body: ${response.body}');
+
+      if (response.statusCode == 201) {
+        print('✅ Recipe synced successfully to backend');
+      } else {
+        print('❌ Failed to sync recipe: ${response.statusCode} - ${response.body}');
+      }
+    } catch (e) {
+      print('❌ Error syncing recipe to backend: $e');
+    }
   }
 }

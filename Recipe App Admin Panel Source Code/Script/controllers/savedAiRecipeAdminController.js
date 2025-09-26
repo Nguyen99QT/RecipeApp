@@ -6,6 +6,8 @@ const loginModel = require("../model/adminLoginModel");
 // Load Saved AI Recipes page
 const loadSavedAiRecipes = async (req, res) => {
     try {
+        console.log("[DEBUG] Loading Saved AI Recipes page...");
+        
         // Get filter parameters
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -13,11 +15,17 @@ const loadSavedAiRecipes = async (req, res) => {
         const search = req.query.search || '';
         const cuisine = req.query.cuisine || '';
         const difficulty = req.query.difficulty || '';
+        const userId = req.query.userId || ''; // New: filter by user
         const sortBy = req.query.sort || 'savedAt';
         const sortOrder = req.query.order === 'asc' ? 1 : -1;
 
         // Build query filter
         let filter = { status: 'active' };
+        
+        // Filter by specific user if provided
+        if (userId) {
+            filter.userId = userId;
+        }
         
         if (search) {
             filter.$or = [
@@ -56,6 +64,45 @@ const loadSavedAiRecipes = async (req, res) => {
         const cuisines = await savedAiRecipeModel.distinct('cuisine', { status: 'active' });
         const difficulties = await savedAiRecipeModel.distinct('difficulty', { status: 'active' });
 
+        // Get list of users who have saved AI recipes for filter dropdown
+        const usersWithRecipes = await savedAiRecipeModel.aggregate([
+            { $match: { status: 'active' } },
+            {
+                $group: {
+                    _id: '$userId',
+                    userEmail: { $first: '$userEmail' },
+                    recipeCount: { $sum: 1 }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'userInfo'
+                }
+            },
+            {
+                $project: {
+                    userId: '$_id',
+                    userEmail: '$userEmail',
+                    recipeCount: '$recipeCount',
+                    userName: {
+                        $cond: [
+                            { $gt: [{ $size: '$userInfo' }, 0] },
+                            { $concat: [
+                                { $arrayElemAt: ['$userInfo.firstname', 0] }, 
+                                ' ', 
+                                { $arrayElemAt: ['$userInfo.lastname', 0] }
+                            ]},
+                            '$userEmail'
+                        ]
+                    }
+                }
+            },
+            { $sort: { recipeCount: -1 } }
+        ]);
+
         // Get statistics
         const stats = {
             total: await savedAiRecipeModel.countDocuments({ status: 'active' }),
@@ -86,11 +133,14 @@ const loadSavedAiRecipes = async (req, res) => {
             search,
             cuisine,
             difficulty,
+            userId,
             sortBy,
             sortOrder: req.query.order || 'desc',
             cuisines,
             difficulties,
-            stats
+            usersWithRecipes,
+            stats,
+            IMAGE_URL: process.env.IMAGE_URL
         });
 
     } catch (error) {
@@ -117,7 +167,7 @@ const viewSavedAiRecipe = async (req, res) => {
         // Fetch admin data
         const loginData = await loginModel.find();
 
-        return res.render("savedAiRecipeDetail", { savedAiRecipe, loginData });
+        return res.render("savedAiRecipeDetail", { savedAiRecipe, loginData, IMAGE_URL: process.env.IMAGE_URL });
 
     } catch (error) {
         console.log(error.message);

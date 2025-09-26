@@ -97,7 +97,7 @@ async function testMobileUserCreateAIRecipe() {
         });
 
         console.log('🎉 SUCCESS: New mobile AI recipe appears in admin panel!');
-        console.log('🌐 Admin Panel URL: http://localhost:8190/saved-ai-recipes');
+        console.log('🌐 Admin Panel URL: http://localhost:3000/saved-ai-recipes');
         console.log('');
         console.log('🔄 Real App Flow:');
         console.log('   1. User generates AI recipe on Flutter mobile app');

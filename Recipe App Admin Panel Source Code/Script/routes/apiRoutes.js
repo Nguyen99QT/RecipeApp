@@ -121,6 +121,12 @@ routes.post("/syncSavedAiRecipes", checkAuthorization, savedAiRecipeController.s
 routes.post("/getSavedAiRecipes", checkAuthorization, savedAiRecipeController.getSavedAiRecipes);
 routes.post("/deleteSavedAiRecipe", checkAuthorization, savedAiRecipeController.deleteSavedAiRecipe);
 
+// Add endpoint for Flutter app sync (simpler endpoint name)
+routes.post("/saved-ai-recipes", savedAiRecipeController.saveSingleAiRecipe);
+
+// Get saved recipes for Flutter app (no auth for testing)
+routes.post("/flutter-saved-ai-recipes", savedAiRecipeController.getFlutterSavedAiRecipes);
+
 // Test endpoint without auth for development/testing
 routes.post("/testSyncSavedAiRecipes", savedAiRecipeController.syncSavedAiRecipes);
 

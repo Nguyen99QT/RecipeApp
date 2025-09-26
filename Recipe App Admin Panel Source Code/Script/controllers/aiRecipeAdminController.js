@@ -6,18 +6,23 @@ const loginModel = require("../model/adminLoginModel");
 // Load AI Recipes page
 const loadAiRecipes = async (req, res) => {
     try {
+        console.log("[DEBUG] Loading AI Recipes page...");
+        
         // Fetch all AI recipes with user information
         const aiRecipes = await aiRecipeModel.find()
             .populate('userId', 'firstname lastname email')
             .sort({ createdAt: -1 });
 
+        console.log("[DEBUG] Found AI recipes count:", aiRecipes.length);
+
         // Fetch admin data
         const loginData = await loginModel.find();
 
+        console.log("[DEBUG] About to render aiRecipes.ejs");
         return res.render("aiRecipes", { aiRecipes, loginData });
 
     } catch (error) {
-        console.log(error.message);
+        console.log("ERROR in loadAiRecipes:", error.message);
         req.flash('error', 'Something went wrong. Please try again.');
         res.redirect('back');
     }

@@ -43,8 +43,8 @@ async function checkSavedAiRecipes() {
         });
         
         console.log('🌐 Admin Panel URLs:');
-        console.log('   • Saved AI Recipes: http://localhost:8190/saved-ai-recipes');
-        console.log('   • Login Page: http://localhost:8190/');
+        console.log('   • Saved AI Recipes: http://localhost:3000/saved-ai-recipes');
+        console.log('   • Login Page: http://localhost:3000/');
         console.log('');
         console.log('✅ Database check completed!');
         

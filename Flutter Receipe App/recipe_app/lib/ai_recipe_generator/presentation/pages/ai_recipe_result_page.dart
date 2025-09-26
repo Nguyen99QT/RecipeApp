@@ -90,7 +90,7 @@ class _AIRecipeResultPageContent extends StatelessWidget {
           } else if (state is AIRecipeError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Lỗi: ${state.message}'),
+                content: Text('Error: ${state.message}'),
                 backgroundColor: Colors.red,
               ),
             );
