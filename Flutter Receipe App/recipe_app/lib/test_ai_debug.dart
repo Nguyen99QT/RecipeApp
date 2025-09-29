@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 /// Simple test for AI API connectivity
 class AIDebugTest {
-  static const String API_KEY = 'AIzaSyCy6tZdHl5JViz4u--naRLfapeJqTjSAnY';
+  static const String API_KEY = 'AIzaSyA0er_CFpuAvZZx0-iVhiqwKOqAcC_sq6U';
   static const String BASE_URL = 'https://generativelanguage.googleapis.com/v1beta';
   
   static Future<void> testAPIConnectivity() async {
@@ -29,7 +29,7 @@ class AIDebugTest {
       final client = http.Client();
       
       final response = await client.post(
-        Uri.parse('$BASE_URL/models/gemini-1.5-flash:generateContent?key=$API_KEY'),
+        Uri.parse('$BASE_URL/models/gemini-flash-latest:generateContent?key=$API_KEY'),
         headers: {
           'Content-Type': 'application/json',
         },

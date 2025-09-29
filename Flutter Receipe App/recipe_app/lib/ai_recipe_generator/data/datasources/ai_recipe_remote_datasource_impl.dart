@@ -120,13 +120,13 @@ class AIRecipeRemoteDataSourceImpl implements AIRecipeRemoteDataSource {
 
       print('[AI_REMOTE_DATASOURCE] 🌐 Sending request to Gemini API...');
       print(
-          '[AI_REMOTE_DATASOURCE] API URL: $baseUrl/models/gemini-1.5-flash:generateContent');
+          '[AI_REMOTE_DATASOURCE] API URL: $baseUrl/models/gemini-flash-latest:generateContent');
       print(
           '[AI_REMOTE_DATASOURCE] Payload size: ${json.encode(payload).length} characters');
 
       final response = await httpClient.post(
         Uri.parse(
-            '$baseUrl/models/gemini-1.5-flash:generateContent?key=$apiKey'),
+            '$baseUrl/models/gemini-flash-latest:generateContent?key=$apiKey'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -230,7 +230,7 @@ Please improve the recipe based on the feedback and return the result in JSON fo
 
       final response = await httpClient.post(
         Uri.parse(
-            '$baseUrl/models/gemini-1.5-flash:generateContent?key=$apiKey'),
+            '$baseUrl/models/gemini-flash-latest:generateContent?key=$apiKey'),
         headers: {
           'Content-Type': 'application/json',
         },

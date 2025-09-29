@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 void main() async {
   print('🚀 Starting simple AI API test...');
   
-  const String API_KEY = 'AIzaSyCy6tZdHl5JViz4u--naRLfapeJqTjSAnY';
+  const String API_KEY = 'AIzaSyA0er_CFpuAvZZx0-iVhiqwKOqAcC_sq6U';
   const String BASE_URL = 'https://generativelanguage.googleapis.com/v1beta';
   
   try {
@@ -45,7 +45,7 @@ void main() async {
     };
     
     final genResponse = await http.post(
-      Uri.parse('$BASE_URL/models/gemini-1.5-flash:generateContent?key=$API_KEY'),
+      Uri.parse('$BASE_URL/models/gemini-flash-latest:generateContent?key=$API_KEY'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(payload),
     ).timeout(Duration(seconds: 20));

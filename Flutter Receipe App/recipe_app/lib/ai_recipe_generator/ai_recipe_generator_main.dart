@@ -58,7 +58,7 @@ class AIRecipeGeneratorDI {
     _remoteDataSource ??= AIRecipeSimpleDataSourceImpl(
       apiKey: geminiApiKey ??
           const String.fromEnvironment('GEMINI_API_KEY',
-              defaultValue: 'AIzaSyAnx6FKl4dkPpACvIjWQ2L9D8Vt7UBmNks'),
+              defaultValue: 'AIzaSyA0er_CFpuAvZZx0-iVhiqwKOqAcC_sq6U'),
       httpClient: _httpClient!,
     );
 

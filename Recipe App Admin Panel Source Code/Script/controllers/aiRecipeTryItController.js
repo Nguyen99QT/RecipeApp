@@ -125,7 +125,7 @@ Respond with valid JSON in this exact format:
 }`;
 
       // Generate content using Gemini
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
       const result = await model.generateContent([systemPrompt, ...imageData]);
       const response = result.response;
       const text = response.text();
