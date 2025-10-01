@@ -1,10 +1,9 @@
-const { GoogleGenerativeAI } = require('@google/generative-ai');
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
-
-// Initialize Gemini AI
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const axios = require('axios');
+const { genAI, safetySettings, generationConfig } = require('../config/geminiConfig');
+const { processRecipeResponse } = require('./processRecipeResponse');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -84,51 +83,85 @@ class AIRecipeTryItController {
       }
 
       // Prepare the AI prompt
-      const systemPrompt = `You are an expert chef and recipe developer. Analyze the provided food images and create a detailed recipe. 
+      const systemPrompt = `You are a concise recipe creator. Look at the food image and create a simple, easy-to-follow recipe.
 
-Requirements:
-- Generate recipe in JSON format
-- Include title, description, ingredients (with quantities), step-by-step instructions
-- Estimate preparation time, cooking time, servings, calories
-- Consider any dietary restrictions or preferences mentioned
-- Make the recipe practical and easy to follow
+Key requirements:
+- Keep the recipe short and practical
+- Use 5-8 main ingredients maximum
+- Limit to 3-5 essential cooking steps
+- Focus on basic cooking techniques
+- Be specific but brief in instructions
+- Generate in JSON format
 
-Additional preferences:
-- Cuisine preference: ${cuisine || 'Any'}
-- Difficulty level: ${difficulty || 'Medium'}
-- Target servings: ${servings || '4'}
-- Maximum prep time: ${maxPrepTime || '30'} minutes
-- Dietary restrictions: ${dietaryRestrictions || 'None'}
-- User notes: ${prompt || 'Create a delicious recipe'}
+Preferences:
+- Cuisine: ${cuisine || 'Any'}
+- Difficulty: ${difficulty || 'Easy'}
+- Servings: ${servings || '2-4'}
+- Prep time: ${maxPrepTime || '15'} minutes max
+- Diet: ${dietaryRestrictions || 'None'}
+- Notes: ${prompt || 'Create a simple recipe'}
 
 Respond with valid JSON in this exact format:
 {
-  "title": "Recipe Name",
-  "description": "Brief description of the dish",
-  "cuisine": "Cuisine type",
+  "title": "Brief Recipe Name",
+  "description": "2-3 sentence description",
+  "cuisine": "Type",
   "difficulty": "Easy/Medium/Hard",
-  "prepTime": 15,
-  "cookTime": 25,
-  "totalTime": 40,
+  "prepTime": 10,
+  "cookTime": 20,
+  "totalTime": 30,
   "servings": 4,
-  "calories": 350,
+  "calories": 300,
   "ingredients": [
-    "1 cup ingredient 1",
-    "2 tbsp ingredient 2"
+    "5-8 ingredients only",
+    "with measurements"
   ],
   "instructions": [
-    "Step 1 instructions",
-    "Step 2 instructions"
+    "3-5 clear steps",
+    "be concise"
   ],
-  "tags": ["tag1", "tag2"],
-  "notes": "Additional cooking tips"
+  "tags": ["2-3 tags"],
+  "notes": "Optional quick tips"
 }`;
 
       // Generate content using Gemini
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      const result = await model.generateContent([systemPrompt, ...imageData]);
-      const response = result.response;
-      const text = response.text();
+      console.log('🤖 Initializing Gemini model...');
+      const model = genAI.getGenerativeModel({
+        model: "gemini-2.5-flash",
+        generationConfig,
+        safetySettings,
+      });
+      
+      try {
+        console.log('🤖 Preparing request parts...');
+        const parts = [
+          { text: systemPrompt },
+          ...imageData
+        ];
+        
+        console.log('🤖 Sending request to Gemini...');
+        console.log('📋 Number of images:', imageData.length);
+        console.log('📋 Prompt length:', systemPrompt.length);
+        
+        const result = await model.generateContent(parts);
+        
+        if (!result || !result.response) {
+          throw new Error('No response from Gemini API');
+        }
+        
+        const text = result.response.text();
+        console.log('✨ Raw response:', text);
+        
+        // Continue with text processing
+        return processRecipeResponse(text, req.files.length, res);
+      } catch (error) {
+        console.error('🔴 Gemini API Error:', error);
+        console.error('🔴 Error details:', JSON.stringify(error, null, 2));
+        return res.status(500).json({
+          success: false,
+          error: 'AI generation failed. Please try again.'
+        });
+      }
 
       console.log('🤖 AI Response received:', text.substring(0, 200) + '...');
 
@@ -136,9 +169,10 @@ Respond with valid JSON in this exact format:
       let recipeData;
       try {
         // Clean the response text to extract JSON
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/) || text.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
-          recipeData = JSON.parse(jsonMatch[0]);
+          const jsonContent = jsonMatch[1] || jsonMatch[0];
+          recipeData = JSON.parse(jsonContent);
         } else {
           throw new Error('No JSON found in response');
         }
